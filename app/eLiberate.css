@@ -1,0 +1,129 @@
+body {
+  font-family: sans-serif;
+  height: 100%;
+  margin: 0;
+}
+
+.title {
+  font-family: sans-serif;
+  font-size: 45px;
+  font-style: bold;
+  color: #FFFFFF;
+}
+
+.login-buttons-dropdown-align- {
+  z-index: 2;
+  position: absolute;
+  right: 250px; 
+  top: 0;
+}
+
+.loginControls {
+  position: absolute;
+  top: 0;
+  height: 50px;
+  left: 0;
+  right: 0;
+  background-color: #888888;
+  z-index: 3;
+}
+
+/* Organization Styles */
+.editButton {
+  width: 50px;
+  text-align: center;
+  border: 1px solid #444444;
+  background-color: #888888;
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  padding: 5px;
+}
+
+.newOrganizationName {
+  width: 200px;
+}
+
+.newOrganizationSubmit {
+  width: 50px;
+}
+
+.organizationsContainer {
+  position: absolute;
+  background-color: #FFCC00;
+  width: 50%;
+  margin: 0;
+  top: 50px;
+  left: 0; 
+  height: 120px;
+  z-index: 2;
+}
+
+.organizationsContainer * {
+  margin-left: 10px;
+}
+
+.organizationControls {
+  position: absolute;
+  display: none;
+  bottom: 75px;
+}
+
+/* Details Styles */
+.organizationDetailsContainer {
+  position: absolute;
+  background-color: Silver;
+  width: 50%;
+  margin: 0;
+  top: 50px;
+  right: 0;
+  height: 120px;
+  z-index: 2;
+}
+
+.organizationDetailsContainer * {
+  margin-left: 20px;
+}
+
+.meetingControls {
+  position: absolute;
+  display: none;
+  bottom: 75px;
+}
+
+.meetings {
+  position:absolute;
+  overflow-y: scroll;
+  left: 10px;
+  right: 0;
+  bottom: 50px;
+  top: 0;
+}
+
+/* Message Styles */
+.messagesContainer {
+  position: absolute;
+  border-width: 30px;
+  border-color: #444444;
+  border-style: solid;
+  padding: 10px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 170px;  
+  overflow-y: auto;
+}
+
+#messageControls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+}
+
+#newMessage {
+  position: relative;
+  width: 100%;
+  height: 50px;
+}

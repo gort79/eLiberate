@@ -1,0 +1,15 @@
+{
+  "meteor": {},
+  "dependencies": {
+    "basePackages": {
+      "roles": {}
+    },
+    "packages": {
+      "roles": {
+        "git": "https://github.com/alanning/meteor-roles.git",
+        "tag": "v1.2.11",
+        "commit": "2d7dc91848ec874d3a0852c77f462d0fae749de5"
+      }
+    }
+  }
+}

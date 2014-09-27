@@ -1,0 +1,24 @@
+<template name="meetingTemplates">
+  {{> meetings}}
+  {{> meetingControls}}
+  <a id="editOrganizationDetails" class="editButton">Edit</a>
+</template>
+
+<template name="meetings">
+  <div class="meetings">
+    {{#each organizationMeetings}}
+      <div style="meeting">
+        <a href="#" id="meetingId">{{name}}</a>
+      </div>
+    {{/each}}
+  </div>
+</template>
+
+<template name="meetingControls">
+  <div class="meetingControls">
+    <p>New Meeting <input type="text" id="newMeetingName" /></p>
+    <p>Start Date <input type="date" id="newMeetingDate" />
+    <input type="time" id="newMeetingTime" /></p>
+    <input type="button" id="newMeetingSubmit" value="Submit" />
+  </div>
+</template>
