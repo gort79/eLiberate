@@ -1,0 +1,20 @@
+<head>
+  <title>eLiberate</title>
+  <link rel="stylesheet" type="text/css" href="content/main.css">
+</head>
+
+<body>
+  {{> loginButtons }}
+  
+  <div class="organizationsContainer row">
+    {{> organizationTemplates}}
+  </div>
+
+  <div class="meetingsContainer row">
+    {{> meetingTemplates}}
+  </div>
+
+  <div class="messagesContainer">
+    {{> messageTemplates}}
+  </div>
+</body>
