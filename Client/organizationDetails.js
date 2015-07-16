@@ -1,7 +1,4 @@
 if(Meteor.isClient) {
-	Meetings = new Meteor.Collection("meetings");
-
-
 	if (Meteor.isClient) {
 	  Template.meetings.organizationMeetings = function() {
 		return Meetings.find({organizationId: Session.get("organizationId")});

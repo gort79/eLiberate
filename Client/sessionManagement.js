@@ -7,15 +7,15 @@ if(Meteor.isClient) {
 		//Session.Abandon();
 	  //}
 
-	  Organizations.stop();
-	  Meetings.stop();
-	  Permissions.stop();
-	  Invites.stop();
+	  // Organizations.stop();
+	  // Meetings.stop();
+	  // Permissions.stop();
+	  // Invites.stop();
 
-	  hideOrganizationMenu(); 
+	  //hideOrganizationMenu(); 
 	});
 
-	Template.home.helpers({
+	Template.login.helpers({
 		created: function() {
 		  if (Accounts._verifyEmailToken) {
 			Accounts.verifyEmail(Accounts._verifyEmailToken, function(err) {

@@ -1,0 +1,163 @@
+<head>
+  <meta charset="utf-8">
+  <title>eLiberate</title>
+  <meta name="description" content="Description of your Site">
+  <meta name="author" content="CREATEBRILLIANCE - Media &amp; Consulting">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- http://www.greepit.com/open-source-icons-gcons/gcons-preview/ -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/owl-carousel/owl.carousel.css">
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/owl-carousel/owl.theme.css">
+  <link rel="stylesheet" href="/css/animate.css">
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="stylesheet" href="/css/eLiberate.css">
+  
+  <link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700,900' rel='stylesheet' type='text/css'>
+  
+</head>
+
+<body>
+	{{ created }}
+	<!--[if lt IE 7]>
+		<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+	<![endif]-->
+	
+	<div id="preloader">
+		<div id="spinner_container">
+			<img src="images/spinner.gif" alt=""/>
+		</div>
+	</div>
+
+	<!-- Login -->
+	<div class="text-right">
+		{{> login }}
+	</div>
+	
+	<!-- Side Menu -->
+	<nav class="bt-menu-close" id="menu-toggle">
+				<a class="bt-menu-trigger" href="#"><span>Menu</span></a>
+	</nav>
+
+	<div id="sidebar-wrapper">
+		<ul class="sidebar-nav">
+			
+			<li class="sidebar-brand">
+				eLiberate
+			</li>
+			<li class="show-modal nav-organizations" data-modal="organizations">
+				<a href="#"><i class="fa fa-users"></i> Organizations</a>
+			</li>
+			<li class="show-modal nav-about" data-modal="about">
+				<a href="#"><i class="fa fa-flask"></i> Meetings</a>
+			</li>
+			<li class="show-modal nav-contact" data-modal="contact">
+				<a href="#"><i class="fa fa-users"></i> Contact</a>
+			</li>
+
+		</ul>
+	</div>
+		
+
+	<section id="modal">
+		<div class="bt-modal-close"><span></span></div>
+
+		<article id="modal-organizations">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						{{> organizationTemplates}}						
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<article id="modal-meetings">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<h2><i class="fa fa-users"></i> Meetings</h2>
+					</div>
+					<div class="col-md-6">
+						{{> meetingTemplates}}
+					</div>
+				</div>
+			</div>
+		</article>
+		
+	</section>
+
+	<section id="head">
+			<div class="container">
+				<div class="row animated" data-animation-delay="500" data-animation="bounceInDown">
+					<div class="col-md-12 text-center">
+						<h1>eLiberate</h1>
+						<hr>
+						<h3> 
+							The online deliberation tool for all.
+						</h3>
+						<h4> 
+							Sign up now to start deliberating!
+						</h4>
+					</div>
+				</div>
+
+				<div class="row">
+					{{> messageTemplates}}
+				</div>
+				<!--				
+				<div class="row">
+					<div class="divider">
+						<i class="fa fa-clock-o"></i> <h2>We will be back in</h2>
+					</div>
+				</div>
+				
+				<div class="row  countdown">				
+					<div class="col-md-3 animated" data-animation-delay="0" data-animation="fadeInUp">
+						<div id="days">00</div><div id="days-text">Days</div>
+					</div>
+					<div class="col-md-3 animated" data-animation-delay="200" data-animation="fadeInUp">
+						<div id="hours">00</div><div id="hours-text">Hours</div>
+					</div>
+					<div class="col-md-3 animated" data-animation-delay="400" data-animation="fadeInUp">
+						<div id="minutes">00</div><div id="minutes-text">Mins</div>
+					</div>
+					<div class="col-md-3 animated" data-animation-delay="600" data-animation="fadeInUp">
+						<div id="seconds">00</div><div id="seconds-text">Secs</div>
+					</div>
+				</div>
+			</div>
+			-->
+		</div>
+		<!--container-->
+	</section>
+
+	<footer>    	
+			<div class="container">
+				<div class="row text-center animated" data-animation-delay="200" data-animation="bounceIn">
+					<div class="col-md-12">
+						<div class="social-icons">
+							<a href="#" target="_blank" class="facebook"><i class="fa fa-facebook"></i></a>
+							<a href="#" target="_blank" class="flickr"><i class="fa fa-flickr"></i> </a>
+							<a href="#" target="_blank" class="linkedin"><i class="fa fa-linkedin"></i> </a>
+							<a href="#" target="_blank" class="pinterest"><i class="fa fa-pinterest"></i> </a>
+							<a href="#" target="_blank" class="dribbble"><i class="fa fa-dribbble"></i> </a>
+							<a href="#" target="_blank" class="dropbox"><i class="fa fa-dropbox"></i> </a>
+							<a href="#" target="_blank" class="instagram"><i class="fa fa-instagram"></i> </a>
+						</div>
+					</div>
+							<p class="copy">&copy; Public Sphere Project 2015</p>
+				</div>
+			</div>
+	</footer>
+
+	  
+	<div class="bokeh"></div>
+					
+	<div id="slides">
+		<div class="slides-container">
+			<img src="images/foggy.jpg" alt="">
+			<img src="images/foggy-seattle.jpg" alt="">				
+		</div>
+	</div>
+</body>

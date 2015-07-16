@@ -1,8 +1,8 @@
 if(Meteor.isServer) {
 	// Organization subscription details
-	Meteor.publish("organizations", function() {
-	  return Organizations.find({});
-	});
+    Meteor.publish("organizations", function() {
+      return Organizations.find({members: { $elemMatch: { userId: this.userId }}});
+    });
 
 	// Permission subscription details
 	Meteor.publish("permissions", function(organizationId) {

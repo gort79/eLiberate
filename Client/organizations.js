@@ -82,7 +82,6 @@ if(Meteor.isClient) {
 	  'click #newOrganizationSubmit': function() {
 		organizationId = Organizations.insert({name: $("#newOrganizationName").val()});
 		Permissions.insert({organizationId: organizationId, userId: Meteor.userId(), userName: Meteor.user().username, role: ROLES.administrator});
-
 	  }
 	});
 

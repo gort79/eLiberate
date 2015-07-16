@@ -5,21 +5,43 @@
 </template>
 
 <template name="organizations">
-  <div id="organizationList">
+  <div>
     {{#each userOrganization}}
-      <div class="organization">
-        <a href="#" class="organizationLink">{{name}}</a>
-        {{#if isAdminAndCurrentOrganization _id}}
-          <a id="editOrganization" class="editButton">Edit</a>
-        {{/if}}
+      <div class="organization-carousel">
+        <div class="item">
+			<img src="/images/orgs/{{name}}.jpg" />
+			<a href="#">{{name}}</a>
+			{{#if isAdminAndCurrentOrganization _id}}
+			  <a id="editOrganization" class="editButton">Edit</a>
+			{{/if}}
+		</div>
       </div>
     {{/each}}
   </div>
+  
+	<script langauge="javascript">
+		$('.organization-carousel').owlCarousel({
+			loop:true,
+			margin:10,
+			nav:true,
+			responsive:{
+				0:{
+					items:1
+				},
+				600:{
+					items:3
+				},
+				1000:{
+					items:5
+				}
+			}
+		})
+	</script>
 </template>
 
 <template name="newOrganizationControls">
   <div id="newOrganizationControls">
-    <div id="newOrganizationLabel">Create New Organization</div>
+    <div id="newOrganizationLabel">Create a New Organization</div>
     <input type="text" id="newOrganizationName" />
     <input type="button" id="newOrganizationSubmit" value="Save" />
   </div>

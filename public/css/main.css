@@ -13,6 +13,11 @@ html,body {
 
 body {
 	background:#222;	
+    background: url("/images/foggy.jpg") no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;	
 	font-family: "Lato", Helvetica, Arial, sans-serif;
 	color:white;
 	overflow: hidden;
@@ -138,6 +143,30 @@ a:hover, a:focus {
 	-ms-transition: all 0.4s ease 0s;
 	-o-transition: all 0.4s ease 0s;
 	transition: all 0.4s ease 0s;
+}
+
+.bt-menu-login {
+	opacity:0.8;
+    cursor: pointer;
+    display: block;
+    height: 50px;
+    right: 20px;
+    position: fixed;
+    top: 15px;
+    width: 400px;
+    z-index:10000;
+}
+
+#login-dropdown-list {
+	position: fixed;
+	display: block;
+	right: 0px;
+}
+
+#login-dropdown-list .dropdown-menu {
+	left: auto;
+	right: 5px;
+	z-index: 10000;
 }
 
 .bt-menu-trigger {
@@ -330,7 +359,7 @@ transition:all 0.9s ease-out;
 }
 #head hr {
     border-top: 1px solid white;
-	width:40px;
+	width:100%;
 }
 #modal{
 	opacity:0.8;
@@ -441,12 +470,12 @@ transition:all 0.9s ease-out;
 #modal #modal-newsletter .btn-submit:hover {
 	opacity:0.6;
 }
-.gmap img{
+.gmap images{
 	max-width: 100%;
 	opacity:0;
 }
 .gmap{
-	 background-image: url("http://maps.google.com/maps/api/staticmap?center=New%20York%20City&zoom=15&size=640x200&maptype=roadmap&sensor=false&markers=icon:http://themes.createbrilliance.com/Soonr/theme/img/map-marker.png|New%20York%20City");
+	 background-image: url("http://maps.google.com/maps/api/staticmap?center=New%20York%20City&zoom=15&size=640x200&maptype=roadmap&sensor=false&markers=icon:http://themes.createbrilliance.com/Soonr/theme/images/map-marker.png|New%20York%20City");
     background-position: 50% 50%;
     background-repeat: no-repeat;
     display: block;
@@ -602,7 +631,7 @@ footer .copy {
 }
 
 /*#slides .slides-container > div:before {
-   	background: url(../img/bg_pattern.png) repeat scroll 0 0 rgba(0, 0, 0, 0);
+   	background: url(../images/bg_pattern.png) repeat scroll 0 0 rgba(0, 0, 0, 0);
     content: "";
     height: 100%;
     left: 0;

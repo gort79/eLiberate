@@ -16,11 +16,11 @@ if(Meteor.isServer) {
 
 	Permissions.allow({
 	  'insert': function(userId, doc) {
-		return isOrganizationAdmin(doc.organizationId, userId);
+		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 
 	  'update': function(userId, doc) {
-		if(isOrganizationAdmin(doc.organizationId, userId)){
+		if(isNewOrOrganizationAdmin(doc.organizationId, userId)){
 		  // If the role they're setting now ISN'T an admin level role, we need to make sure there's an admin somewhere
 		  // You can't have an org without an admin, otherwise no one will be able to make any changes to the org. 
 		  if(doc.role != ROLES.administrator && doc.role != ROLES.chairperson) {
@@ -44,7 +44,7 @@ if(Meteor.isServer) {
 	  },
 
 	  'remove': function(userId, doc) {
-		if(isOrganizationAdmin(doc.organizationId, userId)){
+		if(isNewOrOrganizationAdmin(doc.organizationId, userId)){
 		  // Check if there's a different person with an admin role
 		  if(Permissions.find({organizationId: doc.organizationId, userId: {$ne: doc.userId}, $or: [{ role: ROLES.administrator}, {role: ROLES.chairperson}]})) {
 			// There is!
@@ -62,27 +62,27 @@ if(Meteor.isServer) {
 
 	Invites.allow({
 	  'insert': function(userId, doc) {
-		return isOrganizationAdmin(doc.organizationId, userId);
+		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 
 	  'update': function(userId, doc) {
-		return isOrganizationAdmin(doc.organizationId, userId);
+		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 
 	  'remove': function(userId, doc) {
-		return isOrganizationAdmin(doc.organizationId, userId);
+		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  }
 	});
 
 	Meetings.allow({
 	  'insert': function (userId,doc) {
-		return isOrganizationAdmin(doc.organizationId, userId);
+		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 	  'update': function (userId,docs) {
-		return isOrganizationAdmin(doc.organizationId, userId);
+		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 	  'remove': function (userId,doc) {
-		return isOrganizationAdmin(doc.organizationId, userId);
+		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  }    
 	});
 
@@ -126,9 +126,11 @@ if(Meteor.isServer) {
 	  }
 	})
 
-	function isOrganizationAdmin(organizationId, userId) {
-	  if(Permissions.find({organizationId: organizationId, userId: userId, $or: [ { role: ROLES.administrator }, { role: ROLES.chairperson} ] }).count() > 0) 
+	function isNewOrOrganizationAdmin(organizationId, userId) {
+	  if(Permissions.find({organizationId: organizationId, userId: userId, $or: [ { role: ROLES.administrator }, { role: ROLES.chairperson} ] }).count() > 0
+		|| Permissions.find({organizationId: organizationId}).count() == 0) 
 	  {
+		
 		return true;
 	  }
 

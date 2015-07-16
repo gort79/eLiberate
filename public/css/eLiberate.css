@@ -1,9 +1,3 @@
-body {
-  font-family: sans-serif;
-  height: 100%;
-  margin: 0;
-  color: #444444;
-}
 
 .floatLeft {
   float: left;
@@ -55,16 +49,18 @@ body {
   height: 17px;
 }
 
-/* Organization Styles */
-#organizationList {
-  position: absolute;
-  overflow-y: scroll;
-  top: 0;
-  right: 0;
-  left: 0;
-  height: 60px; 
+#modal-organizations {
+  min-height: 200px;
 }
 
+#modal-organizations  .container {
+  position: absolute;
+  display: block;
+  top: 0px;
+}
+
+
+/* Organization Styles */
 #newOrganizationName {
   width: 200px;
 }
@@ -89,39 +85,16 @@ body {
 }
 
 #newOrganizationLabel {
-  position: absolute;
-  bottom: 25px;
-  left: 0;
-}
-
-#newOrganizationControls {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  font-style: italic;
-  font-size: small;
-  color: #444444;
 }
 
 #newOrganizationName {
-  position: absolute;
-  left: 0;
-  right: 70px;
-  bottom: 0;
 }
 
 #newOrganizationSubmit {
-  position: absolute;
-  right: 10px;
-  bottom: 0;
 }
 
 #editOrganizationControls {
-  position: absolute;
   display: none;
-  bottom: 200px;
-  top: 100px;
 }
 
 #editOrganizationControls TABLE {
@@ -157,8 +130,6 @@ body {
 
 #meetingContent {
   margin-left: 20px;
-  display: none;
-
 }
 
 #meetingsContainer TABLE {
