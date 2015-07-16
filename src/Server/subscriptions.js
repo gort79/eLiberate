@@ -1,5 +1,4 @@
 if (Meteor.isServer) {
-  
   // Organization subscription details
   Meteor.startup(function () {
     Meteor.publish("organizations", function() {

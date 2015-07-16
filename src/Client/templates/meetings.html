@@ -1,0 +1,55 @@
+<template name="meetingTemplates">
+  <div id="meetingContent">
+    {{> meetings}}
+    {{> meetingControls}}
+  </div>
+</template>
+
+<template name="meetings">
+  <table id="meetings">
+    <thead>
+      <tr>
+        <td>
+          Meeting Title
+        </td>
+        <td>
+          Starts
+        </td>
+        <td>
+          Rule Set
+        </td>
+      </tr>
+    </thead>              
+    <tbody>        
+      {{#each meetings}}
+        <tr>
+          <td>
+            <a href="#" id="meetingId">{{name}}</a>
+          </td>
+          <td>
+            {{prettifyDate dateTime}}
+          </td>
+          <td>
+            {{ruleset}}
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</template>
+
+<template name="meetingControls">
+  <div id="meetingControls">
+    <p>New Meeting <input type="text" id="newMeetingName" /></p>
+    <p>Start Date <input type="date" id="newMeetingDate" />
+    <input type="time" id="newMeetingTime" /></p>
+    <select id="ruleset" type="select" style="width: 100%">
+        {{#each allRulesets}} 
+          <option value="{{this}}">{{this}}</option>
+        {{/each}}
+      </select>
+
+    <input type="button" id="newMeetingSubmit" value="Submit" />
+  </div>
+  <div id="editMeetings">Edit</div><br />
+</template>

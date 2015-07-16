@@ -1,0 +1,11 @@
+<template name="messageTemplates">
+  {{#with meeting}}
+  <div id="messages">
+    {{messages ruleset}}
+  </div>  
+
+  <div id="messageControls">
+    {{messageControls ruleset}}
+  </div>
+  {{/with}}
+</template>

@@ -1,0 +1,26 @@
+<template name="noRulesMessages">
+  {{#each meetingMessages}}
+    <div class="message">
+      <div class="messageHeader">
+        Posted by 
+        {{#if this.userName}}
+        	{{userName}}
+        {{else}} 
+      	  {{#if this.email}}
+  	        {{email}}
+  	      {{else}}
+  	        Unknown
+  	      {{/if}}
+        {{/if}} 
+        @ {{prettifyDate dateTime}}
+      </div>
+      {{body}}      
+    </div>
+  {{/each}}
+</template>
+
+<template name="noRulesControls">
+  <p>New no rules Message</p>
+  <textarea id="newMessage"></textarea><br />
+  <input type="button" id="newMessageSubmit" value="Submit" />
+</template>

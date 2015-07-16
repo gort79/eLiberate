@@ -1,0 +1,250 @@
+body {
+  font-family: sans-serif;
+  height: 100%;
+  margin: 0;
+  color: #444444;
+}
+
+.floatLeft {
+  float: left;
+  clear: none;
+}
+
+.floatRight {
+  float: right;
+  clear: none;
+}
+
+.alert {
+  display: inline-block;
+  background-color: #dd4400;
+  color: #FFFFFF;
+}
+
+.title {
+  font-family: sans-serif;
+  font-size: 45px;
+  font-style: bold;
+  color: #FFFFFF;
+}
+
+.login-buttons-dropdown-align- {
+  z-index: 2;
+  position: absolute;
+  right: 250px; 
+  top: 0;
+}
+
+.loginControls {
+  position: absolute;
+  top: 0;
+  height: 50px;
+  left: 0;
+  right: 0; 
+  background-color: #888888;
+  z-index: 3;
+}
+
+.editButton {
+  text-align: center;
+  border: 1px solid #444444;
+  background-color: #888888;
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 17px;
+}
+
+/* Organization Styles */
+#organizationList {
+  position: absolute;
+  overflow-y: scroll;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 60px; 
+}
+
+#newOrganizationName {
+  width: 200px;
+}
+
+#newOrganizationSubmit {
+  width: 50px;
+}
+
+#organizationsContainer {
+  position: absolute;
+  background-color: #FFCC00;
+  width: 50%;
+  margin: 0;
+  top: 50px;
+  left: 0; 
+  height: 120px;
+  z-index: 2;
+}
+
+#organizationsContainer > *  {
+  margin-left: 10px;
+}
+
+#newOrganizationLabel {
+  position: absolute;
+  bottom: 25px;
+  left: 0;
+}
+
+#newOrganizationControls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  font-style: italic;
+  font-size: small;
+  color: #444444;
+}
+
+#newOrganizationName {
+  position: absolute;
+  left: 0;
+  right: 70px;
+  bottom: 0;
+}
+
+#newOrganizationSubmit {
+  position: absolute;
+  right: 10px;
+  bottom: 0;
+}
+
+#editOrganizationControls {
+  position: absolute;
+  display: none;
+  bottom: 200px;
+  top: 100px;
+}
+
+#editOrganizationControls TABLE {
+ width: 100%;
+}
+
+#editOrganizationControls THEAD {
+  text-align: center;
+  background: #444444;
+  color: #FFCC00;
+}
+
+#editOrganizationControls TR :first-child {
+  width: 70%;
+}
+
+#editOrganizationControls TBODY tr:nth-child(odd) {
+  background-color: #FFEE55;
+}
+
+/* Details Styles */
+#meetingsContainer {
+  position: absolute;
+  overflow-y: scroll;
+  background-color: Silver;
+  width: 50%;
+  margin: 0;
+  top: 50px;
+  right: 0;
+  height: 120px;
+  z-index: 2;
+}
+
+#meetingContent {
+  margin-left: 20px;
+  display: none;
+
+}
+
+#meetingsContainer TABLE {
+ width: 100%;
+ overflow-y: scroll;
+}
+
+#meetingsContainer THEAD {
+  text-align: center;
+  background: #444444;
+  color: Silver;
+}
+
+#meetingsContainer TR :first-child {
+  width: 70%;
+}
+
+#meetingsContainer TBODY tr:nth-child(odd) {
+  background-color: #FFEE55;
+}
+
+
+#meetingControls {
+  position: absolute;
+  display: none;
+  bottom: 75px;
+}
+
+#editMeetings {
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+}
+
+/* Message Styles */
+#messagesContainer {
+  position: absolute;
+  border-width: 30px;
+  border-color: #444444;
+  border-style: solid;
+  padding: 10px;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 170px;  
+  overflow-y: auto;
+}
+
+#messages {
+  position: absolute;
+  bottom: 130px;
+  left: 0;
+  top: 0;
+  right: 0;
+  overflow-y: scroll;
+}
+
+.message {
+  width: 100%;
+  background-color: lightgreen;
+  margin-bottom: 5px;
+}
+
+.messageHeader {
+  font-style: italic;
+  color: #444444;
+  font-size: small;
+  margin-bottom: 7px;
+}
+
+#messageControls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+}
+
+#newMessage {
+  position: relative;
+  width: 75%;
+  height: 50px;
+}
+
+#queue {
+  display: block;
+  overflow-y: scroll;
+  height: 40px;
+}

@@ -1,0 +1,102 @@
+<template name="organizationTemplates">
+  {{> organizations}}
+  {{> editOrganizationControls}}
+  {{> newOrganizationControls}}
+</template>
+
+<template name="organizations">
+  <div id="organizationList">
+    {{#each userOrganization}}
+      <div class="organization">
+        <a href="#" class="organizationLink">{{name}}</a>
+        {{#if isAdminAndCurrentOrganization _id}}
+          <a id="editOrganization" class="editButton">Edit</a>
+        {{/if}}
+      </div>
+    {{/each}}
+  </div>
+</template>
+
+<template name="newOrganizationControls">
+  <div id="newOrganizationControls">
+    <div id="newOrganizationLabel">Create New Organization</div>
+    <input type="text" id="newOrganizationName" />
+    <input type="button" id="newOrganizationSubmit" value="Save" />
+  </div>
+</template>
+
+<template name="editOrganizationControls">
+  <div id="editOrganizationControls">
+    <div>
+      Edit "{{organization.name}}"<br />
+      <input type="text" id="editOrganizationName" value="{{organization.name}}" />
+      <input type="button" id="editOrganizationSubmit" value="Save" />
+    </div>
+    
+    <table>
+      <thead>
+        <tr>
+          <td colspan="2">Members</td>
+        </tr>
+        <tr>
+          <td>User Name</td>
+          <td>Role</td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each permissions}}
+          <tr>
+            <td>{{userName}}</td>
+            <td>
+              <select id="{{userName}}" class="userRole" type="select" style="width: 100%">
+                {{#each allRoles}} 
+                  <option value="{{this}}" selected="{{isInRole ../role this}}">{{this}}</option>
+                {{/each}}
+              </select>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <br /><br />
+    <table>
+      <thead>
+        <tr>
+          <td colspan="2">Invites</td>
+        </tr>
+        <tr>
+          <td>E-Mail</td>
+          <td>Role</td>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each invite}}
+          <tr>
+            <td>{{email}}</td>
+            <td>
+              <select class="inviteeRole" type="select" style="width: 100%">
+                {{#each allRoles}} 
+                  <option value="{{this}}" selected="{{isInRole ../role this}}">{{this}}</option>
+                {{/each}}
+              </select>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+
+    <br /><br />
+    <div>
+      Invite a User<br />
+      Enter an E-mail Address Below<br />
+      <input type="email" id="inviteUserEmail" />
+      <select id="inviteUserRole" type="select" style="width: 100%">
+        {{#each allRoles}} 
+          <option value="{{this}}">{{this}}</option>
+        {{/each}}
+      </select>
+      <input type="button" id="inviteUserSubmit" value="Invite" />
+    </div>
+  </div>
+</template>
