@@ -6,18 +6,18 @@
 </template>
 
 <template name="meetings">
-  <table id="meetings">
+  <table id="meetings" class="table table-responsive">
     <thead>
       <tr>
-        <td>
+        <th>
           Meeting Title
-        </td>
-        <td>
+        </th>
+        <th>
           Starts
-        </td>
-        <td>
+        </th>
+        <th>
           Rule Set
-        </td>
+        </th>
       </tr>
     </thead>              
     <tbody>        
@@ -43,13 +43,28 @@
     <p>New Meeting <input type="text" id="newMeetingName" /></p>
     <p>Start Date <input type="date" id="newMeetingDate" />
     <input type="time" id="newMeetingTime" /></p>
-    <select id="ruleset" type="select" style="width: 100%">
-        {{#each allRulesets}} 
-          <option value="{{this}}">{{this}}</option>
-        {{/each}}
-      </select>
+	<input type="hidden" id="ruleset" />
+	<div id="rulesetDropdown" class="dropdown">
+		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span id="rulesetSelected">Select a ruleset</span>
+		<span class="caret"></span></button>
+		<ul class="dropdown-menu">
+			{{#each allRulesets}} 
+			<li><a href="#">{{this}}</a></li>
+			{{/each}}
+		</ul>
+	</div>
 
-    <input type="button" id="newMeetingSubmit" value="Submit" />
+    <input type="button" class="btn btn-primary" id="newMeetingSubmit" value="Submit" />
   </div>
   <div id="editMeetings">Edit</div><br />
+</template>
+
+<template name="meetingSidebar">
+	{{#if meetingsExist}}
+		<hr />
+		<h4>Upcoming Meetings</h4>
+		{{#each upcomingMeetings}}
+			<a class="btn btn-default meeting-button">{{name}} <p><i class="icon-time icon-white"></i> {{prettifyDate dateTime}}</p></a>
+		{{/each}}
+	{{/if}}
 </template>

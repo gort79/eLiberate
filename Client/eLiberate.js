@@ -1,5 +1,7 @@
 if(Meteor.isClient) {
 	$(window).load(function(){	
+	
+	
 		$('#preloader').fadeOut(800, function() {
 			$('body').css('overflow', 'visible');
 			
@@ -51,7 +53,6 @@ if(Meteor.isClient) {
 				$("#menu-toggle").show();
 				$("#menu-toggle").removeClass("bt-menu-open").addClass("bt-menu-close");
 			});
-		}); 
-		
+		});
 	}); 
 }

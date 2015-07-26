@@ -25,7 +25,7 @@ if(Meteor.isServer) {
 		  // You can't have an org without an admin, otherwise no one will be able to make any changes to the org. 
 		  if(doc.role != ROLES.administrator && doc.role != ROLES.chairperson) {
 			// Check if there's a different person with an admin role
-			if(Permissions.find({organizationId: doc.organizationId, userId: {$ne: doc.userId}, $or: [{ role: ROLES.administrator}, {role: ROLES.chairperson}]})) {
+			if(Permissions.find({organizationId: doc.organizationId, userId: {$ne: doc.userId}, $or: [{ role: ROLES.administrator}, {role: ROLES.chairperson}]}).count() > 0) {
 			  // There is!
 			  return true;
 			}

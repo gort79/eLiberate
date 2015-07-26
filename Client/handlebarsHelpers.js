@@ -1,32 +1,33 @@
 /* General Utilities */
 Handlebars.registerHelper("prettifyDate", function(timestamp) {
-    return new Date(timestamp).toString('yyyy-MM-dd hh:mm:ss')
+	var dateOptions = {
+		year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+	};
+	console.log("shortDateTime");
+    return new Date(timestamp).toLocaleDateString("en-US", dateOptions);
 });
-
 
 /* Partial helpers */
 var currentMessageControlsView;
 /* Render message controllers */
 Handlebars.registerHelper("messageControls", function(ruleset) {
-	Blaze.remove(Blaze.currentView);
-	$('#messageControls').remove();
+	UI.remove(UI.currentView);
 
 	if(ruleset == RULESETS.talkingStick) { 
-		currentMessageControlsView = Blaze.render(Template.talkingStickControls, $('#messageControls')[0]);
+		UI.render(Template.talkingStickControls, $('#messageControls')[0]);
 	} else {
-		currentMessageControlsView = Blaze.render(Template.noRulesControls, $('#messageControls')[0]);
+		UI.render(Template.noRulesControls, $('#messageControls')[0]);
 	}
 });
 
 /* Render message templates */
 Handlebars.registerHelper("messages", function(ruleset) {
-	Blaze.remove(Blaze.currentView);
-	$('#messages').remove();
+	UI.remove(UI.currentView);
 
 	if(ruleset == RULESETS.talkingStick) { 
-		Blaze.render(Template.talkingStickMessages, $('#messages')[0]);
+		UI.render(Template.talkingStickMessages, messages(), $('#messages')[0]);
 	} else {
-		Blaze.render(Template.noRulesMessages, $('#messages')[0]);
+		UI.render(Template.noRulesMessages, messages(), $('#messages')[0]);
 	}
 }); 
 

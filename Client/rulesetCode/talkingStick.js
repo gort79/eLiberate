@@ -5,11 +5,11 @@ if(Meteor.isClient) {
 	  },
 
 	  meetingMessages: function() {
-		return Messages.find({});
+		return Messages.find({meetingId: Session.get("meetingId")});
 	  },
 
 	  queue: function() {
-		return Queues.find({});
+		return Queues.find({meetingId: Session.get("meetingId")});
 	  }
 	});
 

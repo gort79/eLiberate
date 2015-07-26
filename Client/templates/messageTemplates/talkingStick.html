@@ -20,18 +20,26 @@
 </template>
 
 <template name="talkingStickControls">
-  <div class="floatRight">
-    <p>Talking Stick Queue</p>
-    <div id="queue">
-      {{#each queue}}
-        {{userName}}<br />
-      {{/each}}
-    </div>
-    <input type="button" id="enterQueue" value="Request the Talking Stick" />
-  </div>
-  <div>
-    <p>New Message {{#if isYourTurn}}<div class="alert">It's your turn with the talking stick!</div>{{/if}}</p>
-    <textarea id="newMessage"></textarea><br />
-    <input type="button" id="newMessageSubmit" value="Submit" />
-  </div>
+	{{#if isYourTurn}}
+		<div class="alert alert-danger">
+			<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">x</a>
+			It's your turn with the talking stick!
+		</div>
+	{{/if}}
+	<div class="row">
+		<div class="col-sm-8">
+			<h5>New Message</h5>
+			<textarea id="newMessage"></textarea><br />
+			<input type="button" id="newMessageSubmit" class="btn btn-default" value="Submit" />
+		</div>
+		<div class="col-sm-4">
+			<h5>Talking Stick Queue</h5>
+			<div id="queue">
+				{{#each queue}}
+					{{userName}}<br />
+				{{/each}}
+			</div>
+			<input type="button" id="enterQueue" class="btn btn-default" value="Request the Talking Stick" />
+		</div>
+	</div>
 </template>

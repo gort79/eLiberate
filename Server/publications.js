@@ -1,31 +1,38 @@
 if(Meteor.isServer) {
 	// Organization subscription details
     Meteor.publish("organizations", function() {
-      return Organizations.find({members: { $elemMatch: { userId: this.userId }}});
+		var permissions = Permissions.find({ userId: this.userId }, { organizationId: 1, _id:0, userId: 0, userName: 0, role: 0 }).fetch();
+
+		var orgIds = [];
+		for(i = 0; i < permissions.length; i++) {
+			orgIds.push(permissions[i].organizationId);
+		}
+		
+		return Organizations.find({_id: { $in: orgIds }});
     });
 
 	// Permission subscription details
 	Meteor.publish("permissions", function(organizationId) {
-	  return Permissions.find({organizationId: organizationId});
+		return Permissions.find({organizationId: organizationId});
 	});
 
 	// Invite subscription details
 	Meteor.publish("invites", function(organizationId) {
-	  return Invites.find({organizationId: organizationId});
+		return Invites.find({organizationId: organizationId});	
 	});
 
 	// Meeting subscription details
 	Meteor.publish("meetings", function(organizationId) {
-	  return Meetings.find({organizationId: organizationId});
+		return Meetings.find({organizationId: organizationId});
 	});
 
 	// Message subscription details
 	Meteor.publish("messages", function(meetingId) {
-	  return Messages.find({meetingId: meetingId});
+		return Messages.find({meetingId: meetingId});
 	});
 
 	// Message subscription details
 	Meteor.publish("queues", function(meetingId) {
-	  return Queues.find({meetingId: meetingId});
+		return Queues.find({meetingId: meetingId});
 	});
 }

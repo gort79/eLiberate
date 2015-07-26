@@ -1,14 +1,31 @@
 if(Meteor.isClient) {
+	var options = {
+		loop:true,
+		margin:10,
+		nav:true,
+		autoWidth:true
+	};
+	
+	var owl;
+
+	function organizations() {
+		return Organizations.find({});
+	}
+
 	Template.organizations.helpers({
-	  userOrganization: function () {
+	  userOrganizations: function () {
 		if(Meteor.user() != null)
 		{
-		  Meteor.subscribe('organizations');
-		  return Organizations.find();
-		}
-	  },
+			Meteor.subscribe('organizations');
+			var orgs = organizations();
+						
+			$('#organization-details').hide();
 
-	  isAdminAndCurrentOrganization: function (organizationId) {
+			return orgs;
+		}
+	},
+
+	isAdminAndCurrentOrganization: function (organizationId) {
 		// Make sure we're talking the same organization. If not, the user is trying to hack the system
 		if(organizationId == Session.get("organizationId"))
 		{
@@ -21,8 +38,31 @@ if(Meteor.isClient) {
 		return false;
 	  }
 	});
+	
+	Template.organizations.rendered = function() {
+		this.autorun(_.bind(function(){
+			owl = $('#organization-list').owlCarousel(options)		
+			// this is how we "listen" for databases change : we setup a reactive computation
+			// and inside we reference a cursor (query) from the database and register
+			// dependencies on it by calling cursor.forEach, so whenever the documents found
+			// by the cursor are modified on the server, the computation is rerun with
+			// updated content, note that we use the SAME CURSOR that we fed our #each with
+			var orgs = organizations();
+			// forEach registers dependencies on the cursor content exactly like #each does
+			orgs.forEach(function(org){});
+			// finally we need to reinit the carousel so it take into account our newly added
+			// HTML elements as carousel items, but we can only do that AFTER the #each block
+			// has finished inserting in the DOM, this is why we have to use Deps.afterFlush
+			// the #each block itself setup another computation and Deps.afterFlush makes sure
+			// this computation is done before executing our callback
+			
+			Tracker.afterFlush(_.bind(function(){
+				owl.trigger('refresh.owl.carousel', [300]);
+			},this));
+		},this));
+	}
 
-	Template.editOrganizationControls.helpers({
+	Template.organizationDetails.helpers({
 	  organization: function () {
 		return Organizations.findOne({_id: Session.get("organizationId")});
 	  },
@@ -45,71 +85,52 @@ if(Meteor.isClient) {
 	});
 
 	Template.organizations.events({
-	  'click .organizationLink': function() {
+	  'click #organization-link': function() {
 		Session.set("organizationId", this._id);
 		Meteor.subscribe("meetings", this._id);
 		Meteor.subscribe("permissions", this._id);
 		Meteor.subscribe("invites", this._id);
 
-		$('#meetingContent').show(); 
+		$('#meetingControls').show();
+		$('#meetingContent').show();
+		$('#organization-details').slideDown();
 	  },
-
-	  'click #editOrganization': function() {
-		if($("#editOrganization").html() == "Edit") 
-		{
-		  $("#editOrganization").html("Close");
-		  $("#organizationsContainer").animate({ height: "90%", visibility: "visible"},
-			function() { 
-			  $("#newOrganizationControls").show();
-			  $("#editOrganizationControls").show();
-			}
-		  );
-		} 
-		else 
-		{
-		  hideOrganizationMenu();
-		} 
-	  }
 	});
-
-	function hideOrganizationMenu() {
-	  $("#editOrganization").html("Edit");
-	  $("#organizationsContainer").animate({ height: "120px"});
-	  $("#editOrganizationControls").hide()
-	}
 
 	Template.newOrganizationControls.events({
 	  'click #newOrganizationSubmit': function() {
 		organizationId = Organizations.insert({name: $("#newOrganizationName").val()});
-		Permissions.insert({organizationId: organizationId, userId: Meteor.userId(), userName: Meteor.user().username, role: ROLES.administrator});
+		permissionId = Permissions.insert({organizationId: organizationId, userId: Meteor.userId(), userName: Meteor.user().username, role: ROLES.administrator});
 	  }
 	});
 
-	Template.editOrganizationControls.events({
-	  'change .userRole': function() {
-		Permissions.update({ _id: this._id },
-						   { $set: {"role":  $("#" + this.userName + ".userRole ").val()}});
-	  },
+	Template.organizationDetails.events({
+		'change .userRole': function() {
+			Permissions.update({ _id: this._id },
+							   { $set: {"role":  $("#" + this.userName + ".userRole ").val()}});
+		},
+	  
+		'click #editOrganizationSubmit': function() {
+			Organizations.update({ _id: Session.get("organizationId") },
+								 { $set: {"name": $("#editOrganizationName").val()}});
+		},
 
-	  'click #inviteUserSubmit': function() {
-		Meteor.call('findUserIdByEmail', $('#inviteUserEmail').val(), function(err, data) {
-		  if(data != null){
-			if(Permissions.find({organizationId: Session.get("organizationId"), userId: data._id}).count() == 0)
-			{
-			  Permissions.insert({organizationId: Session.get("organizationId"), userId: data._id, userName:data.username, role: $('#inviteUserRole').val() })
-			}
-			else
-			{
-			  alert($('#inviteUserEmail').val() + " is already a member of your organization.");            
-			}
-		  }
-		  else if(Invites.find({organizationId: Session.get("organizationId"), email: $('#inviteUserEmail').val()}).count() == 0) {
-			Invites.insert({organizationId: Session.get("organizationId"), email: $('#inviteUserEmail').val(), role: $('#inviteUserRole').val()});
+		'click #inviteUserSubmit': function() {
+			Meteor.call('findUserIdByEmail', $('#inviteUserEmail').val(), function(err, data) {
+				if(data != null){
+					if(Permissions.find({organizationId: Session.get("organizationId"), userId: data._id}).count() == 0) {
+						Permissions.insert({organizationId: Session.get("organizationId"), userId: data._id, userName:data.username, role: $('#inviteUserRole').val() })
+					} else {
+						alert($('#inviteUserEmail').val() + " is already a member of your organization.");            
+					}
+				}
+				else if(Invites.find({organizationId: Session.get("organizationId"), email: $('#inviteUserEmail').val()}).count() == 0) {
+					Invites.insert({organizationId: Session.get("organizationId"), email: $('#inviteUserEmail').val(), role: $('#inviteUserRole').val()});
 
-			organization = Organizations.find({_id: Session.get("organizationId")}).fetch();
-			Meteor.call('inviteUser', $('#inviteUserEmail').val(), organization[0].name);
-		  }
-		});
-	  }
+					organization = Organizations.find({_id: Session.get("organizationId")}).fetch();
+					Meteor.call('inviteUser', $('#inviteUserEmail').val(), organization[0].name);
+				}
+			});
+		}
 	});
 }
