@@ -15,40 +15,45 @@ if(Meteor.isClient) {
 
 
 	Template.talkingStickControls.helpers({
-	  queue: function() {
-		return Queues.find({});
-	  },
+		queue: function() {
+			return Queues.find({});
+		},
 
-	  isYourTurn: function() {
-		var queue = Queues.find({}).fetch();
+		isYourTurn: function() {
+			var queue = Queues.find({}).fetch();
 
-		if(queue.length > 0) {
-			if(queue[0].userId == Meteor.userId())
-			{
-				return true;
+			if(queue.length > 0) {
+				if(queue[0].userId == Meteor.userId())
+				{
+					return true;
+				}
 			}
-		}
 		
-		return false; 
-	  }
+			return false; 
+		},
 	});
 
 
 	Template.talkingStickControls.events({
-	  'click #newMessageSubmit': function() {
-		messageId = Messages.insert({body: $('#newMessage').val(), dateTime: new Date(), meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username});
-		if(messageId != "") 
-		{
-			var queue = Queues.findOne({ meetingId: Session.get("meetingId"), userId: Meteor.userId() });
-			if(queue != null)
+		'click #newMessageSubmit': function() {
+			messageId = Messages.insert({body: $('#newMessage').val(), dateTime: new Date(), meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username});
+			if(messageId != "") 
 			{
-				Queues.remove({ _id: queue._id });
+				var queue = Queues.findOne({ meetingId: Session.get("meetingId"), userId: Meteor.userId() });
+				if(queue != null)
+				{
+					Queues.remove({ _id: queue._id });
+				}
 			}
+		},
+	  
+		'click #messagePreviewButton': function() {
+			Session.set("preview", $('#newMessage').val());
+			showModal($("#messagePreviewButton"));
+		},
+	  
+		'click #enterQueue': function() {
+			Queues.insert({meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username});
 		}
-	  },
-
-	  'click #enterQueue': function() {
-		Queues.insert({meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username});
-	  }
 	});
 }

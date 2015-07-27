@@ -1,7 +1,5 @@
 if(Meteor.isClient) {
 	$(window).load(function(){	
-	
-	
 		$('#preloader').fadeOut(800, function() {
 			$('body').css('overflow', 'visible');
 			
@@ -34,17 +32,7 @@ if(Meteor.isClient) {
 		});
 
 		$(".show-modal").on("click", function(){
-			var modalView = $(this).attr("data-modal");
-			$("#modal article").hide();
-			$("#modal article#modal-"+modalView).show();
-			if($("#modal").is(":visible")){
-					
-			}else{
-				$("#sidebar-wrapper").removeClass("active");
-				$("#modal").slideDown("slow");
-				$("#modal").addClass("active");
-				$("#menu-toggle").hide();
-			}
+			showModal(this);
 		});
 		
 		$("#modal .bt-modal-close").on("click", function() {
@@ -55,4 +43,19 @@ if(Meteor.isClient) {
 			});
 		});
 	}); 
+	
+	showModal = function(e) {
+		var modalView = $(e).attr("data-modal");
+		console.log(modalView);
+		$("article").hide();
+		$("article#modal-"+modalView).show();
+		if($("#modal").is(":visible")){
+					
+		}else{
+			$("#sidebar-wrapper").removeClass("active");
+			$("#modal").slideDown("slow");
+			$("#modal").addClass("active");
+			$("#menu-toggle").hide();
+		}
+	}
 }

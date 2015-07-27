@@ -43,13 +43,13 @@
 				<h4>eLiberate Menu</h4>
 			</li>
 			<li class="show-modal nav-organizations" data-modal="organizations">
-				<a href="#"><i class="fa fa-university"></i>Organizations</a>
+				<a href="#"><i class="fa fa-university"></i> Organizations</a>
 			</li>
 			<li class="show-modal nav-about" data-modal="meetings">
-				<a href="#"><i class="fa fa-flask"></i>Meetings</a>
+				<a href="#"><i class="fa fa-flask"></i> Meetings</a>
 			</li>
 			<li class="show-modal nav-contact" data-modal="contact">
-				<a href="#"><i class="fa fa-users"></i>Contact</a>
+				<a href="#"><i class="fa fa-users"></i> Contact</a>
 			</li>
 			<li>
 				{{> meetingSidebar }}
@@ -66,7 +66,7 @@
 				<div class="row">
 					<div class="col-md-12">
 						<h2>
-							<i class="fa fa-university"></i>Organizations
+							<i class="fa fa-university"></i> Organizations
 						</h2>
 					</div>
 					<div class="col-md-12">
@@ -80,7 +80,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-md-12">
-						<h2><i class="fa fa-users"></i>Meetings</h2>
+						<h2><i class="fa fa-users"></i> Meetings</h2>
 					</div>
 					<div class="col-md-6">
 						{{> meetingTemplates}}
@@ -88,7 +88,19 @@
 				</div>
 			</div>
 		</article>
-		
+
+		<article id="modal-preview">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<h2><i class="fa fa-users"></i> Preivew</h2>
+					</div>
+					<div class="col-md-6">
+						<p>{{#markdown}}{{{Preview}}}{{/markdown}}</p>
+					</div>
+				</div>
+			</div>
+		</article>
 	</section>
 
 	<section id="head">

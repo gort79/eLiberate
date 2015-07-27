@@ -43,6 +43,9 @@
   height: 17px;
 }
 
+.dropdown-menu {
+  background-color: rgba(0, 0, 0, .5);
+}
 
 /* Organization Styles */
 

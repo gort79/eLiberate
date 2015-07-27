@@ -14,13 +14,18 @@
         {{/if}} 
         @ {{prettifyDate dateTime}}
       </div>
-      {{body}}      
+	  {{#markdown}}{{body}}{{/markdown}}
     </div>
   {{/each}}
 </template>
 
 <template name="noRulesControls">
-  <p>New no rules Message</p>
-  <textarea id="newMessage"></textarea><br />
-  <input type="button" id="newMessageSubmit" value="Submit" />
+	<div class="row">
+		<div class="col-sm-12">
+			<p>SPEAK!</p>
+			<textarea id="newMessage"></textarea><br />
+			<input type="button" id="newMessageSubmit" class="btn btn-default" value="Submit" />
+			<button type="button" id="messagePreviewButton" class="btn btn-default show-modal" data-modal="preview">Preview Your Message</button>
+		</div>
+	</div>
 </template>

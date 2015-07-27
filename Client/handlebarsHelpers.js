@@ -31,3 +31,8 @@ Handlebars.registerHelper("messages", function(ruleset) {
 	}
 }); 
 
+
+Handlebars.registerHelper("Preview", function () {
+    return Session.get("preview");
+});
+
