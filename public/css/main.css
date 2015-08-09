@@ -39,7 +39,9 @@ a:hover, a:focus {
     opacity:0.6;
 }
 
-
+textarea {
+  color: black;
+}
 
 #video-wrapper{
 	height:100%;
@@ -286,6 +288,12 @@ transition:all 0.6s ease-out;
 -o-transition:all 0.9s ease-out;
 transition:all 0.9s ease-out;
  }
+ .active .sidebar-nav li:nth-child(5) a{
+ 	-webkit-transition:all 0.9s ease-out;
+-moz-transition:all 1.2s ease-out;
+-o-transition:all 1.2s ease-out;
+transition:all 1.2s ease-out;
+ }
 .sidebar-nav li a .fa{
 	padding-right:10px;
 }
@@ -350,7 +358,7 @@ transition:all 0.9s ease-out;
 	font-weight:100;
     margin: 0 0 32px;
     text-align: center;
-    text-transform: uppercase;
+    text-transform: uppercase;5444444444444
 
     
 }
@@ -361,7 +369,20 @@ transition:all 0.9s ease-out;
     border-top: 1px solid white;
 	width:100%;
 }
-#modal{
+/* override to fix bootstrap modal stuff */
+.modal  {
+	color:black;
+	display: none;
+}
+.modal input {
+	width: 100%;
+}
+.dropdown-menu {
+	text-align: left;
+}
+/* end boostrap modal overrides */ 
+
+#modal-nav{
 	opacity:0.8;
 	z-index:999;
 	width:100%;
@@ -371,7 +392,7 @@ transition:all 0.9s ease-out;
     padding-top:15px;
     padding-bottom:50px;
 }
-#modal h2{
+#modal-nav h2{
 	text-transform: uppercase;
 	color:white;
 }
@@ -431,19 +452,20 @@ transition:all 0.9s ease-out;
      -o-transform:translateY(0px) rotate(-45deg);
         transform:translateY(0px) rotate(-45deg);
 }
-#modal #modal-newsletter{
+
+#modal-nav #modal-newsletter{
 	padding:25px;
 }
-#modal #modal-newsletter .form-inline {
+#modal-nav #modal-newsletter .form-inline {
     position: relative;
 }
-#modal #modal-newsletter .form-group {
+#modal-nav #modal-newsletter .form-group {
     display: inline-block;
     margin-bottom: 0;
     vertical-align: middle;
     width: 100%;
 }
-#modal #modal-newsletter .form-group input {
+#modal-nav #modal-newsletter .form-group input {
     background: none;
     border: 1px solid #FFFFFF;
     border-radius: 0;
@@ -451,7 +473,7 @@ transition:all 0.9s ease-out;
     height: 50px;
 }
 
-#modal #modal-newsletter .btn-submit {
+#modal-nav #modal-newsletter .btn-submit {
 	background: none;
 	border-radius: 0;
 	color: #FFFFFF;
@@ -467,7 +489,7 @@ transition:all 0.9s ease-out;
 	transition: all 400ms ease-out 0s;
 }
 
-#modal #modal-newsletter .btn-submit:hover {
+#modal-nav #modal-newsletter .btn-submit:hover {
 	opacity:0.6;
 }
 .gmap images{

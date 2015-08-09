@@ -1,20 +1,31 @@
 if(Meteor.isClient) {
-	Meteor.logout(function(err) {
-	  // callback
-	  //if(Session != null)
-	  //{
-		//Session.Clear();
-		//Session.Abandon();
-	  //}
-
-	  // Organizations.stop();
-	  // Meetings.stop();
-	  // Permissions.stop();
-	  // Invites.stop();
-
-	  //hideOrganizationMenu(); 
+	Template.login.events({  
+		'click #login-buttons-logout': function(event, template) {
+			userLeaving();
+		}
 	});
+	
+	$(window).bind('beforeunload', function() { 
+            userLeaving();
+        } 
+    );
 
+	Tracker.autorun(function(){
+		if(Meteor.userId()){
+			Meteor.subscribe("meetings");
+		}
+	});
+	
+	function userLeaving() {
+		leaveMeeting(Meteor.userId(), Session.get("organizationId"), Session.get("meetingId"));
+
+		Session.set('meetingId', undefined);
+		Session.set('organizationId', undefined);
+		Session.set('ruleset', undefined);
+		delete Session.keys.organizationId;
+		delete Session.keys.ruleset;
+	}
+	
 	Template.login.helpers({
 		created: function() {
 		  if (Accounts._verifyEmailToken) {

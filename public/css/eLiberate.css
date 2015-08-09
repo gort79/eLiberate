@@ -93,7 +93,7 @@
 	color: white !important;
 }
 
-.icon-time {
+.fa fa-clock-o {
 	color: white;
 }
 
@@ -140,7 +140,6 @@
 
 .message {
   width: 100%;
-  background: rgba(144, 238, 144, .75);;
   margin-bottom: 5px;
 }
 
@@ -169,4 +168,3 @@
   overflow-y: scroll;
   height: 100%;
 }
-*/

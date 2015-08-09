@@ -36,7 +36,7 @@ if(Meteor.isClient) {
 
 	Template.talkingStickControls.events({
 		'click #newMessageSubmit': function() {
-			messageId = Messages.insert({body: $('#newMessage').val(), dateTime: new Date(), meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username});
+			messageId = Messages.insert({body: $('#newMessage').val(), dateTime: new Date(), meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username, backgroundColor: Meteor.user().profile.preferredColor});
 			if(messageId != "") 
 			{
 				var queue = Queues.findOne({ meetingId: Session.get("meetingId"), userId: Meteor.userId() });

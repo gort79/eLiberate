@@ -16,6 +16,9 @@
           Starts
         </th>
         <th>
+          Ends
+        </th>
+        <th>
           Rule Set
         </th>
       </tr>
@@ -27,7 +30,10 @@
             <a href="#" id="meetingId">{{name}}</a>
           </td>
           <td>
-            {{prettifyDate dateTime}}
+            {{prettifyDate startDateTime}}
+          </td>
+          <td>
+            {{prettifyDate endDateTime}}
           </td>
           <td>
             {{ruleset}}
@@ -39,32 +45,55 @@
 </template>
 
 <template name="meetingControls">
-  <div id="meetingControls">
-    <p>New Meeting <input type="text" id="newMeetingName" /></p>
-    <p>Start Date <input type="date" id="newMeetingDate" />
-    <input type="time" id="newMeetingTime" /></p>
-	<input type="hidden" id="ruleset" />
-	<div id="rulesetDropdown" class="dropdown">
-		<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span id="rulesetSelected">Select a ruleset</span>
-		<span class="caret"></span></button>
-		<ul class="dropdown-menu">
-			{{#each allRulesets}} 
-			<li><a href="#">{{this}}</a></li>
-			{{/each}}
-		</ul>
+	<div id="meetingControls">
+		<div class="row">
+			<div class="col-sm-12">New Meeting <input type="text" id="newMeetingName" /></div>
+		</div>
+		<div class="row">
+			<div class="col-sm-2">Start Date &amp; Time</div>
+			<div class="col-sm-4">
+				<input type="date" id="newMeetingStartDate" />
+				<input type="time" id="newMeetingStartTime" />
+			</div>
+			<div class="col-sm-2">End Date &amp; Time</div>
+			<div class="col-sm-4">
+				<input type="date" id="newMeetingEndDate" />
+				<input type="time" id="newMeetingEndTime" />
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<input type="hidden" id="ruleset" />
+				<div id="rulesetDropdown" class="dropdown">
+					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span id="rulesetSelected">Select a ruleset</span>
+					<span class="caret"></span></button>
+					<ul class="dropdown-menu">
+						{{#each allRulesets}} 
+						<li><a href="#">{{this}}</a></li>
+						{{/each}}
+					</ul>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-sm-12">
+				<input type="button" class="btn btn-primary" id="newMeetingSubmit" value="Submit" />
+			</div>
+		</div>
 	</div>
-
-    <input type="button" class="btn btn-primary" id="newMeetingSubmit" value="Submit" />
-  </div>
-  <div id="editMeetings">Edit</div><br />
 </template>
 
 <template name="meetingSidebar">
 	{{#if meetingsExist}}
 		<hr />
 		<h4>Upcoming Meetings</h4>
-		{{#each upcomingMeetings}}
-			<a class="btn btn-default meeting-button">{{name}} <p><i class="icon-time icon-white"></i> {{prettifyDate dateTime}}</p></a>
+		{{#each activeAndUpcomingMeetings}}
+			<a class="btn btn-default meeting-button" style="text-align: left;" >
+				{{name}} 
+				<div><i class="fa fa-clock-o icon-white"></i> {{prettifyDate startDateTime}}</div> 
+				<div><i class="fa fa-gavel icon-white"></i> {{status}}</div>
+				<div><i class="fa fa-users"></i> {{attendance}} in Attendance</div>
+			</a>
 		{{/each}}
 	{{/if}}
 </template>

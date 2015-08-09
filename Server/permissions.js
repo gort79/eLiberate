@@ -1,13 +1,13 @@
 if(Meteor.isServer) {
 	Organizations.allow({
-	  'insert': function (userId,doc) {
+	  'insert': function (userId, doc) {
 		return true; 
 	  },
 
 	  'update': function (userId, doc) {
 		if(Permissions.find({organizationId: doc._id, userId: userId, $or: [{ role: ROLES.administrator }, { role: ROLES.chairperson }]})) 
 		{
-		  return true
+		  return true;
 		}
 
 		return false;
@@ -107,6 +107,29 @@ if(Meteor.isServer) {
 	  }
 	});
 
+	Attendees.allow({
+		'insert': function (userId,doc) {
+			// They have to be a member AND not already be in the meeting
+			if(Permissions.find({organizationId: doc.organizationId, userId: userId}).count() > 0
+			   && Attendees.find({meetingId: doc.meetingId, userId: userId}).count() == 0) 
+			{		
+				return true; 
+			}
+			
+			return false
+		},
+		
+		'remove': function(userId, doc) {
+			if(Permissions.find({organizationId: doc.organizationId, userId: userId}).count() > 0
+				&& doc.userId == userId)
+			{
+				return true;
+			}	
+
+			return false;
+		}
+	});
+
 	Queues.allow({
 	  'insert': function(userId, doc) {
 		if(Queues.find({meetingId: doc.meetingId, userId: userId}).count() == 0)
@@ -124,13 +147,12 @@ if(Meteor.isServer) {
 	  'remove': function(userId, doc) {
 		return true;
 	  }
-	})
-
+	});
+	
 	function isNewOrOrganizationAdmin(organizationId, userId) {
 	  if(Permissions.find({organizationId: organizationId, userId: userId, $or: [ { role: ROLES.administrator }, { role: ROLES.chairperson} ] }).count() > 0
 		|| Permissions.find({organizationId: organizationId}).count() == 0) 
 	  {
-		
 		return true;
 	  }
 

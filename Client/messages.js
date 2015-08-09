@@ -14,6 +14,10 @@ if(Meteor.isClient) {
 		
 		rulesetControls: function() {
 			return toCamelCase(Session.get("ruleset")) + "Controls";
+		},
+		
+		attendance: function() {
+			return Attendees.find({meetingId: Session.get("meetingId")}).count();
 		}
 	});
  }

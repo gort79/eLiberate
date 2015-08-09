@@ -14,13 +14,20 @@ if(Meteor.isClient) {
 
 	Template.organizations.helpers({
 	  userOrganizations: function () {
-		if(Meteor.user() != null)
+		if(isLoggedIn())
 		{
-			Meteor.subscribe('organizations');
+			Meteor.subscribe("organizations");
 			var orgs = organizations();
 						
 			$('#organization-details').hide();
 
+			if(orgs.count() == 1)
+			{
+				organizationId = orgs.fetch()[0]._id;
+				Session.set("organizationId", organizationId);
+				logIntoOrganization(organizationId);
+			}
+			
 			return orgs;
 		}
 	},
@@ -85,18 +92,21 @@ if(Meteor.isClient) {
 	});
 
 	Template.organizations.events({
-	  'click #organization-link': function() {
-		Session.set("organizationId", this._id);
-		Meteor.subscribe("meetings", this._id);
-		Meteor.subscribe("permissions", this._id);
-		Meteor.subscribe("invites", this._id);
-
-		$('#meetingControls').show();
-		$('#meetingContent').show();
-		$('#organization-details').slideDown();
-	  },
+		'click #organization-link': function() {
+			logIntoOrganization(this._id);
+	
+			$('#meetingControls').show();
+			$('#meetingContent').show();
+			$('#organization-details').slideDown();
+		},
 	});
 
+	logIntoOrganization = function(organizationId) {
+		Session.set("organizationId", organizationId);
+		Meteor.subscribe("permissions", organizationId);
+		Meteor.subscribe("invites", organizationId);
+	}
+	
 	Template.newOrganizationControls.events({
 	  'click #newOrganizationSubmit': function() {
 		organizationId = Organizations.insert({name: $("#newOrganizationName").val()});

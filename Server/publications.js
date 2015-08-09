@@ -2,7 +2,7 @@ if(Meteor.isServer) {
 	// Organization subscription details
     Meteor.publish("organizations", function() {
 		var permissions = Permissions.find({ userId: this.userId }, { organizationId: 1, _id:0, userId: 0, userName: 0, role: 0 }).fetch();
-
+		
 		var orgIds = [];
 		for(i = 0; i < permissions.length; i++) {
 			orgIds.push(permissions[i].organizationId);
@@ -22,8 +22,15 @@ if(Meteor.isServer) {
 	});
 
 	// Meeting subscription details
-	Meteor.publish("meetings", function(organizationId) {
-		return Meetings.find({organizationId: organizationId});
+	Meteor.publish("meetings", function() {
+		var permissions = Permissions.find({ userId: this.userId }, { organizationId: 1, _id:0, userId: 0, userName: 0, role: 0 }).fetch();
+
+		var orgIds = [];
+		for(i = 0; i < permissions.length; i++) {
+			orgIds.push(permissions[i].organizationId);
+		}
+		
+		return Meetings.find({organizationId: { $in: orgIds}});
 	});
 
 	// Message subscription details
@@ -34,5 +41,10 @@ if(Meteor.isServer) {
 	// Message subscription details
 	Meteor.publish("queues", function(meetingId) {
 		return Queues.find({meetingId: meetingId});
+	});
+
+	// Message subscription details
+	Meteor.publish("attendees", function(meetingId) {
+		return Attendees.find({meetingId: meetingId});
 	});
 }

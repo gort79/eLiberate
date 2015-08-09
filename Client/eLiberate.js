@@ -35,26 +35,34 @@ if(Meteor.isClient) {
 			showModal(this);
 		});
 		
-		$("#modal .bt-modal-close").on("click", function() {
-			$("#modal").removeClass("active");
-			$("#modal").slideUp("slow", function() {
+		$("#modal-nav .bt-modal-close").on("click", function() {
+			$("#modal-nav").removeClass("active");
+			$("#modal-nav").slideUp("slow", function() {
 				$("#menu-toggle").show();
 				$("#menu-toggle").removeClass("bt-menu-open").addClass("bt-menu-close");
 			});
 		});
 	}); 
 	
+	isLoggedIn = function() {
+		if(Meteor.user() != null)
+		{
+			return true;
+		}
+		
+		return false;
+	}
+	
 	showModal = function(e) {
 		var modalView = $(e).attr("data-modal");
-		console.log(modalView);
 		$("article").hide();
 		$("article#modal-"+modalView).show();
-		if($("#modal").is(":visible")){
+		if($("#modal-nav").is(":visible")){
 					
 		}else{
 			$("#sidebar-wrapper").removeClass("active");
-			$("#modal").slideDown("slow");
-			$("#modal").addClass("active");
+			$("#modal-nav").slideDown("slow");
+			$("#modal-nav").addClass("active");
 			$("#menu-toggle").hide();
 		}
 	}

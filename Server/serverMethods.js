@@ -19,6 +19,26 @@ if(Meteor.isServer) {
 			}
 
 			return null;
+		},
+		
+		// Meeting methods
+		joinMeeting: function(userId, organizationId, meetingId) {
+			if(Permissions.find({organizationId: organizationId, userId: userId}).count() > 0
+				&& Attendees.find({meetingId: meetingId, userId: userId}).fetch() == 0)			
+			{
+				Attendees.insert({meetingId: meetingId, userId: userId});
+			}
+		},
+		
+		leaveMeeting: function(userId, organizationId, meetingId) {
+			attendees = Attendees.find({meetingId: meetingId, userId: userId}).fetch();
+			if(attendees.length > 0)
+			{
+				for(var i = 0; i < attendees.length; i++)
+				{
+					Attendees.remove({_id: attendees[i]._id});
+				}
+			}
 		}
 	  })
 	});

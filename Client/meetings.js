@@ -1,46 +1,67 @@
 if(Meteor.isClient) {
 	Template.meetings.helpers({
-	  meetings: function() {
-		return Meetings.find({organizationId: Session.get("organizationId")});
-	  },
-
-	  organizationId: function() {
-		return Session.get("organizationId");
-	  }
+		meetings: function() {
+			return Meetings.find({organizationId: Session.get("organizationId")});
+		},
+	
+		organizationId: function() {
+			return Session.get("organizationId");
+		}
 	});
 
 	Template.meetings.events({
 		'click #meetingId': function() {
-			meetingClicked(this);
+			joinMeeting(this);
 		}		 
 	});
 
 	Template.meetingSidebar.events({
 		'click .meeting-button': function() {
-			meetingClicked(this);
-		}		 
+			joinMeeting(this);
+		},
+		
 	});
 
-	function meetingClicked(args) {
-		Session.set("meetingId", args._id);
-		Session.set("ruleset", args.ruleset);
-		Meteor.subscribe("messages", args._id);
-		Meteor.subscribe("queues", args._id);
+	function joinMeeting(meeting) {
+		// Pull them out of the previous meeting if they were in one
+		Meteor.call('leaveMeeting', Meteor.userId(), Session.get("organizationId"), Session.get("meetingId"));
+
+		// Log the user into the meeting
+		Session.set("meetingId", meeting._id);
+		Session.set("ruleset", meeting.ruleset);
+		Meteor.subscribe("messages", meeting._id);
+		Meteor.subscribe("queues", meeting._id);
+		Meteor.subscribe("attendees", meeting._id);
+
+		// Increment the number logged into the meeting
+		Meteor.call('joinMeeting', Meteor.userId(), meeting.organizationId, meeting._id);
 		
 		$('#head').hide();
 		$('footer').hide();
 		$('#messagesContainer').show();
 	}
-	
+
+	// Global function because it's used in the signout event
+	leaveMeeting = function(userId, organizationId, meetingId) {
+		if(Session.get("meetingId") != undefined) {
+			Meteor.call('leaveMeeting', userId, organizationId, meetingId);
+			delete Session.keys.meetingId;
+		
+			$('#head').show();
+			$('footer').show();
+			$('#messagesContainer').hide();
+		}
+	}
+		
 	Template.meetingControls.helpers({
-	  allRulesets: function() {
-		return RULESETS.all();
-	  }
+		allRulesets: function() {
+			return RULESETS.all();
+		}
 	});
 
 	Template.meetingControls.events({
 		'click #newMeetingSubmit': function() {
-			Meetings.insert({name: $('#newMeetingName').val(), dateTime: new Date($('#newMeetingDate').val() + ' ' + $('#newMeetingTime').val()), organizationId: Session.get("organizationId"), ruleset: $('#ruleset').val()});
+			Meetings.insert({name: $('#newMeetingName').val(), startDateTime: new Date($('#newMeetingStartDate').val() + ' ' + $('#newMeetingStartTime').val()), endDateTime: new Date($('#newMeetingEndDate').val() + ' ' + $('#newMeetingEndTime').val()), organizationId: Session.get("organizationId"), ruleset: $('#ruleset').val(), status: MEETINGSTATUS.pending});
 		},
 	  
 		'click #rulesetDropdown ul li a': function() {
@@ -50,13 +71,17 @@ if(Meteor.isClient) {
 	});
 	
 	Template.meetingSidebar.helpers({
-	  upcomingMeetings: function() {
-		return Meetings.find({organizationId: Session.get("organizationId"), dateTime: {"$gte": new Date()}});
-	  },
+		activeAndUpcomingMeetings: function() {
+			return Meetings.find({$or: [{ startDateTime: {"$gte": new Date()}}, { status: MEETINGSTATUS.pending}]}, { sort: { startDateTime: 1 }});
+		},
 	  
-	  meetingsExist: function() {
-		return Meetings.find({organizationId: Session.get("organizationId"), dateTime: {"$gte": new Date()}}).count() > 0;
-	  }
+		meetingsExist: function() {
+			return Meetings.find({$or: [{ startDateTime: {"$gte": new Date()}}, { status: MEETINGSTATUS.pending}]}).count() > 0;
+		},
+
+		attendance: function() {
+			return Attendees.find({meetingId: this._id}).count();
+		}
 	});
 	
 }
