@@ -23,7 +23,7 @@ if(Meteor.isClient) {
 			execute : function() {
 				if(this.validateAction()) {
 					// Save the command
-					messageId = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), actionType: this.actionType(), body: this.statement });
+					messageId = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, actionType: this.actionType(), body: this.statement });
 					
 					if(messageId != "") 
 					{
@@ -36,6 +36,10 @@ if(Meteor.isClient) {
 					
 					return messageId;
 				}
+			},
+			
+			render : function(message) {
+				
 			},
 			
 			validateAction : function() {
