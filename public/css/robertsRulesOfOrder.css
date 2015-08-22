@@ -1,5 +1,10 @@
 .CallMeetingToOrder {
-	background-color: rgba(55, 55, 55, .5);
+	background-color: rgba(75, 175, 75, .5);
+}
+
+.CallMeetingToOrder .messageHeader {
+	color: lightgrey;
+	border-bottom: 1px solid grey;
 }
 
 .MakeAStatement {

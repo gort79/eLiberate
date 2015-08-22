@@ -1,25 +1,29 @@
 <template name="robertsRulesOfOrderMessages">
   {{#each meetingMessages}}
-    <div class="message {{actionType}}">
-      <div class="messageHeader">
-        Posted by 
-        {{#if this.userName}}
-        	{{userName}}
-        {{else}} 
-      	  {{#if this.email}}
-  	        {{email}}
-  	      {{else}}
-  	        Unknown
-  	      {{/if}}
-        {{/if}} 
-        @ {{prettifyDate dateTime}}
-      </div>
-	  {{#markdown}}{{body}}{{/markdown}}
-    </div>
+    {{> Template.dynamic template=commandTemplate data=this }}
   {{/each}}
 </template>
 
+<template name="robertsRulesOfOrderStandardCommand">
+  <div class="message {{commandType}}">
+    <div class="messageHeader">
+      Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
+    </div>
+  {{#markdown}}{{statement}}{{/markdown}}
+  </div>
+</template>
 
+<template name="CallMeetingToOrderCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
+</template>
+
+<template name="MakeAStatementCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
+</template>
+
+<template name="OpenTheFloorToDebateCommand">
+  {{> Template.dynamic template=robertsRulesOfOrderStandardCommand data=this }}
+</template>
 
 <template name="robertsRulesOfOrderControls">
 	{{#if hasTheFloor}}
@@ -37,11 +41,11 @@
 		</div>
 			<div class="col-sm-4">
 				<input type="hidden" id="ruleset" />
-				<div id="actionDropdown" class="dropdown">
-					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span id="actionSelected">Things you can do</span>
+				<div id="commandDropdown" class="dropdown">
+					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span id="commandSelected">Things you can do</span>
 					<span class="caret"></span></button>
 					<ul class="dropdown-menu">
-						{{#each actions}} 
+						{{#each commands}}
 						<li><a href="#">{{this}}</a></li>
 						{{/each}}
 					</ul>

@@ -3,7 +3,7 @@ if(Meteor.isClient) {
 		meetings: function() {
 			return Meetings.find({organizationId: Session.get("organizationId")});
 		},
-	
+
 		organizationId: function() {
 			return Session.get("organizationId");
 		}
@@ -12,14 +12,14 @@ if(Meteor.isClient) {
 	Template.meetings.events({
 		'click #meetingId': function() {
 			joinMeeting(this);
-		}		 
+		}
 	});
 
 	Template.meetingSidebar.events({
 		'click .meeting-button': function() {
 			joinMeeting(this);
 		},
-		
+
 	});
 
 	function joinMeeting(meeting) {
@@ -35,10 +35,13 @@ if(Meteor.isClient) {
 
 		// Increment the number logged into the meeting
 		Meteor.call('joinMeeting', Meteor.userId(), meeting.organizationId, meeting._id);
-		
+
 		$('#head').hide();
 		$('footer').hide();
 		$('#messagesContainer').show();
+
+		// Trigger our custom event
+		$(document).trigger("joinedMeeting");
 	}
 
 	// Global function because it's used in the signout event
@@ -46,13 +49,13 @@ if(Meteor.isClient) {
 		if(Session.get("meetingId") != undefined) {
 			Meteor.call('leaveMeeting', userId, organizationId, meetingId);
 			delete Session.keys.meetingId;
-		
+
 			$('#head').show();
 			$('footer').show();
 			$('#messagesContainer').hide();
 		}
 	}
-		
+
 	Template.meetingControls.helpers({
 		allRulesets: function() {
 			return RULESETS.all();
@@ -61,20 +64,20 @@ if(Meteor.isClient) {
 
 	Template.meetingControls.events({
 		'click #newMeetingSubmit': function() {
-			Meetings.insert({name: $('#newMeetingName').val(), startDateTime: new Date($('#newMeetingStartDate').val() + ' ' + $('#newMeetingStartTime').val()), endDateTime: new Date($('#newMeetingEndDate').val() + ' ' + $('#newMeetingEndTime').val()), organizationId: Session.get("organizationId"), ruleset: $('#ruleset').val(), status: MEETINGSTATUS.pending});
+			Meetings.insert({name: $('#newMeetingName').val(), startDateTime: new Date($('#newMeetingStartDate').val() + ' ' + $('#newMeetingStartTime').val()), endDateTime: new Date($('#newMeetingEndDate').val() + ' ' + $('#newMeetingEndTime').val()), organizationId: Session.get("organizationId"), ruleset: $('#ruleset').val(), status: MEETINGSTATUS.pending, isInDebate: false});
 		},
-	  
+
 		'click #rulesetDropdown ul li a': function() {
 			$('#ruleset').val(this);
 			$('#rulesetSelected').html(this);
 		}
 	});
-	
+
 	Template.meetingSidebar.helpers({
 		activeAndUpcomingMeetings: function() {
 			return Meetings.find({$or: [{ startDateTime: {"$gte": new Date()}}, { status: MEETINGSTATUS.pending}]}, { sort: { startDateTime: 1 }});
 		},
-	  
+
 		meetingsExist: function() {
 			return Meetings.find({$or: [{ startDateTime: {"$gte": new Date()}}, { status: MEETINGSTATUS.pending}]}).count() > 0;
 		},
@@ -83,5 +86,5 @@ if(Meteor.isClient) {
 			return Attendees.find({meetingId: this._id}).count();
 		}
 	});
-	
+
 }

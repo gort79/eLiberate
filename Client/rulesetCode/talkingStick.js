@@ -28,8 +28,8 @@ if(Meteor.isClient) {
 					return true;
 				}
 			}
-		
-			return false; 
+
+			return false;
 		},
 	});
 
@@ -37,7 +37,7 @@ if(Meteor.isClient) {
 	Template.talkingStickControls.events({
 		'click #newMessageSubmit': function() {
 			messageId = Messages.insert({body: $('#newMessage').val(), dateTime: new Date(), meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username, backgroundColor: Meteor.user().profile.preferredColor});
-			if(messageId != "") 
+			if(messageId != "")
 			{
 				var queue = Queues.findOne({ meetingId: Session.get("meetingId"), userId: Meteor.userId() });
 				if(queue != null)
@@ -46,12 +46,12 @@ if(Meteor.isClient) {
 				}
 			}
 		},
-	  
+
 		'click #messagePreviewButton': function() {
 			Session.set("preview", $('#newMessage').val());
 			showModal($("#messagePreviewButton"));
 		},
-	  
+
 		'click #enterQueue': function() {
 			Queues.insert({meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username});
 		}

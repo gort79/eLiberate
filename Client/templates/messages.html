@@ -1,7 +1,7 @@
 <template name="messageTemplates">
   {{#with meeting}}
   <h2>
-	{{name}} 
+	{{name}}
   </h2>
   <div class="row">
 	<div class="col-sm-2">
@@ -16,7 +16,7 @@
   </div>
   <div id="messages">
     {{> Template.dynamic template=rulesetMessages data=meetings }}
-  </div>  
+  </div>
   <div id="messageControls">
     {{> Template.dynamic template=rulesetControls }}
   </div>

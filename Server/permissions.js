@@ -1,11 +1,11 @@
 if(Meteor.isServer) {
 	Organizations.allow({
 	  'insert': function (userId, doc) {
-		return true; 
+		return true;
 	  },
 
 	  'update': function (userId, doc) {
-		if(Permissions.find({organizationId: doc._id, userId: userId, $or: [{ role: ROLES.administrator }, { role: ROLES.chairperson }]})) 
+		if(Permissions.find({organizationId: doc._id, userId: userId, $or: [{ role: ROLES.administrator }, { role: ROLES.chairperson }]}))
 		{
 		  return true;
 		}
@@ -22,7 +22,7 @@ if(Meteor.isServer) {
 	  'update': function(userId, doc) {
 		if(isNewOrOrganizationAdmin(doc.organizationId, userId)){
 		  // If the role they're setting now ISN'T an admin level role, we need to make sure there's an admin somewhere
-		  // You can't have an org without an admin, otherwise no one will be able to make any changes to the org. 
+		  // You can't have an org without an admin, otherwise no one will be able to make any changes to the org.
 		  if(doc.role != ROLES.administrator && doc.role != ROLES.chairperson) {
 			// Check if there's a different person with an admin role
 			if(Permissions.find({organizationId: doc.organizationId, userId: {$ne: doc.userId}, $or: [{ role: ROLES.administrator}, {role: ROLES.chairperson}]}).count() > 0) {
@@ -39,7 +39,7 @@ if(Meteor.isServer) {
 		  }
 		}
 
-		// They don't have authorization to edit permissions.         
+		// They don't have authorization to edit permissions.
 		return false;
 	  },
 
@@ -51,11 +51,11 @@ if(Meteor.isServer) {
 			return true;
 		  }
 
-		  // Nope! Denied. 
+		  // Nope! Denied.
 		  return false;
 		}
 
-		// They don't have authorization to edit permissions.         
+		// They don't have authorization to edit permissions.
 		return false;
 	  }
 	});
@@ -78,12 +78,12 @@ if(Meteor.isServer) {
 	  'insert': function (userId,doc) {
 		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
-	  'update': function (userId,docs) {
+	  'update': function (userId,doc) {
 		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 	  'remove': function (userId,doc) {
 		return isNewOrOrganizationAdmin(doc.organizationId, userId);
-	  }    
+	  }
 	});
 
 	Messages.allow({
@@ -98,9 +98,9 @@ if(Meteor.isServer) {
 		  else if (Organizations.find({_id: doc.organizationId, members: {$elemMatch: { userId: userId, role: ROLES.chairperson }}}).count() > 0) {
 			return true;
 		  }
-		  return false; 
+		  return false;
 		}
-		else 
+		else
 		{
 		  return true;
 		}
@@ -111,20 +111,20 @@ if(Meteor.isServer) {
 		'insert': function (userId,doc) {
 			// They have to be a member AND not already be in the meeting
 			if(Permissions.find({organizationId: doc.organizationId, userId: userId}).count() > 0
-			   && Attendees.find({meetingId: doc.meetingId, userId: userId}).count() == 0) 
-			{		
-				return true; 
+			   && Attendees.find({meetingId: doc.meetingId, userId: userId}).count() == 0)
+			{
+				return true;
 			}
-			
+
 			return false
 		},
-		
+
 		'remove': function(userId, doc) {
 			if(Permissions.find({organizationId: doc.organizationId, userId: userId}).count() > 0
 				&& doc.userId == userId)
 			{
 				return true;
-			}	
+			}
 
 			return false;
 		}
@@ -136,7 +136,7 @@ if(Meteor.isServer) {
 		{
 		  return true;
 		}
-		else 
+		else
 		{
 		  return false;
 		}
@@ -148,10 +148,10 @@ if(Meteor.isServer) {
 		return true;
 	  }
 	});
-	
+
 	function isNewOrOrganizationAdmin(organizationId, userId) {
 	  if(Permissions.find({organizationId: organizationId, userId: userId, $or: [ { role: ROLES.administrator }, { role: ROLES.chairperson} ] }).count() > 0
-		|| Permissions.find({organizationId: organizationId}).count() == 0) 
+		|| Permissions.find({organizationId: organizationId}).count() == 0)
 	  {
 		return true;
 	  }
