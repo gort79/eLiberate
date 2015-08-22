@@ -5,7 +5,7 @@ if(Meteor.isClient) {
 		nav:true,
 		autoWidth:true
 	};
-	
+
 	var owl;
 
 	function organizations() {
@@ -18,7 +18,7 @@ if(Meteor.isClient) {
 		{
 			Meteor.subscribe("organizations");
 			var orgs = organizations();
-						
+
 			$('#organization-details').hide();
 
 			if(orgs.count() == 1)
@@ -27,7 +27,7 @@ if(Meteor.isClient) {
 				Session.set("organizationId", organizationId);
 				logIntoOrganization(organizationId);
 			}
-			
+
 			return orgs;
 		}
 	},
@@ -36,19 +36,19 @@ if(Meteor.isClient) {
 		// Make sure we're talking the same organization. If not, the user is trying to hack the system
 		if(organizationId == Session.get("organizationId"))
 		{
-		  if(Permissions.find({organizationId: organizationId, userId: Meteor.userId(), $or: [ { role: ROLES.administrator }, { role: ROLES.chairperson} ] }).count() > 0) 
+		  if(Permissions.find({organizationId: organizationId, userId: Meteor.userId(), $or: [ { role: ROLES.administrator }, { role: ROLES.chairperson} ] }).count() > 0)
 		  {
 			return true;
-		  }       
+		  }
 		}
 
 		return false;
 	  }
 	});
-	
+
 	Template.organizations.rendered = function() {
 		this.autorun(_.bind(function(){
-			owl = $('#organization-list').owlCarousel(options)		
+			owl = $('#organization-list').owlCarousel(options)
 			// this is how we "listen" for databases change : we setup a reactive computation
 			// and inside we reference a cursor (query) from the database and register
 			// dependencies on it by calling cursor.forEach, so whenever the documents found
@@ -62,7 +62,7 @@ if(Meteor.isClient) {
 			// has finished inserting in the DOM, this is why we have to use Deps.afterFlush
 			// the #each block itself setup another computation and Deps.afterFlush makes sure
 			// this computation is done before executing our callback
-			
+
 			Tracker.afterFlush(_.bind(function(){
 				owl.trigger('refresh.owl.carousel', [300]);
 			},this));
@@ -94,7 +94,7 @@ if(Meteor.isClient) {
 	Template.organizations.events({
 		'click #organization-link': function() {
 			logIntoOrganization(this._id);
-	
+
 			$('#meetingControls').show();
 			$('#meetingContent').show();
 			$('#organization-details').slideDown();
@@ -106,7 +106,7 @@ if(Meteor.isClient) {
 		Meteor.subscribe("permissions", organizationId);
 		Meteor.subscribe("invites", organizationId);
 	}
-	
+
 	Template.newOrganizationControls.events({
 	  'click #newOrganizationSubmit': function() {
 		organizationId = Organizations.insert({name: $("#newOrganizationName").val()});
@@ -119,7 +119,7 @@ if(Meteor.isClient) {
 			Permissions.update({ _id: this._id },
 							   { $set: {"role":  $("#" + this.userName + ".userRole ").val()}});
 		},
-	  
+
 		'click #editOrganizationSubmit': function() {
 			Organizations.update({ _id: Session.get("organizationId") },
 								 { $set: {"name": $("#editOrganizationName").val()}});

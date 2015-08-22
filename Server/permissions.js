@@ -78,7 +78,7 @@ if(Meteor.isServer) {
 	  'insert': function (userId,doc) {
 		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
-	  'update': function (userId,docs) {
+	  'update': function (userId,doc) {
 		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 	  'remove': function (userId,doc) {

@@ -12,7 +12,7 @@ var currentMessageControlsView;
 Handlebars.registerHelper("messageControls", function(ruleset) {
 	UI.remove(UI.currentView);
 
-	if(ruleset == RULESETS.talkingStick) { 
+	if(ruleset == RULESETS.talkingStick) {
 		UI.render(Template.talkingStickControls, $('#messageControls')[0]);
 	} else {
 		UI.render(Template.noRulesControls, $('#messageControls')[0]);
@@ -23,12 +23,12 @@ Handlebars.registerHelper("messageControls", function(ruleset) {
 Handlebars.registerHelper("messages", function(ruleset) {
 	UI.remove(UI.currentView);
 
-	if(ruleset == RULESETS.talkingStick) { 
+	if(ruleset == RULESETS.talkingStick) {
 		UI.render(Template.talkingStickMessages, messages(), $('#messages')[0]);
 	} else {
 		UI.render(Template.noRulesMessages, messages(), $('#messages')[0]);
 	}
-}); 
+});
 
 Handlebars.registerHelper("Preview", function () {
     return Session.get("preview");
@@ -37,8 +37,8 @@ Handlebars.registerHelper("Preview", function () {
 Handlebars.registerHelper("configureMenu", function() {
 	if(Meteor.user() != null) {
 		$(".show-modal").show();
-	} 
-	else 
+	}
+	else
 	{
 		$(".nav-profile").hide();
 		$(".nav-organizations").hide();

@@ -13,7 +13,7 @@ if(Meteor.isClient) {
 		'click #newMessageSubmit': function() {
 			Messages.insert({body: $('#newMessage').val(), dateTime: new Date(), meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username, backgroundColor: Meteor.user().profile.preferredColor});
 		},
-	  
+
 	  	'click #messagePreviewButton': function() {
 			Session.set("preview", $('#newMessage').val());
 			showModal($("#messagePreviewButton"));
