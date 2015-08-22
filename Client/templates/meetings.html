@@ -10,6 +10,8 @@
     <thead>
       <tr>
         <th>
+        </th>
+        <th>
           Meeting Title
         </th>
         <th>
@@ -22,10 +24,13 @@
           Rule Set
         </th>
       </tr>
-    </thead>              
-    <tbody>        
+    </thead>
+    <tbody>
       {{#each meetings}}
         <tr>
+          <td>
+            <div id="editMeeting"> <i class="fa fa-cog"></i> </div>
+          </td>
           <td>
             <a href="#" id="meetingId">{{name}}</a>
           </td>
@@ -68,7 +73,7 @@
 					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span id="rulesetSelected">Select a ruleset</span>
 					<span class="caret"></span></button>
 					<ul class="dropdown-menu">
-						{{#each allRulesets}} 
+						{{#each allRulesets}}
 						<li><a href="#">{{this}}</a></li>
 						{{/each}}
 					</ul>
@@ -81,6 +86,44 @@
 			</div>
 		</div>
 	</div>
+  {{> meetingEditor}}
+</template>
+
+<template name="meetingEditor">
+  <div id="editMeetingControlsContainer">
+    <div class="row">
+      <table id="meetings" class="table table-responsive">
+        <thead>
+          <tr>
+            <th>
+            </th>
+            <th>
+              Agenda Items
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each agenda}}
+            <tr>
+              <td>
+                <div id="editAgenda"> <i class="fa fa-cog"></i> </div>
+              </td>
+              <td>
+                {{name}}
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="col-sm-12">
+        Add Agenda Item
+        <input type="text" id="agendaContent" />
+        <input type="button" class="btn btn-primary" id="addAgendaItem" value="Add" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <template name="meetingSidebar">
@@ -89,8 +132,8 @@
 		<h4>Upcoming Meetings</h4>
 		{{#each activeAndUpcomingMeetings}}
 			<a class="btn btn-default meeting-button" style="text-align: left;" >
-				{{name}} 
-				<div><i class="fa fa-clock-o icon-white"></i> {{prettifyDate startDateTime}}</div> 
+				{{name}}
+				<div><i class="fa fa-clock-o icon-white"></i> {{prettifyDate startDateTime}}</div>
 				<div><i class="fa fa-gavel icon-white"></i> {{status}}</div>
 				<div><i class="fa fa-users"></i> {{attendance}} in Attendance</div>
 			</a>

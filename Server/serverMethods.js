@@ -3,7 +3,7 @@ if(Meteor.isServer) {
 	  Meteor.methods({
 		// Organization is admin check
 		isOrganizationAdmin: function(organizationId, userId) {
-		  if(Permissions.find({organizationId: organizationId, userId: userId, $or: [ { role: ROLES.administrator }, { role: ROLES.chairperson} ] }).count() > 0) 
+		  if(Permissions.find({organizationId: organizationId, userId: userId, $or: [ { role: ROLES.administrator }, { role: ROLES.chairperson} ] }).count() > 0)
 		  {
 			return true;
 		  }
@@ -20,16 +20,16 @@ if(Meteor.isServer) {
 
 			return null;
 		},
-		
+
 		// Meeting methods
 		joinMeeting: function(userId, organizationId, meetingId) {
 			if(Permissions.find({organizationId: organizationId, userId: userId}).count() > 0
-				&& Attendees.find({meetingId: meetingId, userId: userId}).fetch() == 0)			
+				&& Attendees.find({meetingId: meetingId, userId: userId}).fetch() == 0)
 			{
 				Attendees.insert({meetingId: meetingId, userId: userId});
 			}
 		},
-		
+
 		leaveMeeting: function(userId, organizationId, meetingId) {
 			attendees = Attendees.find({meetingId: meetingId, userId: userId}).fetch();
 			if(attendees.length > 0)

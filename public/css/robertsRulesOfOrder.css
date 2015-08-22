@@ -5,3 +5,14 @@
 .MakeAStatement {
 	background-color: rgba(55, 55, 150, .5);
 }
+
+.agendaBox {
+	position: fixed;
+  right: 32px;
+	background-color: rgba(55, 55, 55, .8);
+	max-width: 250px;
+}
+.agendaBox TD
+{
+	padding: 5px;
+}

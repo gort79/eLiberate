@@ -1,17 +1,40 @@
 <template name="robertsRulesOfOrderMessages">
+  <table id="agenda" class="agendaBox">
+    <thead>
+      <tr>
+        <th>
+        </th>
+        <th>
+          Agenda Items
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each agenda}}
+        <tr>
+          <td>
+            <i class="fa fa-cog"></i>
+          </td>
+          <td>
+            {{name}}
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
   {{#each meetingMessages}}
     <div class="message {{actionType}}">
       <div class="messageHeader">
-        Posted by 
+        Posted by
         {{#if this.userName}}
         	{{userName}}
-        {{else}} 
+        {{else}}
       	  {{#if this.email}}
   	        {{email}}
   	      {{else}}
   	        Unknown
   	      {{/if}}
-        {{/if}} 
+        {{/if}}
         @ {{prettifyDate dateTime}}
       </div>
 	  {{#markdown}}{{body}}{{/markdown}}
@@ -41,7 +64,7 @@
 					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span id="actionSelected">Things you can do</span>
 					<span class="caret"></span></button>
 					<ul class="dropdown-menu">
-						{{#each actions}} 
+						{{#each actions}}
 						<li><a href="#">{{this}}</a></li>
 						{{/each}}
 					</ul>

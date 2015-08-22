@@ -3,7 +3,7 @@ if(Meteor.isClient) {
 		meetings: function() {
 			return Meetings.find({organizationId: Session.get("organizationId")});
 		},
-	
+
 		organizationId: function() {
 			return Session.get("organizationId");
 		}
@@ -12,14 +12,31 @@ if(Meteor.isClient) {
 	Template.meetings.events({
 		'click #meetingId': function() {
 			joinMeeting(this);
-		}		 
+		},
+		'click #editMeeting': function() {
+			Session.set("meetingId", this._id);
+			$('#editMeetingControlsContainer').toggle();
+		}
+
+	});
+
+	Template.meetingEditor.helpers({
+		agenda: function() {
+			return Agendas.find({meetingId: Session.get("meetingId")});
+		},
+	});
+
+	Template.meetingEditor.events({
+		'click #addAgendaItem': function() {
+			Agendas.insert({name: $('#agendaContent').val(), meetingId: Session.get("meetingId"), ordinal: Agendas.find({meetingId: Session.get("meetingId")}).count(), status: AGENDASTATUS.pending});
+		}
 	});
 
 	Template.meetingSidebar.events({
 		'click .meeting-button': function() {
 			joinMeeting(this);
 		},
-		
+
 	});
 
 	function joinMeeting(meeting) {
@@ -32,10 +49,11 @@ if(Meteor.isClient) {
 		Meteor.subscribe("messages", meeting._id);
 		Meteor.subscribe("queues", meeting._id);
 		Meteor.subscribe("attendees", meeting._id);
+		Meteor.subscribe("agendas", meeting._id);
 
 		// Increment the number logged into the meeting
 		Meteor.call('joinMeeting', Meteor.userId(), meeting.organizationId, meeting._id);
-		
+
 		$('#head').hide();
 		$('footer').hide();
 		$('#messagesContainer').show();
@@ -46,13 +64,13 @@ if(Meteor.isClient) {
 		if(Session.get("meetingId") != undefined) {
 			Meteor.call('leaveMeeting', userId, organizationId, meetingId);
 			delete Session.keys.meetingId;
-		
+
 			$('#head').show();
 			$('footer').show();
 			$('#messagesContainer').hide();
 		}
 	}
-		
+
 	Template.meetingControls.helpers({
 		allRulesets: function() {
 			return RULESETS.all();
@@ -63,18 +81,18 @@ if(Meteor.isClient) {
 		'click #newMeetingSubmit': function() {
 			Meetings.insert({name: $('#newMeetingName').val(), startDateTime: new Date($('#newMeetingStartDate').val() + ' ' + $('#newMeetingStartTime').val()), endDateTime: new Date($('#newMeetingEndDate').val() + ' ' + $('#newMeetingEndTime').val()), organizationId: Session.get("organizationId"), ruleset: $('#ruleset').val(), status: MEETINGSTATUS.pending});
 		},
-	  
+
 		'click #rulesetDropdown ul li a': function() {
 			$('#ruleset').val(this);
 			$('#rulesetSelected').html(this);
 		}
 	});
-	
+
 	Template.meetingSidebar.helpers({
 		activeAndUpcomingMeetings: function() {
 			return Meetings.find({$or: [{ startDateTime: {"$gte": new Date()}}, { status: MEETINGSTATUS.pending}]}, { sort: { startDateTime: 1 }});
 		},
-	  
+
 		meetingsExist: function() {
 			return Meetings.find({$or: [{ startDateTime: {"$gte": new Date()}}, { status: MEETINGSTATUS.pending}]}).count() > 0;
 		},
@@ -83,5 +101,5 @@ if(Meteor.isClient) {
 			return Attendees.find({meetingId: this._id}).count();
 		}
 	});
-	
+
 }

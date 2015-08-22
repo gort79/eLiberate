@@ -2,16 +2,16 @@
   {{#each meetingMessages}}
     <div class="message" style="background-color:{{backgroundColor}}">
       <div class="messageHeader">
-        Posted by 
+        Posted by
         {{#if this.userName}}
         	{{userName}}
-        {{else}} 
+        {{else}}
       	  {{#if this.email}}
   	        {{email}}
   	      {{else}}
   	        Unknown
   	      {{/if}}
-        {{/if}} 
+        {{/if}}
         @ {{prettifyDate dateTime}}
       </div>
 	  {{#markdown}}{{body}}{{/markdown}}

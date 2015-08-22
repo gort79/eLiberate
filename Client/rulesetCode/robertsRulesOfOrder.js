@@ -4,13 +4,17 @@ if(Meteor.isClient) {
 		meetingId: function() {
 			return Session.get("meetingId") || 0;
 		},
-	
+
 		meetingMessages: function() {
 			return Messages.find({meetingId: Session.get("meetingId")});
 		},
-	
+
 		queue: function() {
 			return Queues.find({meetingId: Session.get("meetingId")});
+		},
+
+		agenda: function() {
+			return Agendas.find({meetingId: Session.get("meetingId")});
 		}
 	});
 
@@ -28,16 +32,16 @@ if(Meteor.isClient) {
 					return true;
 				}
 			}
-		
-			return false; 
+
+			return false;
 		},
 
 		attendingCount: function() {
 			return Meetings.find({_id: Session.get("meetingId")}).fetch()[0].attendance;
 		},
-		
+
 		actions: function() {
-			return CommandResolver.validCommands(); 
+			return CommandResolver.validCommands();
 		}
 	});
 
@@ -46,7 +50,7 @@ if(Meteor.isClient) {
 		'click #newMessageSubmit': function() {
 			CommandResolver.submitCommand();
 		},
-	  	
+
 		'click #actionDropdown ul li a': function() {
 			$('#action').val(this);
 			$('#actionSelected').html(this);
@@ -56,7 +60,7 @@ if(Meteor.isClient) {
 			Session.set("preview", $('#newMessage').val());
 			showModal($("#messagePreviewButton"));
 		},
-	  
+
 		'click #enterQueue': function() {
 			Queues.insert({meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username});
 		}
