@@ -88,23 +88,33 @@ if(Meteor.isServer) {
 
 	Messages.allow({
 	  'insert': function (userId,doc) {
-		var meeting = Meetings.findOne({_id: doc.meetingId});
+			var meeting = Meetings.findOne({_id: doc.meetingId});
 
-		if(meeting.ruleset == RULESETS.talkingStick)
-		{
-		  if (Queues.find({meetingId: meeting._id, userId: userId}).count() > 0 && Queues.find({meetingId: meeting._id}).fetch()[0].userId == userId) {
-			return true;
-		  }
-		  else if (Organizations.find({_id: doc.organizationId, members: {$elemMatch: { userId: userId, role: ROLES.chairperson }}}).count() > 0) {
-			return true;
-		  }
-		  return false;
+			if(meeting.ruleset == RULESETS.talkingStick)
+			{
+			  if (Queues.find({meetingId: meeting._id, userId: userId}).count() > 0 && Queues.find({meetingId: meeting._id}).fetch()[0].userId == userId) {
+				return true;
+			  }
+			  else if (Organizations.find({_id: doc.organizationId, members: {$elemMatch: { userId: userId, role: ROLES.chairperson }}}).count() > 0) {
+				return true;
+			  }
+			  return false;
+			}
+			else
+			{
+			  return true;
+			}
+	  },
+
+		'update' : function (userId, doc) {
+			var meeting = Meetings.findOne({_id: doc.meetingId});
+			if(Permissions.find({organizationId: meeting.organizationId, userId: userId, role: ROLES.chairperson}))
+			{
+					return true;
+			}
+
+			return false;
 		}
-		else
-		{
-		  return true;
-		}
-	  }
 	});
 
 	Attendees.allow({
@@ -153,7 +163,7 @@ if(Meteor.isServer) {
 		'insert': function (userId,doc) {
 		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
-	  'update': function (userId,docs) {
+	  'update': function (userId,doc) {
 		return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 	  'remove': function (userId,doc) {

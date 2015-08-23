@@ -12,11 +12,11 @@ if(Meteor.isClient) {
 		this.isMotion = false,
 		this.closesMotion = false,
 		this.orderOfPresedence = 0,
-		this.commandPart = "Administrative",
+		this.meetingPart = MEETINGPARTS.administrative,
 
 		this.addCommandIfIsValid = function(commands) {
-			if(SubmittedCommands.length == 0
-				 && Permissions.find({organizationId: this.meeting.organizationId, userId: Meteor.userId(), role: ROLES.chairperson}).count() > 0) {
+			if(this.meeting.status == MEETINGSTATUS.pending
+				 && Session.get("role") == ROLES.chairperson) {
 				commands.push(this.commandName);
 			}
 		},
@@ -24,7 +24,7 @@ if(Meteor.isClient) {
 		this.execute = function() {
 			if(this.validateCommand()) {
 				// Save the command
-				messageId = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, body: this.statement });
+				messageId = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement });
 
 				// Update the status of the meeting
 				Meetings.update({_id: this.meeting._id}, { $set: {status: MEETINGSTATUS.started}});

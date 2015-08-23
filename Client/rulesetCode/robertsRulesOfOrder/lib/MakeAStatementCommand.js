@@ -12,10 +12,11 @@ if(Meteor.isClient) {
 		this.isMotion = false,
 		this.closesMotion = false,
 		this.orderOfPresedence = 725,
-		this.commandPart = "Subsidiary",
+		this.meetingPart = MEETINGPARTS.subsidiary,
 
 		this.addCommandIfIsValid = function(commands) {
-			if(GetLastCommand() != null && GetLastCommand().isDebateable && this.meeting.status == MEETINGSTATUS.started) {
+			if((this.meeting.status == MEETINGSTATUS.started)
+					|| Session.get("role") == ROLES.chairperson) {
 				commands.push(this.commandName);
 			}
 		},
@@ -23,7 +24,7 @@ if(Meteor.isClient) {
 		this.execute = function() {
 			if(this.validateCommand()) {
 				// Save the command
-				messageId = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, body: this.statement });
+				messageId = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement });
 
 				if(messageId != "")
 				{
@@ -34,15 +35,13 @@ if(Meteor.isClient) {
 					}
 				}
 
-
-
 				return messageId;
 			}
 		},
 
 		this.validateCommand = function() {
-			if(Permissions.find({userId: Meteor.userId(), organizationId: this.organization._id, role: ROLES.chairperson})
-					&& Meeting.isInDebate) {
+			if(Session.get("role") == ROLES.chairperson
+					|| this.meeting.isInDebate) {
 				return true
 			}
 			return true;

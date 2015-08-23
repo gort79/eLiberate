@@ -4,13 +4,18 @@ if(Meteor.isClient) {
 		this.commandName = "Adjourn the Meeting",
 		this.commandType = "AdjournTheMeeting",
 		this.commandDisplayName = "Member moves to adjourn",
-		this.voteType = VOTETYPES.none,
-		this.isDebateable = true,
+		this.canInterrupt = false,
+		this.requiresSecond = true,
+		this.isDebateable = false,
+		this.isAmendable = false,
+		this.voteType = VOTETYPES.simpleMajority,
+		this.isMotion = true,
+		this.closesMotion = true,
 		this.orderOfPresedence = 100,
-		this.commandPart = "Privileged",
+		this.meetingPart = "Privileged",
 
 		this.addCommandIfIsValid = function(commands) {
-			if(Permissions.find({organizationId: this.meeting.organizationId, userId: Meteor.userId(), role: ROLES.chairperson}).count() > 0
+			if(Session.get("role") == ROLES.chairperson
 			 	 && this.meeting.status == MEETINGSTATUS.started) {
 				commands.push(this.commandName);
 			}
@@ -19,7 +24,7 @@ if(Meteor.isClient) {
 		this.execute = function() {
 			if(this.validateCommand()) {
 				// Save the command
-				messageId = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, body: this.statement });
+				messageId = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement });
 
 				if(messageId != "")
 				{
@@ -35,7 +40,7 @@ if(Meteor.isClient) {
 		},
 
 		this.validateCommand = function() {
-			if(Permissions.find({userId: Meteor.userId(), organizationId: this.organization._id, role: ROLES.chairperson})) {
+			if(Session.get("role") == ROLES.chairperson) {
 				return true
 			}
 			return false;

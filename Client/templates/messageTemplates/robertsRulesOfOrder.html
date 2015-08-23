@@ -14,7 +14,11 @@
             <i class="fa {{statusIcon}}"></i>
           </td>
           <td>
-            {{name}}
+            {{#if agendaOccurred}}
+              <a href="#{{name}}">{{name}}</a>
+            {{else}}
+              {{name}}
+            {{/if}}
           </td>
         </tr>
       {{/each}}
@@ -30,6 +34,7 @@
     <div class="messageHeader">
       Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
     </div>
+    <h5>{{commandDisplayName}}</h5>
   {{#markdown}}{{statement}}{{/markdown}}
   </div>
 </template>
@@ -38,8 +43,24 @@
   {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
 </template>
 
+<template name="OpenAgendaItemCommand">
+  <a name="{{agendaName}}"></a>
+  <div class="message {{commandType}}">
+    <div class="messageHeader">
+      Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
+    </div>
+    <h5>{{commandDisplayName}} '{{agendaName}}'</h5>
+  {{#markdown}}{{statement}}{{/markdown}}
+  </div>
+</template>
+
 <template name="MakeAStatementCommand">
-  {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
+  <div class="message {{commandType}}">
+    <div class="messageHeader">
+      Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
+    </div>
+  {{#markdown}}{{statement}}{{/markdown}}
+  </div>
 </template>
 
 <template name="OpenTheFloorToDebateCommand">
@@ -55,14 +76,13 @@
 	{{/if}}
 	<div class="row">
 		<div class="col-sm-4">
-			<h5 id="inputLabel"></h5>
 			<textarea id="newMessage"></textarea><br />
-			<input type="button" id="newMessageSubmit" class="btn btn-default" value="Submit" />
+			<input type="button" id="newMessageSubmit" class="btn btn-default" value="Submit" {{allowToSubmit}}/>
 			<button type="button" id="messagePreviewButton" class="btn btn-default show-modal" data-modal="preview">Preview Your Message</button>
 		</div>
 			<div class="col-sm-4">
 				<input type="hidden" id="ruleset" />
-				<div id="commandDropdown" class="dropdown">
+				<div id="commandDropdown" class="btn-group dropup">
 					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span id="commandSelected">Things you can do</span>
 					<span class="caret"></span></button>
 					<ul class="dropdown-menu">

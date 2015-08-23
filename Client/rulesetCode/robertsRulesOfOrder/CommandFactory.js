@@ -1,7 +1,7 @@
 if(Meteor.isClient) {
-  CreateCommandInstance = function(prototype, meeting, organization, statement, userName, dateTime)
+  CreateCommandInstance = function(prototype, meeting, organization, statement, userName, dateTime, message)
   {
-    return Object.create(prototype, {
+    var command = Object.create(prototype, {
       'meeting' : {
         value : meeting,
         enumerable : false
@@ -23,5 +23,15 @@ if(Meteor.isClient) {
         enumerable : false
       }
     });
+
+    if(message != undefined)
+    {
+      if(message.agendaName != undefined)
+      {
+        command.agendaName = message.agendaName;
+      }
+    }
+
+    return command;
   }
 }

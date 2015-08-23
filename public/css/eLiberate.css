@@ -140,6 +140,7 @@
 
 .message {
   width: 100%;
+  padding: 5px;
   margin-bottom: 5px;
 }
 
@@ -157,6 +158,10 @@
   right: 0;
   padding: 10px;
   z-index: 1;
+}
+
+#commandDropdown .dropdown-menu > li > a {
+  color: white ;
 }
 
 #newMessage {

@@ -8,22 +8,18 @@ if(Meteor.isClient) {
 
 	var owl;
 
-	function organizations() {
-		return Organizations.find({});
-	}
-
 	Template.organizations.helpers({
 	  userOrganizations: function () {
 		if(isLoggedIn())
 		{
 			Meteor.subscribe("organizations");
-			var orgs = organizations();
+			var orgs =  Organizations.find({}).fetch();
 
 			$('#organization-details').hide();
 
-			if(orgs.count() == 1)
+			if(orgs.length == 1)
 			{
-				organizationId = orgs.fetch()[0]._id;
+				organizationId = orgs[0]._id;
 				Session.set("organizationId", organizationId);
 				logIntoOrganization(organizationId);
 			}
@@ -54,7 +50,7 @@ if(Meteor.isClient) {
 			// dependencies on it by calling cursor.forEach, so whenever the documents found
 			// by the cursor are modified on the server, the computation is rerun with
 			// updated content, note that we use the SAME CURSOR that we fed our #each with
-			var orgs = organizations();
+			var orgs = Organizations.find({});
 			// forEach registers dependencies on the cursor content exactly like #each does
 			orgs.forEach(function(org){});
 			// finally we need to reinit the carousel so it take into account our newly added
@@ -105,6 +101,12 @@ if(Meteor.isClient) {
 		Session.set("organizationId", organizationId);
 		Meteor.subscribe("permissions", organizationId);
 		Meteor.subscribe("invites", organizationId);
+
+		var permission = Permissions.findOne({organizationId: organizationId, userId: Meteor.userId()});
+		if(permission != undefined)
+		{
+			Session.set("role", Permissions.findOne({organizationId: organizationId, userId: Meteor.userId()}).role);
+		}
 	}
 
 	Template.newOrganizationControls.events({

@@ -40,7 +40,7 @@ a:hover, a:focus {
 }
 
 textarea {
-  color: black;
+  color: black !important;
 }
 
 #video-wrapper{
@@ -256,7 +256,6 @@ textarea {
 }
 
 .sidebar-nav li a {
-  color: #999999;
   display: block;
   text-decoration: none;
     text-indent: 10px;

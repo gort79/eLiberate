@@ -11,6 +11,20 @@
 	background-color: rgba(55, 55, 150, .5);
 }
 
+.MakeAStatement .messageHeader {
+	color: lightgrey;
+	border-bottom: 1px solid grey;
+}
+
+.OpenAgendaItem {
+	background-color: rgba(25, 75, 25, .5);
+}
+
+.OpenAgendaItem .messageHeader {
+	color: lightgrey;
+	border-bottom: 1px solid grey;
+}
+
 .agendaBox {
 	position: fixed;
   right: 32px;
