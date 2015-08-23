@@ -1,15 +1,21 @@
 if(Meteor.isClient) {
-	OpenTheFloorToDebateCommand = function() {
+	PointOfInformationCommand = function() {
 
-		this.commandName = "Open the Floor to Debate",
-		this.commandType = "OpenTheFloorToDebate",
-		this.commandDisplayName = "The floor has been open for debate",
+		this.commandName = "Point of Information",
+		this.commandType = "PointOfInformation",
+		this.commandDisplayName = "Point of information",
+		this.canInterrupt = true,
+		this.requiresSecond = false,
+		this.isDebateable = false,
+		this.isAmendable = false,
 		this.voteType = VOTETYPES.none,
-		this.isDebateable = true,
+		this.isMotion = false,
+		this.closesMotion = false,
+		this.orderOfPresedence = 0,
+		this.commandPart = "Incidental",
 
 		this.addCommandIfIsValid = function(commands) {
-			if(Permissions.find({organizationId: this.meeting.organizationId, userId: Meteor.userId(), role: ROLES.chairperson}).count() > 0
-			 	 && this.meeting.status == MEETINGSTATUS.started) {
+			if(GetLastCommand() != null && GetLastCommand().isDebateable && this.meeting.status == MEETINGSTATUS.started) {
 				commands.push(this.commandName);
 			}
 		},
@@ -28,15 +34,18 @@ if(Meteor.isClient) {
 					}
 				}
 
+
+
 				return messageId;
 			}
 		},
 
 		this.validateCommand = function() {
-			if(Permissions.find({userId: Meteor.userId(), organizationId: this.organization._id, role: ROLES.chairperson})) {
+			if(Permissions.find({userId: Meteor.userId(), organizationId: this.organization._id, role: ROLES.chairperson})
+					&& Meeting.isInDebate) {
 				return true
 			}
-			return false;
+			return true;
 		}
 	}
 }

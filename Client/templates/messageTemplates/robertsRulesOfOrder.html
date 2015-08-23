@@ -2,9 +2,7 @@
   <table id="agenda" class="agendaBox">
     <thead>
       <tr>
-        <th>
-        </th>
-        <th>
+        <th colspan="2">
           Agenda Items
         </th>
       </tr>
@@ -13,7 +11,7 @@
       {{#each agenda}}
         <tr>
           <td>
-            <i class="fa fa-cog"></i>
+            <i class="fa {{statusIcon}}"></i>
           </td>
           <td>
             {{name}}
@@ -85,4 +83,3 @@
 		</div>
 	</div>
 </template>
- 

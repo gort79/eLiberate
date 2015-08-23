@@ -3,12 +3,19 @@ if(Meteor.isClient) {
 
 		this.commandName = "Call the Meeting to Order",
 		this.commandType = "CallMeetingToOrder",
-		this.commandDisplayName = "The meeting has been called to order",
-		this.voteType = VOTETYPES.none,
+		this.commandDisplayName = "Chairperson has called the meeting to order",
+		this.canInterrupt = false,
+		this.requiresSecond = false,
 		this.isDebateable = false,
+		this.isAmendable = false,
+		this.voteType = VOTETYPES.none,
+		this.isMotion = false,
+		this.closesMotion = false,
+		this.orderOfPresedence = 0,
+		this.commandPart = "Administrative",
 
 		this.addCommandIfIsValid = function(commands) {
-			if(activeCommands.length == 0
+			if(SubmittedCommands.length == 0
 				 && Permissions.find({organizationId: this.meeting.organizationId, userId: Meteor.userId(), role: ROLES.chairperson}).count() > 0) {
 				commands.push(this.commandName);
 			}

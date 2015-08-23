@@ -17,7 +17,8 @@
 	background-color: rgba(55, 55, 55, .8);
 	max-width: 250px;
 }
-.agendaBox TD
+.agendaBox TD,
+.agendaBox TH
 {
 	padding: 5px;
 }

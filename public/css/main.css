@@ -4,20 +4,20 @@ Author: CREATEBRILLIANCE - Media & Consulting
 Author URI: http://www.createbrilliance.com
 Version: 2.2
 */
-  
+
 html,body {
 
 }
 
-  
+
 
 body {
-	background:#222;	
-    background: url("/images/foggy.jpg") no-repeat center center fixed; 
+	background:#222;
+    background: url("/images/foggy.jpg") no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
-    background-size: cover;	
+    background-size: cover;
 	font-family: "Lato", Helvetica, Arial, sans-serif;
 	color:white;
 	overflow: hidden;
@@ -88,7 +88,7 @@ textarea {
    -moz-transition:all 0.5s ease 0s;
      -o-transition:all 0.5s ease 0s;
         transition:all 0.5s ease 0s;
-    
+
 }
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
     background-color: #FFFFFF;
@@ -247,7 +247,7 @@ textarea {
   list-style: none;
   margin: 0;
   padding: 0;
-  
+
 }
 
 .sidebar-nav li {
@@ -267,10 +267,10 @@ textarea {
  .active .sidebar-nav li a {
     opacity:1;
     left:0px;
- 
+
 }
 .active .sidebar-nav li:nth-child(2) a{
-	
+
  	-webkit-transition:all 0.3s ease-out;
 -moz-transition:all 0.3s  ease-out;
 -o-transition:all 0.3s  ease-out;
@@ -341,11 +341,11 @@ transition:all 1.2s ease-out;
 	border:3px solid white;
 	border-radius:0px;
 	color:white;
-	
+
 }
 .btn-style:hover {
 	opacity:0.5;
-	
+
 }
 
 
@@ -360,7 +360,7 @@ transition:all 1.2s ease-out;
     text-align: center;
     text-transform: uppercase;5444444444444
 
-    
+
 }
 #head h3 {
 	font-weight:300;
@@ -380,7 +380,7 @@ transition:all 1.2s ease-out;
 .dropdown-menu {
 	text-align: left;
 }
-/* end boostrap modal overrides */ 
+/* end boostrap modal overrides */
 
 #modal-nav{
 	opacity:0.8;
@@ -644,7 +644,7 @@ footer .copy {
     z-index: -3;
     overflow:hidden;
 
-    
+
 }
 
 #slides .slides-container {
@@ -752,7 +752,7 @@ footer .copy {
 
 /*
  * preloader
- * 
+ *
  */
 #preloader {
 	position: fixed;
@@ -769,7 +769,3 @@ footer .copy {
 	  margin:250px auto;
 	  text-align:center;
 }
-
-
-
-

@@ -131,7 +131,7 @@ if(Meteor.isClient) {
 					if(Permissions.find({organizationId: Session.get("organizationId"), userId: data._id}).count() == 0) {
 						Permissions.insert({organizationId: Session.get("organizationId"), userId: data._id, userName:data.username, role: $('#inviteUserRole').val() })
 					} else {
-						alert($('#inviteUserEmail').val() + " is already a member of your organization.");            
+						alert($('#inviteUserEmail').val() + " is already a member of your organization.");
 					}
 				}
 				else if(Invites.find({organizationId: Session.get("organizationId"), email: $('#inviteUserEmail').val()}).count() == 0) {
