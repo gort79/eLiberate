@@ -1,32 +1,45 @@
 <template name="robertsRulesOfOrderMessages">
-  <table id="agenda" class="agendaBox">
-    <thead>
-      <tr>
-        <th colspan="2">
-          Agenda Items
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each agenda}}
+  {{#if Template.subscriptionsReady}}
+    <table id="agenda" class="agendaBox">
+      <thead>
         <tr>
-          <td>
-            <i class="fa {{statusIcon}}"></i>
-          </td>
-          <td>
-            {{#if agendaOccurred}}
-              <a href="#{{name}}">{{name}}</a>
-            {{else}}
-              {{name}}
-            {{/if}}
-          </td>
+          <th colspan="2">
+            Agenda Items
+          </th>
         </tr>
-      {{/each}}
-    </tbody>
-  </table>
-  {{#each meetingMessages}}
-    {{> Template.dynamic template=commandTemplate data=this }}
-  {{/each}}
+      </thead>
+      <tbody>
+        {{#each agenda}}
+          <tr>
+            <td>
+              <i class="fa {{statusIcon}}"></i>
+            </td>
+            <td>
+              {{#if agendaOccurred}}
+                <a href="#{{name}}">{{name}}</a>
+              {{else}}
+                {{name}}
+              {{/if}}
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+    {{#each meetingMessages}}
+      {{> Template.dynamic template=commandTemplate data=this }}
+    {{/each}}
+    <nav id="messagesFooter" class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container-fluid">
+        {{> robertsRulesOfOrderControls}}
+      </div>
+    </nav>
+  {{else}}
+    <div id="meeting_loading">
+      <div id="spinner_container">
+        <h1><i class='fa fa-spinner fa-spin'></i></h1>
+      </div>
+    </div>
+  {{/if}}
 </template>
 
 <template name="robertsRulesOfOrderStandardCommand">
@@ -39,12 +52,122 @@
   </div>
 </template>
 
+<template name="robertsRulesOfOrderVotableCommand">
+  <div class="message {{commandType}}">
+    <div class="messageHeader">
+      Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
+    </div>
+    <h5>{{commandDisplayName}}</h5>
+    {{#markdown}}{{statement}}{{/markdown}}
+    {{#if needsSecond}}
+      <strong>A second is required</strong>
+      {{#if canSecond}}
+        <input type="button" class="btn btn-primary" id="second" value="Second" />
+      {{/if}}
+      {{#if canKillMotion}}
+        <input type="button" class="btn btn-primary" id="killMotion" value="Kill the Motion" />
+      {{/if}}
+    {{/if}}
+    {{#if motionNotSeconded}}
+      <strong>The motion was not seconded</strong>
+    {{/if}}
+    {{#if seconded}}
+      <strong>Seconded by {{secondedBy}}</strong>
+    {{/if}}
+  </div>
+</template>
+
+<template name="PutToVoteCommand">
+  <div class="message {{commandType}}">
+    <div class="messageHeader">
+      Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
+    </div>
+    <h5>{{commandDisplayName}}</h5>
+    {{#markdown}}{{statement}}{{/markdown}}
+
+    <h5>Motion Put to Vote</h5>
+    {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=motionPutToVote }}
+
+    {{#if inVote}}
+      <div><strong>The motion is currently under vote</strong></div>
+      <div class="row">
+        <div class="col-sm-1">
+          Aye Votes: {{aye}}
+        </div>
+        <div class="col-sm-1">
+          Nay Votes: {{nay}}
+        </div>
+        <div class="col-sm-1">
+          Abstained: {{abstain}}
+        </div>
+      </div>
+      {{#if canVote}}
+        <input type="button" class="btn btn-primary" id="vote" value="Vote" />
+      {{else}}
+        <div>You voted: <strong>{{yourVote}}</strong></div>
+      {{/if}}
+    {{/if}}
+    {{#if approved}}
+      <div class="bg-success"><strong>Motion carried with a vote of {{aye}} for, {{nay}} against, and {{abstain}} abstaining.</strong></div>
+    {{/if}}
+    {{#if denied}}
+      <div class="bg-success"><strong>Motion not carried with a vote of {{denied}} against, {{aye}} for, and {{abstain}} abstaining.</strong></div>
+    {{/if}}
+    </div>
+    {{#if requiresVote}}
+    <div id="voteModal" class="modal fade" role="dialog">
+      <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+             <h4 class="modal-title">A {{VoteType}} vote is required</h4>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="messageHeader">
+                Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
+              </div>
+              <h5>{{commandDisplayName}}</h5>
+              {{#markdown}}{{statement}}{{/markdown}}
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                <input type="button" class="btn btn-primary" id="aye" value="Aye" />
+              </div>
+              <div class="col-sm-3">
+                <input type="button" class="btn btn-primary" id="nay" value="Nay" />
+              </div>
+              <div class="col-sm-3">
+                <input type="button" class="btn btn-primary" id="abstain" value="Abstain" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-sm-3">
+                Aye Votes: {{aye}}
+              </div>
+              <div class="col-sm-3">
+                Nay Votes: {{nay}}
+              </div>
+              <div class="col-sm-3">
+                Abstained: {{abstain}}
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+    <script language="javascript">$('#voteModal').modal('show');</script>
+  {{/if}}
+</template>
+
 <template name="CallMeetingToOrderCommand">
   {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
 </template>
 
 <template name="OpenAgendaItemCommand">
-  <a name="{{agendaName}}"></a>
+  <a class="agena-link" name="{{agendaName}}"></a>
   <div class="message {{commandType}}">
     <div class="messageHeader">
       Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
@@ -64,7 +187,15 @@
 </template>
 
 <template name="OpenTheFloorToDebateCommand">
-  {{> Template.dynamic template=robertsRulesOfOrderStandardCommand data=this }}
+  {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
+</template>
+
+<template name="AdjournTheMeetingCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="MotionCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
 </template>
 
 <template name="robertsRulesOfOrderControls">

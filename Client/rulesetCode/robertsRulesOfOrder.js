@@ -17,8 +17,8 @@ if(Meteor.isClient) {
 			if(!isInMotion && SubmittedCommands.list()[index].isMotion) {
 				isInMotion = true;
 			}
-			else if (IsInMotion && SubmittedCommands.list()[index].closesMotion) {
-				IsInMotion = false;
+			else if (isInMotion && SubmittedCommands.list()[index].closesMotion) {
+				isInMotion = false;
 			}
 		}
 
@@ -27,31 +27,39 @@ if(Meteor.isClient) {
 
 	CurrentOrderOfPresedence = function() {
 		var currentMotion = CurrentMotion();
-		var currentOrderOfPresedence = 0;
 
 		if(currentMotion == undefined)
 		{
-			return 10000000;
+			return Number.MAX_VALUE;
 		}
 
-		return currentOrderOfPresedence.orderOfPresedence;
+		return currentMotion.orderOfPresedence;
 	}
 
 	// Gets the current motion if you need it
 	CurrentMotion = function() {
 		var currentMotion;
-
 		for(var index = 0; index < SubmittedCommands.list().length; index++)
 		{
-			if(!IsInMotion() && SubmittedCommands.list()[index].isMotion) {
+			if(SubmittedCommands.list()[index].isMotion) {
 				currentMotion = SubmittedCommands.list()[index];
 			}
-			else if (IsInMotion() && SubmittedCommands.list()[index].closesMotion) {
+			else if (SubmittedCommands.list()[index].closesMotion) {
 				currentMotion = undefined;
 			}
 		}
 
 		return currentMotion;
+	}
+
+	// Gets a motion
+	GetMotion = function(motionId) {
+		for(var index = 0; index < SubmittedCommands.list().length; index++)
+		{
+			if(SubmittedCommands.list()[index]._id == motionId) {
+				return SubmittedCommands.list()[index];
+			}
+		}
 	}
 
 	HasTheFloor = function() {
@@ -82,11 +90,24 @@ if(Meteor.isClient) {
 
 			for(var index = 0; index < messagesSubmitted.length; index++)
 			{
-				commandPrototype = GetCommandPrototype(messagesSubmitted[index].commandType);
-				SubmittedCommands.push(CreateCommandInstance(commandPrototype, meeting, organization, messagesSubmitted[index].statement, messagesSubmitted[index].userName, messagesSubmitted[index].dateTime, messagesSubmitted[index]));
+				var commandPrototype = GetCommandPrototype(messagesSubmitted[index].commandType);
+				var command = CreateCommandInstance(commandPrototype, meeting, organization, messagesSubmitted[index].statement, messagesSubmitted[index].userId, messagesSubmitted[index].userName, messagesSubmitted[index].dateTime, messagesSubmitted[index]);
+				if(command.motionIdPutToVote == undefined)
+				{
+					command.motionPutToVote = GetMotion(command.motionIdPutToVote);
+					command.voteType = command.motionPutToVote.voteType;
+				}
+				SubmittedCommands.push(command);
 			}
 		}
 	}
+
+	Template.robertsRulesOfOrderMessages.onCreated(function () {
+		this.subscribe("messages", Session.get("meetingId"));
+		this.subscribe("queues", Session.get("meetingId"));
+		this.subscribe("agendas", Session.get("meetingId"));
+		this.subscribe("votes", Session.get("meetingId"));
+	});
 
 	/* eLiberate Constants */
 	Template.robertsRulesOfOrderMessages.helpers({
@@ -132,6 +153,233 @@ if(Meteor.isClient) {
 		}
 	});
 
+	Template.robertsRulesOfOrderVotableCommand.helpers({
+		needsSecond: function() {
+			if(this.status == MOTIONSTATUS.second)
+			{
+				return true;
+			}
+
+			return false;
+		},
+
+		canKillMotion: function() {
+			if(Session.get("role") == ROLES.chairperson
+				 && this.status == MOTIONSTATUS.requiresSecond)
+			{
+				return true;
+			}
+
+			return false;
+		},
+
+		motionNotSeconded: function() {
+			if(this.status == MOTIONSTATUS.notSeconded)
+			{
+				return true;
+
+			}
+
+			return false;
+		},
+
+		canSecond: function() {
+			if(this.userId === Meteor.userId())
+			{
+				return false;
+			}
+
+			return true;
+		},
+
+		seconded: function() {
+			if(this.secondedBy != undefined)
+			{
+				return true;
+			}
+
+			return false;
+		}
+	});
+
+	Template.robertsRulesOfOrderVotableCommand.events({
+		'click #second': function() {
+			var status = "";
+			if(this.isDebateable)
+			{
+				status = MOTIONSTATUS.debate;
+			}
+			else
+			{
+				status = MOTIONSTATUS.toVote;
+			}
+
+			this.status = status;
+			Messages.update({_id: this._id}, {$set: {status: status, secondedBy: Meteor.user().username, secondedById: Meteor.userId()}});
+			SubmittedCommands.clear(); // I have to do this because stupid ReactiveArray doesn't react when an eleent is UPDATED, only added/removed.
+		}
+	});
+
+	Template.PutToVoteCommand.helpers({
+
+		requiresVote: function() {
+			if(this.status == MOTIONSTATUS.toVote
+			   && Votes.find({motionId: this._id, userId: Meteor.userId()}).count() == 0)
+			{
+				return true;
+			}
+
+			return false;
+		},
+
+		canVote: function() {
+			if(Votes.find({motion: this._id, userId: Meteor.userId()}).count() > 0)
+			{
+				return true;
+			}
+
+			return false;
+		},
+
+		yourVote: function() {
+			var vote = Votes.findOne({motionId: this._id, userId: Meteor.userId()});
+			if(vote != undefined)
+			{
+				return vote.voteOption;
+			}
+			return ''
+		},
+
+		inVote: function() {
+			if(this.status == MOTIONSTATUS.toVote)
+			{
+				return true;
+			}
+
+			return false;
+		},
+
+		approved: function() {
+			if(this.status == MOTIONSTATUS.approved)
+			{
+				return true;
+			}
+
+			return false;
+		},
+
+		denied: function() {
+			if(this.status == MOTIONSTATUS.denied)
+			{
+				return true;
+			}
+
+			return false;
+		},
+
+		motionPutToVote: function() {
+			return this.motionPutToVote;
+		}
+	});
+
+	Template.PutToVoteCommand.events({
+		'click #vote': function() {
+			$('#voteModal').modal('show');
+		},
+
+		'click #aye': function() {
+			if(Votes.find({motionId: this._id, userId: Meteor.userId()}).count() == 0)
+			{
+				Votes.insert({motionId: this._id, userId: Meteor.userId(), userName: Meteor.user().username, meetingId: this.meeting._id, voteOption: VOTEOPTIONS.aye});
+				Messages.update({_id: this._id}, {$inc: {aye: 1}});
+				TallyVote(this);
+				SubmittedCommands.clear(); // I have to do this because stupid ReactiveArray doesn't react when an eleent is UPDATED, only added/removed.
+			}
+			$('#voteModal').modal('hide');
+			$('.modal-backdrop').hide();
+		},
+
+		'click #nay': function() {
+			if(Votes.find({motionId: this._id, userId: Meteor.userId()}).count() == 0)
+			{
+				Votes.insert({motionId: this._id, userId: Meteor.userId(), userName: Meteor.user().username, meetingId: this.meeting._id, voteOption: VOTEOPTIONS.nay});
+				Messages.update({_id: this._id}, {$inc: {nay: 1}});
+				SubmittedCommands.clear(); // I have to do this because stupid ReactiveArray doesn't react when an eleent is UPDATED, only added/removed.
+				TallyVote(this);
+			}
+			$('#voteModal').modal('hide');
+			$('.modal-backdrop').hide();
+		},
+
+		'click #abstain': function() {
+			if(Votes.find({motionId: this._id, userId: Meteor.userId()}).count() == 0)
+			{
+				Votes.insert({motionId: this._id, userId: Meteor.userId(), userName: Meteor.user().username, meetingId: this.meeting._id, voteOption: VOTEOPTIONS.abstain});
+				Messages.update({_id: this._id}, {$inc: {abstain: 1}});
+				TallyVote(this);
+				SubmittedCommands.clear(); // I have to do this because stupid ReactiveArray doesn't react when an eleent is UPDATED, only added/removed.
+			}
+			$('#voteModal').modal('hide');
+			$('.modal-backdrop').hide();
+		},
+
+		'click #killMotion': function() {
+			Messages.update({_id: this._id}, {status: MOTIONSTATUS.notSeconded});
+		}
+	});
+
+	TallyVote = function(motion) {
+		var meeting = Meetings.findOne({_id: Session.get("meetingId")});
+		var attendanceCount = Attendees.find({meetingId: Session.get("meetingId")}).count();
+		var voteCount = Votes.find({motionId: motion._id}).count();
+		var ayeCount = Votes.find({motionId: motion._id, voteOption: VOTEOPTIONS.aye}).count();
+		console.log(meeting);
+		console.log(attendanceCount);
+		console.log(voteCount);
+		console.log(ayeCount);
+		switch(motion.voteType)
+		{
+			case VOTETYPES.simpleMajority:
+				if(voteCount == attendanceCount
+					 && ayeCount / attendanceCount > .5)
+				{
+					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.approved}});
+					motion.status = MOTIONSTATUS.approved;
+					if(motion.approved != undefined)
+					{
+						motion.approved()
+					}
+					return true;
+				}
+				else
+				{
+					motion.status = MOTIONSTATUS.denied;
+					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.denied}});
+				}
+				break;
+			case VOTETYPES.twoThirdsMajority:
+				if(voteCount == attendanceCount
+					 && ayeCount / attendanceCount > .66)
+				{
+ 					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.approved}});
+					motion.status = MOTIONSTATUS.approved;
+					if(motion.approved != undefined)
+					{
+						motion.approved()
+					}
+					return true;
+ 				}
+ 				else
+ 				{
+					motion.status = MOTIONSTATUS.denied;
+ 					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.denied}});
+ 				}
+				break;
+		}
+
+		return false;
+	}
+
 	Template.robertsRulesOfOrderControls.helpers({
 		queue: function() {
 			return Queues.find({});
@@ -168,6 +416,12 @@ if(Meteor.isClient) {
 			// Clear out the command controls
 			$("#newMessage").val('');
 			$("#commandSelected").val('Things you can do');
+			var queue = Queues.findOne({meetingId: Session.get("meetingId"), userId: Meteor.userId()});
+
+			if(queue != undefined)
+			{
+				Queues.remove({_id: queue._id});
+			}
 		},
 
 		'click #commandDropdown ul li a': function() {
@@ -183,5 +437,9 @@ if(Meteor.isClient) {
 		'click #enterQueue': function() {
 			Queues.insert({meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username});
 		}
+	});
+
+	$(window).on("hashchange", function () {
+  	window.scrollTo(window.scrollX, window.scrollY - 84);
 	});
 }

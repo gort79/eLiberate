@@ -41,8 +41,7 @@ if(Meteor.isClient) {
 
 				// Save the command
 				this.agendaName = nextAgendaItem.name;
-				messageId = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, agendaName: this.agendaName, statement: this.statement });
-				return messageId;
+				this._id = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, agendaName: this.agendaName, statement: this.statement });
 			}
 		},
 

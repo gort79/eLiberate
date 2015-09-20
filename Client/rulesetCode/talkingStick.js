@@ -1,4 +1,10 @@
 if(Meteor.isClient) {
+
+	Template.talkingStickMessages.onCreated(function () {
+		this.subscribe("messages", Session.get("meetingId"));
+		this.subscribe("queues", Session.get("meetingId"));
+	});
+
 	Template.talkingStickMessages.helpers({
 	  meetingId: function() {
 		return Session.get("meetingId") || 0;

@@ -1,22 +1,35 @@
 <template name="talkingStickMessages">
-  {{#each meetingMessages}}
-    <div class="message" style="background-color:{{backgroundColor}}">
-      <div class="messageHeader">
-        Posted by
-        {{#if this.userName}}
-        	{{userName}}
-        {{else}}
-      	  {{#if this.email}}
-  	        {{email}}
-  	      {{else}}
-  	        Unknown
-  	      {{/if}}
-        {{/if}}
-        @ {{prettifyDate dateTime}}
+  {{#if Template.subscriptionsReady}}
+    {{#each meetingMessages}}
+      <div class="message" style="background-color:{{backgroundColor}}">
+        <div class="messageHeader">
+          Posted by
+          {{#if this.userName}}
+          	{{userName}}
+          {{else}}
+        	  {{#if this.email}}
+    	        {{email}}
+    	      {{else}}
+    	        Unknown
+    	      {{/if}}
+          {{/if}}
+          @ {{prettifyDate dateTime}}
+        </div>
+  	  {{#markdown}}{{statement}}{{/markdown}}
       </div>
-	  {{#markdown}}{{statement}}{{/markdown}}
+    {{/each}}
+    <nav id="messagesFooter" class="navbar navbar-default navbar-fixed-bottom">
+      <div class="container-fluid">
+        {{> talkingStickControls}}
+      </div>
+    </nav>
+  {{else}}
+    <div id="meeting_loading">
+      <div id="spinner_container">
+        <h1><i class='fa fa-spinner fa-spin'></i></h1>
+      </div>
     </div>
-  {{/each}}
+  {{/if}}
 </template>
 
 <template name="talkingStickControls">

@@ -23,9 +23,9 @@ if(Meteor.isClient) {
 		this.execute = function() {
 			if(this.validateCommand()) {
 				// Save the command
-				messageId = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement });
+				this._id = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement });
 
-				if(messageId != "")
+				if(this._id != "")
 				{
 					var queue = Queues.findOne({ meetingId: Session.get("meetingId"), userId: Meteor.userId() });
 					if(queue != null)
@@ -33,10 +33,6 @@ if(Meteor.isClient) {
 						Queues.remove({ _id: queue._id });
 					}
 				}
-
-
-
-				return messageId;
 			}
 		},
 

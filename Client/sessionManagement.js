@@ -1,21 +1,22 @@
 if(Meteor.isClient) {
-	Template.login.events({  
+	Template.login.events({
 		'click #login-buttons-logout': function(event, template) {
 			userLeaving();
 		}
 	});
-	
-	$(window).bind('beforeunload', function() { 
+
+	$(window).bind('beforeunload', function() {
             userLeaving();
-        } 
+        }
     );
 
 	Tracker.autorun(function(){
 		if(Meteor.userId()){
 			Meteor.subscribe("meetings");
+			Meteor.subscribe("attendees");
 		}
 	});
-	
+
 	function userLeaving() {
 		leaveMeeting(Meteor.userId(), Session.get("organizationId"), Session.get("meetingId"));
 
@@ -25,7 +26,7 @@ if(Meteor.isClient) {
 		delete Session.keys.organizationId;
 		delete Session.keys.ruleset;
 	}
-	
+
 	Template.login.helpers({
 		created: function() {
 		  if (Accounts._verifyEmailToken) {
@@ -38,7 +39,7 @@ if(Meteor.isClient) {
 				return 'Thank you! Your email address has been confirmed.';
 			  }
 			});
-		  } 
+		  }
 		}
 	});
 }

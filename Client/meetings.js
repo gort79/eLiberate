@@ -35,28 +35,25 @@ if(Meteor.isClient) {
 	Template.meetingSidebar.events({
 		'click .meeting-button': function() {
 			joinMeeting(this);
+			$('#menu-toggle').removeClass("bt-menu-open").addClass("bt-menu-close");
+			$("#sidebar-wrapper").removeClass("active");
 		},
 
 	});
 
 	function joinMeeting(meeting) {
 		// Pull them out of the previous meeting if they were in one
-		Meteor.call('leaveMeeting', Meteor.userId(), Session.get("organizationId"), Session.get("meetingId"));
+		Meteor.call('leaveMeeting', Meteor.userId(), meeting.organizationId, meeting._id);
 
 		// Log the user into the meeting
 		Session.set("meetingId", meeting._id);
 		Session.set("ruleset", meeting.ruleset);
-		Meteor.subscribe("messages", meeting._id);
-		Meteor.subscribe("queues", meeting._id);
-		Meteor.subscribe("attendees", meeting._id);
-		Meteor.subscribe("agendas", meeting._id);
 
 		// Increment the number logged into the meeting
 		Meteor.call('joinMeeting', Meteor.userId(), meeting.organizationId, meeting._id);
 
 		$('#head').hide();
 		$('footer').hide();
-		$('#messagesContainer').show();
 
 		// Trigger our custom event
 		$(document).trigger("joinedMeeting");
@@ -70,7 +67,6 @@ if(Meteor.isClient) {
 
 			$('#head').show();
 			$('footer').show();
-			$('#messagesContainer').hide();
 		}
 	}
 

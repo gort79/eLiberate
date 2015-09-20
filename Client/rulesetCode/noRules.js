@@ -1,4 +1,8 @@
 if(Meteor.isClient) {
+	Template.noRulesMessages.onCreated(function () {
+		this.subscribe("messages", Session.get("meetingId"));
+	});
+
 	Template.noRulesMessages.helpers({
 		meetingId: function() {
 			return Session.get("meetingId") || 0;

@@ -31,7 +31,7 @@ if(Meteor.isServer) {
 		},
 
 		leaveMeeting: function(userId, organizationId, meetingId) {
-			attendees = Attendees.find({meetingId: meetingId, userId: userId}).fetch();
+			attendees = Attendees.find({userId: userId}).fetch();
 			if(attendees.length > 0)
 			{
 				for(var i = 0; i < attendees.length; i++)

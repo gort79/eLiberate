@@ -1,5 +1,5 @@
 .CallMeetingToOrder {
-	background-color: rgba(75, 175, 75, .5);
+	background-color: rgba(75, 175, 75, .8);
 }
 
 .CallMeetingToOrder .messageHeader {
@@ -8,7 +8,7 @@
 }
 
 .MakeAStatement {
-	background-color: rgba(55, 55, 150, .5);
+	background-color: rgba(55, 55, 150, .8);
 }
 
 .MakeAStatement .messageHeader {
@@ -17,7 +17,7 @@
 }
 
 .OpenAgendaItem {
-	background-color: rgba(25, 75, 25, .5);
+	background-color: rgba(25, 75, 25, .8);
 }
 
 .OpenAgendaItem .messageHeader {
@@ -25,9 +25,39 @@
 	border-bottom: 1px solid grey;
 }
 
+.AdjournTheMeeting {
+	background-color: rgba(0, 0, 0, .8);
+	color: white
+}
+
+.AdjournTheMeeting .messageHeader {
+	color: lightgrey;
+	border-bottom: 1px solid white;
+}
+
+.Motion {
+	background-color: rgba(0,0, 50, .8);
+	color: white
+}
+
+.Motion .messageHeader {
+	color: lightgrey;
+	border-bottom: 1px solid white;
+}
+
+.PutToVote {
+	background-color: rgba(153, 101, 21, .8);
+	color: white
+}
+
+.PutToVote .messageHeader {
+	color: lightgrey;
+	border-bottom: 1px solid white;
+}
+
 .agendaBox {
 	position: fixed;
-  right: 32px;
+  right: 0px;
 	background-color: rgba(55, 55, 55, .8);
 	max-width: 250px;
 }
@@ -35,4 +65,9 @@
 .agendaBox TH
 {
 	padding: 5px;
+}
+
+#voteModal
+{
+	z-index: 1041;
 }

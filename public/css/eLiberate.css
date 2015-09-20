@@ -23,6 +23,19 @@
   top: 0;
 }
 
+#login-dropdown-list {
+  margin-right: 70px;
+  padding: 5px;
+  border: solid 2px white;
+  border-radius: 3px;
+}
+
+#login {
+  position: absolute;
+  top: 5px;
+  z-index: 997;
+}
+
 .loginControls {
   position: absolute;
   top: 0;
@@ -103,45 +116,9 @@
 
 
 /* Message Styles */
-#messagesContainer {
-  display: block;
-  position: absolute;
-  border-width: 15px;
-  border-color: #444444;
-  border-style: solid;
-  padding-left: 15px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: -1;
-  display: none;
-}
-
-#messagesContainer hr {
-	margin-right: 15px;
-}
-
-#messages {
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  top: 104px;
-  right: 0;
-  bottom: 150px;
-  overflow-y: scroll;
-  border-top: 1px;
-  border-bottom: 1px;
-  border-left: 0px;
-  border-right: 0px;
-  border-color: white;
-  border-style: solid;
-}
-
 .message {
-  width: 100%;
   padding: 5px;
-  margin-bottom: 5px;
+  margin: 5px;
 }
 
 .messageHeader {
@@ -172,4 +149,49 @@
   display: block;
   overflow-y: scroll;
   height: 100%;
+}
+
+.navbar-collapse.collapse {
+    display: block !important;
+}
+
+.navbar-nav>li, .navbar-nav {
+    float: left !important;
+}
+
+.navbar-nav.navbar-right:last-child {
+    margin-right: -15px !important;
+}
+
+.navbar-right {
+    float: right !important;
+}
+
+#messagesHeader {
+  background-color: rgba(0, 10, 50, .8);
+  border-bottom: solid 1px white;
+}
+
+#messages {
+  padding-top: 84px;
+  padding-bottom: 165px;
+}
+
+#messagesFooter {
+  background-color: rgba(0, 10, 50, .8);
+  border-top: solid 1px white;
+}
+
+.navbar {
+  z-index: auto !important;
+}
+
+#voteModal .modal-dialog .modal-content .modal-body {
+  padding: 25px;
+}
+
+.bg-success {
+  color: rgb(51, 51, 51);
+  padding: 15px;
+  margin: 10px;
 }

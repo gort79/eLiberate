@@ -16,11 +16,10 @@ ejson@1.0.6
 email@1.0.6
 fastclick@1.0.3
 geojson-utils@1.0.3
-grigio:babel@0.1.7
 html-tools@1.0.4
 htmljs@1.0.4
 http@1.1.0
-ian:accounts-ui-bootstrap-3@1.2.77
+ian:accounts-ui-bootstrap-3@1.2.79
 id-map@1.0.3
 jquery@1.11.3_2
 json@1.0.3

@@ -1,7 +1,7 @@
 if(Meteor.isClient) {
 	RobertsRulesOfOrderCommands = [];
 	AdministrativeCommands = [];
-	PrivilegeCommands = [];
+	PrivilegedCommands = [];
 	SubsidiaryCommands = [];
 	MainCommands = [];
 	IncidentalCommands = [];
@@ -10,7 +10,7 @@ if(Meteor.isClient) {
 
 	RobertsRulesOfOrderCommands = [];
 	AdministrativeCommands = [];
-	PrivilegeCommands = [];
+	PrivilegedCommands = [];
 	SubsidiaryCommands = [];
 	MainCommands = [];
 	IncidentalCommands = [];
@@ -36,6 +36,7 @@ if(Meteor.isClient) {
 	RobertsRulesOfOrderCommands.push(new PostponeIndefinitelyCommand());
 	RobertsRulesOfOrderCommands.push(new PostponeToACertainTimeCommand());
 	RobertsRulesOfOrderCommands.push(new PreviousQuestionCommand());
+	RobertsRulesOfOrderCommands.push(new PutToVoteCommand());
 	RobertsRulesOfOrderCommands.push(new ReconsiderCommand());
 	RobertsRulesOfOrderCommands.push(new SuspendTheRulesCommand());
 	RobertsRulesOfOrderCommands.push(new TakeFromTheTableCommand());
@@ -48,8 +49,8 @@ if(Meteor.isClient) {
 			case MEETINGPARTS.administrative:
 				AdministrativeCommands.push(RobertsRulesOfOrderCommands[index]);
 				break;
-			case MEETINGPARTS.privilege:
-				PrivilegeCommands.push(RobertsRulesOfOrderCommands[index]);
+			case MEETINGPARTS.privileged:
+				PrivilegedCommands.push(RobertsRulesOfOrderCommands[index]);
 				break;
 			case MEETINGPARTS.subsidiary:
 				SubsidiaryCommands.push(RobertsRulesOfOrderCommands[index]);
@@ -65,9 +66,6 @@ if(Meteor.isClient) {
 				break;
 		}
 	}
-
-	AdministrativeCommands.push(new MakeAStatementCommand()); // Had code the ability for the chairperson to make a statement at any time
-
 
 	// Methods now...
 
@@ -90,53 +88,50 @@ if(Meteor.isClient) {
 
 				var index
 				commands = [];
-
 				if(Session.get("role") == ROLES.chairperson)
 				{
 					for(var x = 0; x < AdministrativeCommands.length; x++)
 					{
-						CreateCommandInstance(AdministrativeCommands[x], meeting, organization, '', '', '', undefined).addCommandIfIsValid(commands);
+						CreateCommandInstance(AdministrativeCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands);
 					}
 				}
-				else
+
+				if(meeting.status == MEETINGSTATUS.started)
 				{
-					if(meeting.status == MEETINGSTATUS.started)
+					for(var x = 0; x < PrivilegedCommands.length; x++)
 					{
-						for(var x = 0; x < PrivilegeCommands.length; x++)
+						if(PrivilegedCommands[x].orderOfPresedence < CurrentOrderOfPresedence())
 						{
-							if(PrivilegeCommands[x].orderOfPresedence < CurrentOrderOfPresedence())
-							{
-								CreateCommandInstance(PrivilegeCommands[x], meeting, organization, '', '', '', undefined).addCommandIfIsValid(commands);
-							}
+							CreateCommandInstance(PrivilegedCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands);
 						}
+					}
 
-						for(var x = 0; x < SubsidiaryCommands.length; x++)
+					for(var x = 0; x < SubsidiaryCommands.length; x++)
+					{
+						if(SubsidiaryCommands[x].orderOfPresedence < CurrentOrderOfPresedence())
 						{
-							if(SubsidiaryCommands[x].orderOfPresedence < CurrentOrderOfPresedence())
-							{
-								CreateCommandInstance(SubsidiaryCommands[x], meeting, organization, '', '', '', undefined).addCommandIfIsValid(commands);
-							}
+							CreateCommandInstance(SubsidiaryCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands);
 						}
+					}
 
-						for(var x = 0; x < MainCommands.length; x++)
+					for(var x = 0; x < MainCommands.length; x++)
+					{
+						if(MainCommands[x].orderOfPresedence < CurrentOrderOfPresedence())
 						{
-							if(MainCommands[x].orderOfPresedence < CurrentOrderOfPresedence())
-							{
-								CreateCommandInstance(MainCommands[x], meeting, organization, '', '', '', undefined).addCommandIfIsValid(commands);
-							}
+							CreateCommandInstance(MainCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands);
 						}
+					}
 
-						for(var x = 0; x < IncidentalCommands.length; x++)
-						{
-							CreateCommandInstance(IncidentalCommands[x], meeting, organization, '', '', '', undefined).addCommandIfIsValid(commands);
-						}
+					for(var x = 0; x < IncidentalCommands.length; x++)
+					{
+						CreateCommandInstance(IncidentalCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands);
+					}
 
-						if(Agendas.find({$or: [{status: AGENDASTATUS.pending}, {status: AGENDASTATUS.active}]}).count() == 0)
+					if(Agendas.find({$or: [{status: AGENDASTATUS.pending}, {status: AGENDASTATUS.active}]}).count() == 0)
+					{
+						for(var x = 0; x < RevisitCommands.length; x++)
 						{
-							for(var x = 0; x < RevisitCommands.length; x++)
-							{
-								CreateCommandInstance(RevisitCommands[x], meeting, organization, '', '', '', undefined).addCommandIfIsValid(commands);
-							}
+							CreateCommandInstance(RevisitCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands);
 						}
 					}
 				}
@@ -156,9 +151,15 @@ if(Meteor.isClient) {
 			{
 				if(RobertsRulesOfOrderCommands[index].commandName == $('#commandSelected').text())
 				{
-					command = CreateCommandInstance(RobertsRulesOfOrderCommands[index], meeting, organization, statement, Meteor.user().username, new Date());
+					command = CreateCommandInstance(RobertsRulesOfOrderCommands[index], meeting, organization, statement, Meteor.userId(), Meteor.user().username, new Date());
 					command.execute();
-					SubmittedCommands.push(command);
+					if(command.refreshCommands)
+					{
+						SubmittedCommands.clear(); // I have to do this because stupid ReactiveArray doesn't react when an eleent is UPDATED, only added/removed.
+					}
+					else {
+						SubmittedCommands.push(command);
+					}
 					break;
 				}
 			}
