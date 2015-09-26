@@ -31,9 +31,11 @@ if(Meteor.isClient) {
 				motionPutToVote =  CurrentMotion();
 				// Get the motion put to vote and link it to this guy so we can display it more easily on the screen
 				this.motionPutToVote = motionPutToVote;
+				this.voteType = motionPutToVote.voteType;
 				this.aye = 0;
 				this.nay = 0;
 				this.abstain = 0;
+
 				// Record that the chairperson put the motion to vote.
 				this._id = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement, status: MOTIONSTATUS.toVote, motionIdPutToVote: motionPutToVote._id, aye: 0, nay: 0, abstain: 0});
 			}

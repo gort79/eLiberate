@@ -102,11 +102,6 @@ if(Meteor.isClient) {
 			{
 				var commandPrototype = GetCommandPrototype(messagesSubmitted[index].commandType);
 				var command = CreateCommandInstance(commandPrototype, meeting, organization, messagesSubmitted[index].statement, messagesSubmitted[index].userId, messagesSubmitted[index].userName, messagesSubmitted[index].dateTime, messagesSubmitted[index]);
-				if(command.motionIdPutToVote != undefined)
-				{
-					command.motionPutToVote = GetMotion(command.motionIdPutToVote);
-					command.voteType = command.motionPutToVote.voteType;
-				}
 				SubmittedCommands.push(command);
 			}
 
@@ -215,6 +210,8 @@ if(Meteor.isClient) {
 	Template.PutToVoteCommand.helpers({
 
 		requiresVote: function() {
+			console.log(this.status);
+			console.log(Votes.find({motionId: this._id, userId: Meteor.userId()}).count());
 			if(this.status == MOTIONSTATUS.toVote
 			   && Votes.find({motionId: this._id, userId: Meteor.userId()}).count() == 0)
 			{
@@ -275,13 +272,6 @@ if(Meteor.isClient) {
 	});
 
 	Template.PutToVoteCommand.events({
-		'click #vote': function() {
-			$('#voteModal').modal({
-				backdrop: 'static',
-				keyboard: false
-			});
-		},
-
 		'click #aye': function() {
 			if(Votes.find({motionId: this._id, userId: Meteor.userId()}).count() == 0)
 			{
@@ -289,8 +279,6 @@ if(Meteor.isClient) {
 				Messages.update({_id: this._id}, {$inc: {aye: 1}});
 				TallyVote(this);
 			}
-			$('#voteModal').modal('hide');
-			$('.modal-backdrop').hide();
 		},
 
 		'click #nay': function() {
@@ -300,8 +288,6 @@ if(Meteor.isClient) {
 				Messages.update({_id: this._id}, {$inc: {nay: 1}});
 				TallyVote(this);
 			}
-			$('#voteModal').modal('hide');
-			$('.modal-backdrop').hide();
 		},
 
 		'click #abstain': function() {
@@ -311,8 +297,6 @@ if(Meteor.isClient) {
 				Messages.update({_id: this._id}, {$inc: {abstain: 1}});
 				TallyVote(this);
 			}
-			$('#voteModal').modal('hide');
-			$('.modal-backdrop').hide();
 		},
 
 		'click #killMotion': function() {
@@ -322,7 +306,7 @@ if(Meteor.isClient) {
 
 	TallyVote = function(motion) {
 		var meeting = Meetings.findOne({_id: Session.get("meetingId")});
-		var attendanceCount = Attendees.find({meetingId: Session.get("meetingId")}).count();
+		var attendanceCount = Attendees.find({meetingId: meeting._id}).count();
 		var voteCount = Votes.find({motionId: motion._id}).count();
 		var ayeCount = Votes.find({motionId: motion._id, voteOption: VOTEOPTIONS.aye}).count();
 		console.log(meeting);
@@ -332,40 +316,44 @@ if(Meteor.isClient) {
 		switch(motion.voteType)
 		{
 			case VOTETYPES.simpleMajority:
-				if(voteCount == attendanceCount
-					 && ayeCount / attendanceCount > .5)
+				if(voteCount == attendanceCount)
 				{
-					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.approved}});
-					motion.status = MOTIONSTATUS.approved;
-					if(motion.approved != undefined)
+					if(ayeCount / attendanceCount > .5)
 					{
-						motion.approved()
+						Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.approved}});
+						motion.status = MOTIONSTATUS.approved;
+						if(motion.motionPutToVote.approved != undefined)
+						{
+							motion.motionPutToVote.approved()
+						}
+						return true;
 					}
-					return true;
-				}
-				else
-				{
-					motion.status = MOTIONSTATUS.denied;
-					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.denied}});
+					else
+					{
+						motion.status = MOTIONSTATUS.denied;
+						Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.denied}});
+					}
 				}
 				break;
 			case VOTETYPES.twoThirdsMajority:
-				if(voteCount == attendanceCount
-					 && ayeCount / attendanceCount > .66)
+				if(voteCount == attendanceCount)
 				{
- 					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.approved}});
-					motion.status = MOTIONSTATUS.approved;
-					if(motion.approved != undefined)
+					if(ayeCount / attendanceCount > .66)
 					{
-						motion.approved()
-					}
-					return true;
- 				}
- 				else
- 				{
-					motion.status = MOTIONSTATUS.denied;
- 					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.denied}});
- 				}
+	 					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.approved}});
+						motion.status = MOTIONSTATUS.approved;
+						if(motion.motionPutToVote.approved != undefined)
+						{
+							motion.motionPutToVote.approved()
+						}
+						return true;
+	 				}
+	 				else
+	 				{
+						motion.status = MOTIONSTATUS.denied;
+	 					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.denied}});
+	 				}
+				}
 				break;
 		}
 

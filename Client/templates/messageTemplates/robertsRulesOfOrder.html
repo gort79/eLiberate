@@ -111,11 +111,12 @@
       <div class="bg-success"><strong>Motion carried with a vote of {{aye}} for, {{nay}} against, and {{abstain}} abstaining.</strong></div>
     {{/if}}
     {{#if denied}}
-      <div class="bg-success"><strong>Motion not carried with a vote of {{denied}} against, {{aye}} for, and {{abstain}} abstaining.</strong></div>
+      <div class="bg-danger"><strong>Motion not carried with a vote of {{nay}} against, {{aye}} for, and {{abstain}} abstaining.</strong></div>
     {{/if}}
     </div>
     {{#if requiresVote}}
-    <div id="voteModal" class="modal fade" role="dialog">
+    <div class="modal-backdrop fade in "></div>
+    <div id="voteModal" class="modal show" role="dialog">
       <div class="modal-dialog">
         <!-- Modal content-->
         <div class="modal-content">
@@ -158,15 +159,6 @@
         </div>
       </div>
     </div>
-    <script language="javascript">
-      // Show the modal if it's not already shown
-      if(!$('#voteModal').hasClass('in'))
-        $('#voteModal').modal({
-          backdrop: 'static',
-          keyboard: false
-        });
-      }
-    </script>
   {{/if}}
 </template>
 

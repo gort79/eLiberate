@@ -190,6 +190,7 @@
   padding: 25px;
 }
 
+.bg-danger,
 .bg-success {
   color: rgb(51, 51, 51);
   padding: 15px;

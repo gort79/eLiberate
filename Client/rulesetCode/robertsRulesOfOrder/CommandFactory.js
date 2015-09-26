@@ -61,6 +61,8 @@ if(Meteor.isClient) {
       if(message.motionIdPutToVote != undefined)
       {
         command.motionIdPutToVote = message.motionIdPutToVote;
+        command.motionPutToVote = GetMotion(command.motionIdPutToVote);
+        command.voteType = command.motionPutToVote.voteType;
       }
     }
 
