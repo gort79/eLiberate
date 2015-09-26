@@ -79,7 +79,9 @@ if(Meteor.isServer) {
 			return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 	  'update': function (userId,doc) {
-			return isNewOrOrganizationAdmin(doc.organizationId, userId);
+			return true;
+			//TODO: Fix the permissions for meetings
+			//return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 	  'remove': function (userId,doc) {
 			return isNewOrOrganizationAdmin(doc.organizationId, userId);

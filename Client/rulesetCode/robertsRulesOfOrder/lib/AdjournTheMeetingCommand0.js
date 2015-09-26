@@ -33,12 +33,12 @@ if(Meteor.isClient) {
 
 		this.approved = function() {
 			// This should probably be a server-side activity.
-			// Also, we only want it to happen once, hence the role check.
+			// Also, we only want it to happen once, hence the meeting status check.
 			// If we don't have this check, then ALL members would try to run the code and that's not good.
-			if(Session.get("role") == ROLES.chairperson)
+			if(this.meeting.status != MEETINGSTATUS.ended)
 			{
 				// Close the meeting
-				Meetings.update({_id: this.meeting._id}, {$set: {status: MEETINGSTATUS.ended}});
+				Meetings.update({_id: this.meeting._id}, {$set: {status: MEETINGSTATUS.ended, endDateTime: new Date()}});
 
 				// Close any remaining orders of business
 				openAgendas = Agendas.find({meetingId: this.meeting._id, status: AGENDASTATUS.active}).fetch();

@@ -210,8 +210,6 @@ if(Meteor.isClient) {
 	Template.PutToVoteCommand.helpers({
 
 		requiresVote: function() {
-			console.log(this.status);
-			console.log(Votes.find({motionId: this._id, userId: Meteor.userId()}).count());
 			if(this.status == MOTIONSTATUS.toVote
 			   && Votes.find({motionId: this._id, userId: Meteor.userId()}).count() == 0)
 			{
@@ -309,10 +307,6 @@ if(Meteor.isClient) {
 		var attendanceCount = Attendees.find({meetingId: meeting._id}).count();
 		var voteCount = Votes.find({motionId: motion._id}).count();
 		var ayeCount = Votes.find({motionId: motion._id, voteOption: VOTEOPTIONS.aye}).count();
-		console.log(meeting);
-		console.log(attendanceCount);
-		console.log(voteCount);
-		console.log(ayeCount);
 		switch(motion.voteType)
 		{
 			case VOTETYPES.simpleMajority:
@@ -361,6 +355,31 @@ if(Meteor.isClient) {
 	}
 
 	Template.robertsRulesOfOrderControls.helpers({
+		isChairperson: function() {
+			return Session.get("role") == ROLES.chairperson;
+		},
+
+		pending: function() {
+			return Meetings.findOne({_id: Session.get("meetingId")}).status == MEETINGSTATUS.pending;
+		},
+
+		calledToOrder: function() {
+			return Meetings.findOne({_id: Session.get("meetingId")}).status == MEETINGSTATUS.started
+						|| Session.get("role") == ROLES.chairperson;
+		},
+
+		adjourned: function() {
+			return Meetings.findOne({_id: Session.get("meetingId")}).status == MEETINGSTATUS.ended;
+		},
+
+		startDateTime: function() {
+			return Meetings.findOne({_id: Session.get("meetingId")}).startDateTime;
+		},
+
+		endDateTime: function() {
+			return Meetings.findOne({_id: Session.get("meetingId")}).endDateTime;
+		},
+
 		queue: function() {
 			return Queues.find({});
 		},
@@ -380,7 +399,7 @@ if(Meteor.isClient) {
 		},
 
 		attendingCount: function() {
-			return Meetings.find({_id: Session.get("meetingId")}).fetch()[0].attendance;
+			return Meetings.findOne({_id: Session.get("meetingId")}).attendance;
 		},
 
 		commands: function() {
@@ -391,6 +410,10 @@ if(Meteor.isClient) {
 
 
 	Template.robertsRulesOfOrderControls.events({
+		'click #removeFromQueue': function() {
+ 			Queues.remove({_id: this._id});
+		},
+
 		'click #newMessageSubmit': function() {
 			CommandResolver.submitCommand();
 
