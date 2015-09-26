@@ -35,7 +35,7 @@ if(Meteor.isClient) {
 				this.nay = 0;
 				this.abstain = 0;
 				// Record that the chairperson put the motion to vote.
-				this._id = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement, status: MOTIONSTATUS.toVote, motionIdPutToVote: motionPutToVote._id});
+				this._id = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement, status: MOTIONSTATUS.toVote, motionIdPutToVote: motionPutToVote._id, aye: 0, nay: 0, abstain: 0});
 			}
 		},
 

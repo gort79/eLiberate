@@ -158,7 +158,15 @@
         </div>
       </div>
     </div>
-    <script language="javascript">$('#voteModal').modal('show');</script>
+    <script language="javascript">
+      // Show the modal if it's not already shown
+      if(!$('#voteModal').hasClass('in'))
+        $('#voteModal').modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      }
+    </script>
   {{/if}}
 </template>
 

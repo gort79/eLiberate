@@ -155,7 +155,7 @@ if(Meteor.isClient) {
 					command.execute();
 					if(command.refreshCommands)
 					{
-						SubmittedCommands.clear(); // I have to do this because stupid ReactiveArray doesn't react when an eleent is UPDATED, only added/removed.
+						SubmittedCommands = [];
 					}
 					else {
 						SubmittedCommands.push(command);

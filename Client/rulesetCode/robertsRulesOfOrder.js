@@ -1,10 +1,9 @@
 if(Meteor.isClient) {
-	SubmittedCommands = new ReactiveArray([]);
+	SubmittedCommands = [];
 
 	// Subsequent motions rely on the qualities of the last motion.
 	GetLastCommand = function() {
-		LoadSubmittedCommands();
-		return SubmittedCommands.list()[SubmittedCommands.length - 1];
+		return SubmittedCommands[SubmittedCommands.length - 1];
 	}
 
 	// Checks to see if the meeting is currently in a motion.
@@ -12,12 +11,12 @@ if(Meteor.isClient) {
 	IsInMotion = function() {
 		var isInMotion = false;
 
-		for(var index = 0; index < SubmittedCommands.list().length; index++)
+		for(var index = 0; index < SubmittedCommands.length; index++)
 		{
-			if(!isInMotion && SubmittedCommands.list()[index].isMotion) {
+			if(!isInMotion && SubmittedCommands[index].isMotion) {
 				isInMotion = true;
 			}
-			else if (isInMotion && SubmittedCommands.list()[index].closesMotion) {
+			else if (isInMotion && SubmittedCommands[index].closesMotion) {
 				isInMotion = false;
 			}
 		}
@@ -39,12 +38,12 @@ if(Meteor.isClient) {
 	// Gets the current motion if you need it
 	CurrentMotion = function() {
 		var currentMotion;
-		for(var index = 0; index < SubmittedCommands.list().length; index++)
+		for(var index = 0; index < SubmittedCommands.length; index++)
 		{
-			if(SubmittedCommands.list()[index].isMotion) {
-				currentMotion = SubmittedCommands.list()[index];
+			if(SubmittedCommands[index].isMotion) {
+				currentMotion = SubmittedCommands[index];
 			}
-			else if (SubmittedCommands.list()[index].closesMotion) {
+			else if (SubmittedCommands[index].closesMotion) {
 				currentMotion = undefined;
 			}
 		}
@@ -54,10 +53,10 @@ if(Meteor.isClient) {
 
 	// Gets a motion
 	GetMotion = function(motionId) {
-		for(var index = 0; index < SubmittedCommands.list().length; index++)
+		for(var index = 0; index < SubmittedCommands.length; index++)
 		{
-			if(SubmittedCommands.list()[index]._id == motionId) {
-				return SubmittedCommands.list()[index];
+			if(SubmittedCommands[index]._id == motionId) {
+				return SubmittedCommands[index];
 			}
 		}
 	}
@@ -77,30 +76,8 @@ if(Meteor.isClient) {
 
 	// Loads up the SubmittedCommands array when you join a meeting
 	$(document).on("joinedMeeting", function() {
-		SubmittedCommands.clear();
+		SubmittedCommands = [];
 	});
-
-	LoadSubmittedCommands = function() {
-		if(SubmittedCommands.list().length == 0
-			 && Messages.find({meetingId: Session.get("meetingId")}).count() > 0)
-		{
-			meeting = Meetings.findOne({_id: Session.get("meetingId")});
-			organization = Organizations.findOne({_id: meeting.organizationId});
-			messagesSubmitted = Messages.find({meetingId: Session.get("meetingId")}).fetch();
-
-			for(var index = 0; index < messagesSubmitted.length; index++)
-			{
-				var commandPrototype = GetCommandPrototype(messagesSubmitted[index].commandType);
-				var command = CreateCommandInstance(commandPrototype, meeting, organization, messagesSubmitted[index].statement, messagesSubmitted[index].userId, messagesSubmitted[index].userName, messagesSubmitted[index].dateTime, messagesSubmitted[index]);
-				if(command.motionIdPutToVote == undefined)
-				{
-					command.motionPutToVote = GetMotion(command.motionIdPutToVote);
-					command.voteType = command.motionPutToVote.voteType;
-				}
-				SubmittedCommands.push(command);
-			}
-		}
-	}
 
 	Template.robertsRulesOfOrderMessages.onCreated(function () {
 		this.subscribe("messages", Session.get("meetingId"));
@@ -116,8 +93,24 @@ if(Meteor.isClient) {
 		},
 
 		meetingMessages: function() {
-			LoadSubmittedCommands();
-			return SubmittedCommands.list();
+			SubmittedCommands = [];
+			meeting = Meetings.findOne({_id: Session.get("meetingId")});
+			organization = Organizations.findOne({_id: meeting.organizationId});
+			messagesSubmitted = Messages.find({meetingId: Session.get("meetingId")}).fetch();
+
+			for(var index = 0; index < messagesSubmitted.length; index++)
+			{
+				var commandPrototype = GetCommandPrototype(messagesSubmitted[index].commandType);
+				var command = CreateCommandInstance(commandPrototype, meeting, organization, messagesSubmitted[index].statement, messagesSubmitted[index].userId, messagesSubmitted[index].userName, messagesSubmitted[index].dateTime, messagesSubmitted[index]);
+				if(command.motionIdPutToVote != undefined)
+				{
+					command.motionPutToVote = GetMotion(command.motionIdPutToVote);
+					command.voteType = command.motionPutToVote.voteType;
+				}
+				SubmittedCommands.push(command);
+			}
+
+			return SubmittedCommands;
 		},
 
 		queue: function() {
@@ -216,7 +209,6 @@ if(Meteor.isClient) {
 
 			this.status = status;
 			Messages.update({_id: this._id}, {$set: {status: status, secondedBy: Meteor.user().username, secondedById: Meteor.userId()}});
-			SubmittedCommands.clear(); // I have to do this because stupid ReactiveArray doesn't react when an eleent is UPDATED, only added/removed.
 		}
 	});
 
@@ -284,7 +276,10 @@ if(Meteor.isClient) {
 
 	Template.PutToVoteCommand.events({
 		'click #vote': function() {
-			$('#voteModal').modal('show');
+			$('#voteModal').modal({
+				backdrop: 'static',
+				keyboard: false
+			});
 		},
 
 		'click #aye': function() {
@@ -293,7 +288,6 @@ if(Meteor.isClient) {
 				Votes.insert({motionId: this._id, userId: Meteor.userId(), userName: Meteor.user().username, meetingId: this.meeting._id, voteOption: VOTEOPTIONS.aye});
 				Messages.update({_id: this._id}, {$inc: {aye: 1}});
 				TallyVote(this);
-				SubmittedCommands.clear(); // I have to do this because stupid ReactiveArray doesn't react when an eleent is UPDATED, only added/removed.
 			}
 			$('#voteModal').modal('hide');
 			$('.modal-backdrop').hide();
@@ -304,7 +298,6 @@ if(Meteor.isClient) {
 			{
 				Votes.insert({motionId: this._id, userId: Meteor.userId(), userName: Meteor.user().username, meetingId: this.meeting._id, voteOption: VOTEOPTIONS.nay});
 				Messages.update({_id: this._id}, {$inc: {nay: 1}});
-				SubmittedCommands.clear(); // I have to do this because stupid ReactiveArray doesn't react when an eleent is UPDATED, only added/removed.
 				TallyVote(this);
 			}
 			$('#voteModal').modal('hide');
@@ -317,7 +310,6 @@ if(Meteor.isClient) {
 				Votes.insert({motionId: this._id, userId: Meteor.userId(), userName: Meteor.user().username, meetingId: this.meeting._id, voteOption: VOTEOPTIONS.abstain});
 				Messages.update({_id: this._id}, {$inc: {abstain: 1}});
 				TallyVote(this);
-				SubmittedCommands.clear(); // I have to do this because stupid ReactiveArray doesn't react when an eleent is UPDATED, only added/removed.
 			}
 			$('#voteModal').modal('hide');
 			$('.modal-backdrop').hide();
@@ -404,7 +396,8 @@ if(Meteor.isClient) {
 		},
 
 		commands: function() {
-			return CommandResolver.visitValidCommands();
+
+			return CommandResolver.visitValidCommands(Messages.find({meetingId: Session.get("meetingId")}).fetch());
 		}
 	});
 

@@ -118,7 +118,9 @@ if(Meteor.isServer) {
 	Attendees.allow({
 		'insert': function (userId,doc) {
 			// They have to be a member AND not already be in the meeting
-			if(Permissions.find({organizationId: doc.organizationId, userId: userId}).count() > 0
+			var meeting = Meetings.findOne({_id: doc.meetingId});
+			var organization = Organizations.findOne({_id: meeting.organizationId});
+			if(Permissions.find({organizationId: organization._id, userId: userId}).count() > 0
 			   && Attendees.find({meetingId: doc.meetingId, userId: userId}).count() == 0)
 			{
 				return true;
@@ -128,7 +130,7 @@ if(Meteor.isServer) {
 		},
 
 		'remove': function(userId, doc) {
-			if(Permissions.find({organizationId: doc.organizationId, userId: userId}).count() > 0
+			if(Permissions.find({userId: userId}).count() > 0
 				&& doc.userId == userId)
 			{
 				return true;
