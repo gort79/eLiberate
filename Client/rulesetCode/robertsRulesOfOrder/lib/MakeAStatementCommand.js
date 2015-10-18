@@ -15,9 +15,7 @@ if(Meteor.isClient) {
 		this.meetingPart = MEETINGPARTS.subsidiary,
 
 		this.addCommandIfIsValid = function(commands) {
-			if((this.meeting.status == MEETINGSTATUS.started
-						&& this.meeting.inDebate)
-				 || Session.get("role") == ROLES.chairperson) {
+			if(this.validateCommand()) {
 				commands.push(this.commandName);
 			}
 		},
@@ -30,8 +28,9 @@ if(Meteor.isClient) {
 		},
 
 		this.validateCommand = function() {
-			if(Session.get("role") == ROLES.chairperson
-					|| CurrentMotion.status == MOTIONSTATUS.debate) {
+			if(this.meeting.status == MEETINGSTATUS.started
+					&& (this.meeting.inDebate == true
+						|| Session.get("role") == ROLES.chairperson)) {
 				return true
 			}
 			return true;

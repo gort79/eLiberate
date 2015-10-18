@@ -74,6 +74,20 @@ if(Meteor.isClient) {
 		return false;
 	}
 
+	// Checks for quorum
+	HaveQuorum = function() {
+		var meeting = Meetings.findOne({_id: Session.get("meetingId")});
+		var attendanceCount = Attendees.find({meetingId: meeting._id}).count();
+		var members = Permissions.find({organizationId: meeting.organizationId}).count();
+
+		if(attendanceCount / members >= .5)
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	// Loads up the SubmittedCommands array when you join a meeting
 	$(document).on("joinedMeeting", function() {
 		SubmittedCommands = [];

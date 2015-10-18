@@ -1,56 +1,56 @@
-.CallMeetingToOrder {
+.Privileged {
 	background-color: rgba(75, 175, 75, .8);
 }
 
-.CallMeetingToOrder .messageHeader {
+.Privileged .messageHeader {
 	color: lightgrey;
 	border-bottom: 1px solid grey;
 }
 
-.MakeAStatement {
+.Administrative {
 	background-color: rgba(55, 55, 150, .8);
 }
 
-.MakeAStatement .messageHeader {
+.Administrative .messageHeader {
 	color: lightgrey;
 	border-bottom: 1px solid grey;
 }
 
-.OpenAgendaItem {
+.Subsidiary {
 	background-color: rgba(25, 75, 25, .8);
 }
 
-.OpenAgendaItem .messageHeader {
+.Subsidiary .messageHeader {
 	color: lightgrey;
 	border-bottom: 1px solid grey;
 }
 
-.AdjournTheMeeting {
+.Main {
 	background-color: rgba(0, 0, 0, .8);
 	color: white
 }
 
-.AdjournTheMeeting .messageHeader {
+.Main .messageHeader {
 	color: lightgrey;
 	border-bottom: 1px solid white;
 }
 
-.Motion {
+.Incidental {
 	background-color: rgba(0,0, 50, .8);
 	color: white
 }
 
-.Motion .messageHeader {
+.Incidental .messageHeader {
 	color: lightgrey;
 	border-bottom: 1px solid white;
 }
 
-.PutToVote {
+.Revisit {
 	background-color: rgba(153, 101, 21, .8);
 	color: white
 }
 
-.PutToVote .messageHeader {
+.Revisit .messageHeader {
 	color: lightgrey;
 	border-bottom: 1px solid white;
 }

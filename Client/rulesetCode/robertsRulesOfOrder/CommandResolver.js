@@ -20,6 +20,7 @@ if(Meteor.isClient) {
 	RobertsRulesOfOrderCommands.push(new AmendCommand());
 	RobertsRulesOfOrderCommands.push(new AppealDecisionOfTheChairCommand());
 	RobertsRulesOfOrderCommands.push(new CallTheMeetingToOrderCommand());
+	RobertsRulesOfOrderCommands.push(new CloseFloorToDebateCommand());
 	RobertsRulesOfOrderCommands.push(new CommitToCommitteeCommand());
 	RobertsRulesOfOrderCommands.push(new DivideTheQuestionCommand());
 	RobertsRulesOfOrderCommands.push(new ExtendDebateCommand());
@@ -27,9 +28,10 @@ if(Meteor.isClient) {
 	RobertsRulesOfOrderCommands.push(new LayOnTheTableCommand());
 	RobertsRulesOfOrderCommands.push(new LimitDebateCommand());
 	RobertsRulesOfOrderCommands.push(new MakeAStatementCommand());
-	RobertsRulesOfOrderCommands.push(new MainMotion());
+	RobertsRulesOfOrderCommands.push(new MainMotionCommand());
 	RobertsRulesOfOrderCommands.push(new ObjectToConsiderationCommand());
 	RobertsRulesOfOrderCommands.push(new OpenAgendaItemCommand());
+	RobertsRulesOfOrderCommands.push(new OpenFloorToDebateCommand());
 	RobertsRulesOfOrderCommands.push(new OrdersOfTheDayCommand());
 	RobertsRulesOfOrderCommands.push(new PointOfInformationCommand());
 	RobertsRulesOfOrderCommands.push(new PointOfOrderCommand());
@@ -40,7 +42,7 @@ if(Meteor.isClient) {
 	RobertsRulesOfOrderCommands.push(new ReconsiderCommand());
 	RobertsRulesOfOrderCommands.push(new SuspendTheRulesCommand());
 	RobertsRulesOfOrderCommands.push(new TakeFromTheTableCommand());
-	RobertsRulesOfOrderCommands.push(new WithdrawModifyMainMotion());
+	RobertsRulesOfOrderCommands.push(new WithdrawModifyMainMotionCommand());
 
 	for(var index = 0 ; index < RobertsRulesOfOrderCommands.length; index++)
 	{

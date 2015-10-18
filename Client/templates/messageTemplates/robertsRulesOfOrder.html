@@ -43,7 +43,7 @@
 </template>
 
 <template name="robertsRulesOfOrderStandardCommand">
-  <div class="message {{commandType}}">
+  <div class="message {{meetingPart}}">
     <div class="messageHeader">
       Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
     </div>
@@ -53,7 +53,7 @@
 </template>
 
 <template name="robertsRulesOfOrderVotableCommand">
-  <div class="message {{commandType}}">
+  <div class="message {{meetingPart}}">
     <div class="messageHeader">
       Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
     </div>
@@ -78,7 +78,7 @@
 </template>
 
 <template name="PutToVoteCommand">
-  <div class="message {{commandType}}">
+  <div class="message {{meetingPart}}">
     <div class="messageHeader">
       Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
     </div>
@@ -168,7 +168,7 @@
 
 <template name="OpenAgendaItemCommand">
   <a class="agena-link" name="{{agendaName}}"></a>
-  <div class="message {{commandType}}">
+  <div class="message {{meetingPart}}">
     <div class="messageHeader">
       Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
     </div>
@@ -178,7 +178,7 @@
 </template>
 
 <template name="MakeAStatementCommand">
-  <div class="message {{commandType}}">
+  <div class="message {{meetingPart}}">
     <div class="messageHeader">
       Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
     </div>
@@ -191,6 +191,82 @@
 </template>
 
 <template name="AdjournTheMeetingCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="AmendCommandCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="AppealDecisionOfTheChairCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="CommitToCommitteeCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="DivideTheQuestionCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="ExtendDebateCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="InformalConsiderationCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="LayOnTheTableCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="LimitDebateCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="ObjectToConsiderationCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="OpenFloorToDebateCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
+</template>
+
+<template name="OrdersOfTheDayCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
+</template>
+
+<template name="PointOfInformationCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
+</template>
+
+<template name="PointOfOrderCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
+</template>
+
+<template name="PostponeIndefinitelyCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="PostponeToACertainTimeCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="ReconsiderCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="SuspendTheRulesCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="TakeFromTheTableCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="WithdrawModifyMotionCommand">
   {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
 </template>
 

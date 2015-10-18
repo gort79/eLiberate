@@ -15,7 +15,7 @@ if(Meteor.isClient) {
 		this.meetingPart = "Privileged",
 
 		this.addCommandIfIsValid = function(commands) {
-			if(this.meeting.status == MEETINGSTATUS.started) {
+			if(this.validateCommand()) {
 				commands.push(this.commandName);
 			}
 		},
@@ -28,8 +28,7 @@ if(Meteor.isClient) {
 		},
 
 		this.validateCommand = function() {
-			if(Session.get("role") == ROLES.chairperson
-					&& Meeting.isInDebate) {
+			if(this.meeting.status == MEETINGSTATUS.started) {
 				return true
 			}
 			return true;

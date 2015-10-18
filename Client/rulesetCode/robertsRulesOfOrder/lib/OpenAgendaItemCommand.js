@@ -15,9 +15,7 @@ if(Meteor.isClient) {
 		this.meetingPart = MEETINGPARTS.administrative,
 
 		this.addCommandIfIsValid = function(commands) {
-			if(this.meeting.status == MEETINGSTATUS.started
-				 && Agendas.find({meetingId: this.meeting._id, status: AGENDASTATUS.pending}).count() > 0
-				 && Session.get("role") == ROLES.chairperson) {
+			if(this.validateCommand()) {
 				commands.push(this.commandName);
 			}
 		},
@@ -46,9 +44,13 @@ if(Meteor.isClient) {
 		},
 
 		this.validateCommand = function() {
-			// We have quorum and only a chairperson can call the meeting to order
-			return true;//Attendees.find({meetingId: this.meeting._id}).count() >= organization.quorum
-				   //&& Permissions.find({ organizationId: this.organization._id, userId: Meteor.userId(), role: ROLES.chairperson }).count() > 0;
+			if(this.meeting.status == MEETINGSTATUS.started
+				 && Agendas.find({meetingId: this.meeting._id, status: AGENDASTATUS.pending}).count() > 0
+				 && Session.get("role") == ROLES.chairperson)
+				 {
+					 return true;
+				 }
+			return false;
 		}
 	}
 }

@@ -95,10 +95,10 @@ if(Meteor.isServer) {
 			if(meeting.ruleset == RULESETS.talkingStick)
 			{
 			  if (Queues.find({meetingId: meeting._id, userId: userId}).count() > 0 && Queues.find({meetingId: meeting._id}).fetch()[0].userId == userId) {
-				return true;
+					return true;
 			  }
 			  else if (Organizations.find({_id: doc.organizationId, members: {$elemMatch: { userId: userId, role: ROLES.chairperson }}}).count() > 0) {
-				return true;
+					return true;
 			  }
 			  return false;
 			}

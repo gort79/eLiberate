@@ -1,5 +1,5 @@
 if(Meteor.isClient) {
-	MainMotion = function() {
+	MainMotionCommand = function() {
 
 		this.commandName = "Main Motion",
 		this.commandType = "Motion",

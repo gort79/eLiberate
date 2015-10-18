@@ -100,7 +100,7 @@ if(Meteor.isClient) {
 
 	Template.meetingControls.events({
 		'click #newMeetingSubmit': function() {
-			Meetings.insert({name: $('#newMeetingName').val(), startDateTime: new Date($('#newMeetingStartDate').val() + ' ' + $('#newMeetingStartTime').val()), endDateTime: new Date($('#newMeetingEndDate').val() + ' ' + $('#newMeetingEndTime').val()), organizationId: Session.get("organizationId"), ruleset: $('#ruleset').val(), status: MEETINGSTATUS.pending, isInDebate: false});
+			Meetings.insert({name: $('#newMeetingName').val(), startDateTime: new Date($('#newMeetingStartDate').val() + ' ' + $('#newMeetingStartTime').val()), endDateTime: new Date($('#newMeetingEndDate').val() + ' ' + $('#newMeetingEndTime').val()), organizationId: Session.get("organizationId"), ruleset: $('#ruleset').val(), status: MEETINGSTATUS.pending, inDebate: false});
 		},
 
 		'click #rulesetDropdown ul li a': function() {
