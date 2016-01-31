@@ -1,5 +1,6 @@
 if(Meteor.isClient) {
 	SubmittedCommands = [];
+	var LastMeetingPart = '';
 
 	// Subsequent motions rely on the qualities of the last motion.
 	GetLastCommand = function() {
@@ -9,19 +10,9 @@ if(Meteor.isClient) {
 	// Checks to see if the meeting is currently in a motion.
 	// Certain commands can only be used if we are dealing with an open motion.
 	IsInMotion = function() {
-		var isInMotion = false;
+		var currentMotion = CurrentMotion();
 
-		for(var index = 0; index < SubmittedCommands.length; index++)
-		{
-			if(!isInMotion && SubmittedCommands[index].isMotion) {
-				isInMotion = true;
-			}
-			else if (isInMotion && SubmittedCommands[index].closesMotion) {
-				isInMotion = false;
-			}
-		}
-
-		return isInMotion
+		return currentMotion != undefined;
 	}
 
 	CurrentOrderOfPresedence = function() {
@@ -40,7 +31,12 @@ if(Meteor.isClient) {
 		var currentMotion;
 		for(var index = 0; index < SubmittedCommands.length; index++)
 		{
-			if(SubmittedCommands[index].isMotion) {
+			if(SubmittedCommands[index].isMotion
+				&& SubmittedCommands[index].status != MOTIONSTATUS.approved
+				&& SubmittedCommands[index].status != MOTIONSTATUS.denied
+			  && SubmittedCommands[index].status != MOTIONSTATUS.killed
+				&& SubmittedCommands[index].status != MOTIONSTATUS.postponed
+				&& SubmittedCommands[index].status != MOTIONSTATUS.none) {
 				currentMotion = SubmittedCommands[index];
 			}
 			else if (SubmittedCommands[index].closesMotion) {
@@ -49,6 +45,34 @@ if(Meteor.isClient) {
 		}
 
 		return currentMotion;
+	}
+
+	// Get the parent of the current motion
+	CurrentParentMotion = function() {
+		var currentParentMotion;
+		var currentMotion;
+
+		for(var index = 0; index < SubmittedCommands.length; index++)
+		{
+			if(SubmittedCommands[index].isMotion
+				&& SubmittedCommands[index].status != MOTIONSTATUS.approved
+				&& SubmittedCommands[index].status != MOTIONSTATUS.denied
+			  && SubmittedCommands[index].status != MOTIONSTATUS.killed
+				&& SubmittedCommands[index].status != MOTIONSTATUS.postponed
+				&& SubmittedCommands[index].status != MOTIONSTATUS.none) {
+					if(currentMotion != undefined
+						 && (SubmittedCommands[index].meetingPart == MEETINGPARTS.subsidiary
+						 	|| SubmittedCommands[index].meetingPart == MEETINGPARTS.incidental) { // Only subsidiary and incidental motions can have parents
+						currentParentMotion = currentMotion;
+					}
+					currentMotion = SubmittedCommands[index];
+			}
+			else if (SubmittedCommands[index].closesMotion) {
+				currentMotion = undefined;
+			}
+		}
+
+		return currentParentMotion;
 	}
 
 	// Gets a motion
@@ -62,7 +86,7 @@ if(Meteor.isClient) {
 	}
 
 	HasTheFloor = function() {
-		var queue = Queues.find({}).fetch();
+		var queue = Queues.find({motionId: CurrentMotion()._id}).fetch();
 
 		if(queue.length > 0) {
 			if(queue[0].userId == Meteor.userId())
@@ -123,7 +147,7 @@ if(Meteor.isClient) {
 		},
 
 		queue: function() {
-			return Queues.find({meetingId: Session.get("meetingId")});
+			return Queues.find({meetingId: Session.get("meetingId"), motion});
 		},
 
 		agenda: function() {
@@ -419,6 +443,27 @@ if(Meteor.isClient) {
 		commands: function() {
 
 			return CommandResolver.visitValidCommands(Messages.find({meetingId: Session.get("meetingId")}).fetch());
+		},
+
+		actionDisabled: function() {
+			if(!this.isActive)
+			{
+				return "disabled";
+			}
+
+			return "";
+		},
+
+		seperator: function() {
+			seperatorHtml = "";
+			if(this.meetingPart != LastMeetingPart
+				|| LastMeetingPart == "") {
+				seperatorHtml = "<li class='separator'>" + this.meetingPart + "</li>";
+			}
+
+			LastMeetingPart = this.meetingPart
+
+			return seperatorHtml;
 		}
 	});
 

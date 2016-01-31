@@ -194,7 +194,7 @@
   {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
 </template>
 
-<template name="AmendCommandCommand">
+<template name="AmendCommand">
   {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
 </template>
 
@@ -299,8 +299,9 @@
 					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span id="commandSelected">Things you can do</span>
 					<span class="caret"></span></button>
 					<ul class="dropdown-menu">
+            {{seperator}}
 						{{#each commands}}
-						<li><a href="#">{{this}}</a></li>
+              <li class="{{actionDisabled}}"><a href="#">{{commandName}}</a></li>
 						{{/each}}
 					</ul>
 				</div>

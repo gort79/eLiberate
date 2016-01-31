@@ -102,39 +102,27 @@ if(Meteor.isClient) {
 				{
 					for(var x = 0; x < PrivilegedCommands.length; x++)
 					{
-						if(PrivilegedCommands[x].orderOfPresedence < CurrentOrderOfPresedence())
-						{
-							CreateCommandInstance(PrivilegedCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands);
-						}
+						CreateCommandInstance(PrivilegedCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands, CurrentOrderOfPresedence());
 					}
 
 					for(var x = 0; x < SubsidiaryCommands.length; x++)
 					{
-						if(SubsidiaryCommands[x].orderOfPresedence < CurrentOrderOfPresedence())
-						{
-							CreateCommandInstance(SubsidiaryCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands);
-						}
+						CreateCommandInstance(SubsidiaryCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands, CurrentOrderOfPresedence());
 					}
 
 					for(var x = 0; x < MainCommands.length; x++)
 					{
-						if(MainCommands[x].orderOfPresedence < CurrentOrderOfPresedence())
-						{
-							CreateCommandInstance(MainCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands);
-						}
+						CreateCommandInstance(MainCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands, CurrentOrderOfPresedence());
 					}
 
 					for(var x = 0; x < IncidentalCommands.length; x++)
 					{
-						CreateCommandInstance(IncidentalCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands);
+						CreateCommandInstance(IncidentalCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands, CurrentOrderOfPresedence());
 					}
 
 					if(Agendas.find({$or: [{status: AGENDASTATUS.pending}, {status: AGENDASTATUS.active}]}).count() == 0)
 					{
-						for(var x = 0; x < RevisitCommands.length; x++)
-						{
-							CreateCommandInstance(RevisitCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands);
-						}
+						CreateCommandInstance(RevisitCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands, CurrentOrderOfPresedence());
 					}
 				}
 

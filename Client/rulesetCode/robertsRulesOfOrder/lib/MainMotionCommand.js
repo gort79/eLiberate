@@ -16,10 +16,9 @@ if(Meteor.isClient) {
 		this.orderOfPresedence = 1200,
 		this.meetingPart = MEETINGPARTS.main,
 
-		this.addCommandIfIsValid = function(commands) {
-			if(this.meeting.status == MEETINGSTATUS.started) {
-				commands.push(this.commandName);
-			}
+		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
+			isValid = this.validateCommand();
+			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart});
 		},
 
 		this.execute = function() {
@@ -31,7 +30,7 @@ if(Meteor.isClient) {
 		},
 
 		this.validateCommand = function() {
-			return true
+			return this.meeting.status == MEETINGSTATUS.started;
 		}
 	}
 }

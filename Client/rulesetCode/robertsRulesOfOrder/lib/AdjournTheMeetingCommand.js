@@ -17,10 +17,9 @@ if(Meteor.isClient) {
 		this.orderOfPresedence = 100,
 		this.meetingPart = MEETINGPARTS.privileged,
 
-		this.addCommandIfIsValid = function(commands) {
-			if(this.meeting.status == MEETINGSTATUS.started) {
-				commands.push(this.commandName);
-			}
+		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
+			isValid = this.validateCommand();
+			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart});
 		},
 
 		this.execute = function() {
@@ -48,11 +47,22 @@ if(Meteor.isClient) {
 					// Those that are pending are left pending so it's easy to see that they were never addressed.
 					Agendas.update({_id: openAgendas[x]._id}, {$set: {status: AGENDASTATUS.ended}});
 				}
+
+				// Close any parent motions that may be open
+				var parentMotion = CurrentParentMotion();
+				if(parentMotion != undefined)
+				{
+					Messages.update({_id: parentMotion._id}, {status: MOTIONSTATUS.killed});
+				}
 			}
 		},
 
 		this.validateCommand = function() {
-			return true
+			var currentMotion = CurrentMotion();
+			return this.meeting.status == MEETINGSTATUS.started
+				&& (currentMotion == undefined
+					|| (!currentMotion.isMotion
+							|| (currentMotion.isMotion && currentMotion.status != MOTIONSTATUS.second));
 		}
 	}
 }

@@ -19,10 +19,9 @@ if(Meteor.isClient) {
 		this.meetingPart = MEETINGPARTS.administrative,
 		this.motionPutToVote = undefined,
 
-		this.addCommandIfIsValid = function(commands) {
-			if(this.validateCommand()) {
-				commands.push(this.commandName);
-			}
+		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
+			isValid = this.validateCommand();
+			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart, meetingPart: this.meetingPart, meetingPart: this.meetingPart});
 		},
 
 		this.execute = function() {

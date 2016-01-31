@@ -392,6 +392,12 @@ transition:all 1.2s ease-out;
   padding-top:15px;
   padding-bottom:50px;
 }
+
+#modal-nav {
+	overflow-y: scroll;
+	height: 100%;
+}
+
 #modal-nav h2{
 	text-transform: uppercase;
 	color:white;

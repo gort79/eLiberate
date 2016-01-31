@@ -14,10 +14,9 @@ if(Meteor.isClient) {
 		this.orderOfPresedence = 900,
 		this.meetingPart = MEETINGPARTS.subsidiary,
 
-		this.addCommandIfIsValid = function(commands) {
-			if(this.validateCommand()) {
-				commands.push(this.commandName);
-			}
+		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
+			isValid = this.validateCommand();
+			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart});
 		},
 
 		this.execute = function() {
