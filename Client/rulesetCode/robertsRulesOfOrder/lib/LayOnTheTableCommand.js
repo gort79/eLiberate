@@ -32,7 +32,7 @@ if(Meteor.isClient) {
 					&& CurrentMotion().isDebateable) {
 				return true
 			}
-			return true;
+			return false;
 		}
 	}
 }

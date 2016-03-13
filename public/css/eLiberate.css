@@ -106,14 +106,9 @@
 	color: white !important;
 }
 
-.fa fa-clock-o {
-	color: white;
-}
-
 #meetingsContainer TBODY tr:nth-child(odd) {
   background-color: #FFEE55;
 }
-
 
 /* Message Styles */
 .message {
@@ -137,8 +132,15 @@
   z-index: 1;
 }
 
-#commandDropdown .dropdown-menu > li > a {
+#commandDropdown .dropdown-menu > li {
   color: white ;
+  background-color: black;
+  cursor: pointer;
+}
+
+.disabled {
+  color: gray !important;
+  cursor: not-allowed !important;
 }
 
 #newMessage {
@@ -148,7 +150,29 @@
 #queue {
   display: block;
   overflow-y: scroll;
+  overflow-x: hidden;
   height: 100%;
+}
+
+#queue > DIV {
+  width: 100%;
+}
+
+#queue > DIV > DIV {
+  float: left;
+  clear: none;
+}
+
+#removeFromQueue {
+  width: 20px;
+}
+
+#recognize {
+  width: 35px;
+}
+
+#personInQueue {
+  width: auto;
 }
 
 .navbar-collapse.collapse {

@@ -13,21 +13,40 @@ if(Meteor.isClient) {
 		this.closesMotion = false,
 		this.orderOfPresedence = 0,
 		this.meetingPart = MEETINGPARTS.administrative,
+		this.refreshCommands = true,
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();
-			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart, meetingPart: this.meetingPart, meetingPart: this.meetingPart});
+			commands.push({ commandName: this.commandName, isActive: isValid, meetingPart: this.meetingPart});
 		},
 
 		this.execute = function() {
 			if(this.validateCommand()) {
-				Meetings.update({_id: this.meeting._id}, {$set: {inDebate: false}});
+				var currentMotion = CurrentMotion();
+				if(currentMotion != undefined)
+				{
+					Messages.update({_id: currentMotion._id}, {$set: {status: MOTIONSTATUS.seconded}});
+				}
+				else
+				{
+					Meetings.update({_id: Session.get("MeetingId")}, {$set: {inDebate: false}});
+				}
+				Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement });
 			}
 		},
 
 		this.validateCommand = function() {
+			var currentMotion = CurrentMotion();
 			if(Session.get("role") == ROLES.chairperson
-				&& this.meeting.inDebate == true)
+				  && currentMotion != undefined
+				  && currentMotion.status == MOTIONSTATUS.debate
+				)
+			{
+				return true
+			}
+			else if(Session.get("role") == ROLES.chairperson
+				&& currentMotion == undefined
+				&& this.meeting.inDebate)
 			{
 				return true
 			}

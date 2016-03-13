@@ -1,6 +1,8 @@
 if(Meteor.isClient) {
 	SubmittedCommands = [];
 	var LastMeetingPart = '';
+	var isCommandSelected = new ReactiveVar(false);
+	isSubmittedCommandsPopulated = new ReactiveVar(false);
 
 	// Subsequent motions rely on the qualities of the last motion.
 	GetLastCommand = function() {
@@ -39,9 +41,6 @@ if(Meteor.isClient) {
 				&& SubmittedCommands[index].status != MOTIONSTATUS.none) {
 				currentMotion = SubmittedCommands[index];
 			}
-			else if (SubmittedCommands[index].closesMotion) {
-				currentMotion = undefined;
-			}
 		}
 
 		return currentMotion;
@@ -62,7 +61,7 @@ if(Meteor.isClient) {
 				&& SubmittedCommands[index].status != MOTIONSTATUS.none) {
 					if(currentMotion != undefined
 						 && (SubmittedCommands[index].meetingPart == MEETINGPARTS.subsidiary
-						 	|| SubmittedCommands[index].meetingPart == MEETINGPARTS.incidental) { // Only subsidiary and incidental motions can have parents
+						 	|| SubmittedCommands[index].meetingPart == MEETINGPARTS.incidental)) { // Only subsidiary and incidental motions can have parents
 						currentParentMotion = currentMotion;
 					}
 					currentMotion = SubmittedCommands[index];
@@ -85,11 +84,20 @@ if(Meteor.isClient) {
 		}
 	}
 
-	HasTheFloor = function() {
-		var queue = Queues.find({motionId: CurrentMotion()._id}).fetch();
+	HasTheFloor = function(userId) {
+		var currentMotion = CurrentMotion();
+		var queue;
+		if(currentMotion != undefined)
+		{
+			 queue = Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, recognized: { $exists: true }, hasSpoken: false}, {$sort: { recognized: -1 }}).fetch();
+		}
+		else
+		{
+			queue = Queues.find({meetingId: Session.get("meetingId"), recognized: { $exists: true }, hasSpoken: false}, {$sort: { recognized: -1 }}).fetch();
+		}
 
 		if(queue.length > 0) {
-			if(queue[0].userId == Meteor.userId())
+			if(queue[0].userId == userId)
 			{
 				return true;
 			}
@@ -112,6 +120,10 @@ if(Meteor.isClient) {
 		return false;
 	}
 
+	IsCommandSelected = function() {
+		return isCommandSelected.get();
+	}
+
 	// Loads up the SubmittedCommands array when you join a meeting
 	$(document).on("joinedMeeting", function() {
 		SubmittedCommands = [];
@@ -124,34 +136,18 @@ if(Meteor.isClient) {
 		this.subscribe("votes", Session.get("meetingId"));
 	});
 
-	/* eLiberate Constants */
-	Template.robertsRulesOfOrderMessages.helpers({
-		meetingId: function() {
-			return Session.get("meetingId") || 0;
-		},
-
-		meetingMessages: function() {
-			SubmittedCommands = [];
-			meeting = Meetings.findOne({_id: Session.get("meetingId")});
-			organization = Organizations.findOne({_id: meeting.organizationId});
-			messagesSubmitted = Messages.find({meetingId: Session.get("meetingId")}).fetch();
-
-			for(var index = 0; index < messagesSubmitted.length; index++)
-			{
-				var commandPrototype = GetCommandPrototype(messagesSubmitted[index].commandType);
-				var command = CreateCommandInstance(commandPrototype, meeting, organization, messagesSubmitted[index].statement, messagesSubmitted[index].userId, messagesSubmitted[index].userName, messagesSubmitted[index].dateTime, messagesSubmitted[index]);
-				SubmittedCommands.push(command);
-			}
-
-			return SubmittedCommands;
-		},
-
-		queue: function() {
-			return Queues.find({meetingId: Session.get("meetingId"), motion});
-		},
-
+	Template.robertsRulesOfOrderAgenda.helpers({
 		agenda: function() {
 			return Agendas.find({meetingId: Session.get("meetingId")});
+		},
+
+		agendaOccurred: function() {
+			if(this.status == AGENDASTATUS.ended
+				 || this.status == AGENDASTATUS.active)
+				 {
+					 return true;
+				 }
+			return false;
 		},
 
 		statusIcon: function() {
@@ -163,21 +159,39 @@ if(Meteor.isClient) {
 				case AGENDASTATUS.ended:
 					return "fa-check-square-o";
 			}
+		}
+	})
+
+	/* eLiberate Constants */
+	Template.robertsRulesOfOrderMessages.helpers({
+		meetingId: function() {
+			return Session.get("meetingId") || 0;
+		},
+
+		meetingMessages: function() {
+			BuildSubmittedCommands();
+			return SubmittedCommands;
 		},
 
 		commandTemplate: function() {
 			return this.commandType + "Command";
-		},
-
-		agendaOccurred: function() {
-			if(this.status == AGENDASTATUS.ended
-				 || this.status == AGENDASTATUS.active)
-				 {
-					 return true;
-				 }
-			return false;
 		}
 	});
+
+	BuildSubmittedCommands = function() {
+		SubmittedCommands = [];
+		meeting = Meetings.findOne({_id: Session.get("meetingId")});
+		organization = Organizations.findOne({_id: meeting.organizationId});
+		messagesSubmitted = Messages.find({meetingId: Session.get("meetingId")}).fetch();
+
+		for(var index = 0; index < messagesSubmitted.length; index++)
+		{
+			var commandPrototype = GetCommandPrototype(messagesSubmitted[index].commandType);
+			var command = CreateCommandInstance(commandPrototype, meeting, organization, messagesSubmitted[index].statement, messagesSubmitted[index].userId, messagesSubmitted[index].userName, messagesSubmitted[index].dateTime, messagesSubmitted[index]);
+			SubmittedCommands.push(command);
+		}
+		isSubmittedCommandsPopulated.set(true);
+	}
 
 	Template.robertsRulesOfOrderVotableCommand.helpers({
 		needsSecond: function() {
@@ -228,17 +242,26 @@ if(Meteor.isClient) {
 		}
 	});
 
-	Template.robertsRulesOfOrderVotableCommand.events({
-		'click #second': function() {
-			var status = "";
-			if(this.isDebateable)
+	Template.robertsRulesOfOrderHeader.helpers({
+		isInDebate: function() {
+			var messages = Messages.find({meetingId: Session.get("meetingId")}).fetch(); // This is a hack to get this to run whenever the messages are updated
+			var currentMotion = CurrentMotion();
+			if(isSubmittedCommandsPopulated.get() && currentMotion != undefined) // isSubmittedCommandsPopulated is another hack to get this to update after SubmittedCommands is populated
 			{
-				status = MOTIONSTATUS.debate;
+				return currentMotion.status == MOTIONSTATUS.debate ? "In Debate" : "Not In Debate";
 			}
 			else
 			{
-				status = MOTIONSTATUS.toVote;
+				return Meetings.findOne({_id: Session.get("meetingId")}).inDebate ? "In Debate" : "Not In Debate";
 			}
+			return "Not In Debate";
+		}
+	})
+
+	Template.robertsRulesOfOrderVotableCommand.events({
+		'click #second': function() {
+			var status = "";
+			status = MOTIONSTATUS.seconded;
 
 			this.status = status;
 			Messages.update({_id: this._id}, {$set: {status: status, secondedBy: Meteor.user().username, secondedById: Meteor.userId()}});
@@ -336,7 +359,7 @@ if(Meteor.isClient) {
 		},
 
 		'click #killMotion': function() {
-			Messages.update({_id: this._id}, {status: MOTIONSTATUS.notSeconded});
+			Messages.update({_id: this._id}, {status: MOTIONSTATUS.killed});
 		}
 	});
 
@@ -353,17 +376,22 @@ if(Meteor.isClient) {
 					if(ayeCount / attendanceCount > .5)
 					{
 						Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.approved}});
+						Messages.update({_id: motion.motionPutToVote._id}, {$set: {status: MOTIONSTATUS.approved}});
 						motion.status = MOTIONSTATUS.approved;
 						if(motion.motionPutToVote.approved != undefined)
 						{
 							motion.motionPutToVote.approved()
 						}
+
+						BuildSubmittedCommands();
 						return true;
 					}
 					else
 					{
 						motion.status = MOTIONSTATUS.denied;
 						Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.denied}});
+						Messages.update({_id: motion.motionPutToVote._id}, {$set: {status: MOTIONSTATUS.denied}});
+						BuildSubmittedCommands();
 					}
 				}
 				break;
@@ -373,21 +401,27 @@ if(Meteor.isClient) {
 					if(ayeCount / attendanceCount > .66)
 					{
 	 					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.approved}});
+						Messages.update({_id: motion.motionPutToVote._id}, {$set: {status: MOTIONSTATUS.approved}});
 						motion.status = MOTIONSTATUS.approved;
 						if(motion.motionPutToVote.approved != undefined)
 						{
 							motion.motionPutToVote.approved()
 						}
+						BuildSubmittedCommands();
 						return true;
 	 				}
 	 				else
 	 				{
 						motion.status = MOTIONSTATUS.denied;
 	 					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.denied}});
+						Messages.update({_id: motion.motionPutToVote._id}, {$set: {status: MOTIONSTATUS.denied}});
+						BuildSubmittedCommands();
 	 				}
 				}
 				break;
 		}
+
+		BuildSubmittedCommands();
 
 		return false;
 	}
@@ -395,6 +429,22 @@ if(Meteor.isClient) {
 	Template.robertsRulesOfOrderControls.helpers({
 		isChairperson: function() {
 			return Session.get("role") == ROLES.chairperson;
+		},
+
+		canRemoevFromQueue : function() {
+			return Session.get("role") == ROLES.chairperson || this.userId == Meteor.userId();
+		},
+
+		userFloorCount : function() {
+			var currentMotion = CurrentMotion();
+			if(currentMotion != undefined)
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, hasSpoken: true, userId: this.userId}).count();
+			}
+			else
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: true, userId: this.userId}).count();
+			}
 		},
 
 		pending: function() {
@@ -419,16 +469,25 @@ if(Meteor.isClient) {
 		},
 
 		queue: function() {
-			return Queues.find({});
+			var currentMotion = CurrentMotion();
+			if(currentMotion != undefined)
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, hasSpoken: false}, {$sort: { recognized: -1 }});
+			}
+			else
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: false}, {$sort: { recognized: -1 }});
+			}
 		},
 
 		hasTheFloor: function() {
-			return HasTheFloor();
+			return HasTheFloor(this.userId == undefined ? Meteor.userId() : this.userId);
 		},
 
 		allowToSubmit: function() {
-			if(HasTheFloor()
-				 || Session.get("role") == ROLES.chairperson)
+			var currentMotion = CurrentMotion();
+			if((HasTheFloor(Meteor.userId()) && IsCommandSelected() && (currentMotion == undefined || (currentMotion.status != MOTIONSTATUS.second && currentMotion.status != MOTIONSTATUS.toVote)))
+				 || Session.get("role") == ROLES.chairperson && IsCommandSelected())
 			 {
 				 	return "";
 			 }
@@ -458,7 +517,7 @@ if(Meteor.isClient) {
 			seperatorHtml = "";
 			if(this.meetingPart != LastMeetingPart
 				|| LastMeetingPart == "") {
-				seperatorHtml = "<li class='separator'>" + this.meetingPart + "</li>";
+				seperatorHtml = "<li class='separator' style='background-color: #777777; text-align: center;'><h4>" + this.meetingPart + "</h4></li>";
 			}
 
 			LastMeetingPart = this.meetingPart
@@ -473,23 +532,40 @@ if(Meteor.isClient) {
  			Queues.remove({_id: this._id});
 		},
 
+		'click #recognize': function() {
+		  Queues.update({_id: this._id}, { $set: { recognized: new Date() }});
+		},
+
 		'click #newMessageSubmit': function() {
+			// We have to clear out the queue first thing otherwise we end up clearing out the NEW motion's queue, not the old one.
+			var currentMotion = CurrentMotion();
+			var queue;
+			if(currentMotion != undefined)
+			{
+				queue = Queues.findOne({meetingId: Session.get("meetingId"), userId: Meteor.userId(), motionId: currentMotion._id, hasSpoken: false});
+			}
+			else
+			{
+				queue = Queues.findOne({meetingId: Session.get("meetingId"), userId: Meteor.userId(), motionId: { $exists: false }, hasSpoken: false});
+			}
+
+			if(queue != undefined)
+			{
+				Queues.update({_id: queue._id}, { $set: { hasSpoken: true }});
+			}
+
 			CommandResolver.submitCommand();
 
 			// Clear out the command controls
 			$("#newMessage").val('');
-			$("#commandSelected").val('Things you can do');
-			var queue = Queues.findOne({meetingId: Session.get("meetingId"), userId: Meteor.userId()});
-
-			if(queue != undefined)
-			{
-				Queues.remove({_id: queue._id});
-			}
+			$("#commandSelected").text('Things you can do');
+			isCommandSelected.set(false);
 		},
 
-		'click #commandDropdown ul li a': function() {
-			$('#command').val(this);
-			$('#commandSelected').html(this);
+		'click #commandDropdown ul li:not(.disabled):not(.separator)': function() {
+			$('#command').val(this.commandName);
+			$('#commandSelected').html(this.commandName);
+			isCommandSelected.set(true);
 		},
 
 		'click #messagePreviewButton': function() {
@@ -497,12 +573,37 @@ if(Meteor.isClient) {
 			showModal($("#messagePreviewButton"));
 		},
 
-		'click #enterQueue': function() {
-			Queues.insert({meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username});
+		'click #requestTheFloor': function() {
+			var currentMotion = CurrentMotion();
+			if(currentMotion != undefined)
+			{
+				Queues.insert({meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username, motionId: currentMotion._id, hasSpoken: false});
+			}
+			else
+			{
+				Queues.insert({meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username, hasSpoken: false});
+			}
+
 		}
 	});
 
-	$(window).on("hashchange", function () {
-  	window.scrollTo(window.scrollX, window.scrollY - 84);
+	Template.robertsRulesOfOrderStandardCommand.onRendered(function(){
+		window.scrollTo(0,document.body.scrollHeight);
+	});
+
+	Template.robertsRulesOfOrderVotableCommand.onRendered(function(){
+		window.scrollTo(0,document.body.scrollHeight);
+	});
+
+	Template.PutToVoteCommand.onRendered(function(){
+		window.scrollTo(0,document.body.scrollHeight);
+	});
+
+	Template.OpenAgendaItemCommand.onRendered(function(){
+		window.scrollTo(0,document.body.scrollHeight);
+	});
+
+	Template.MakeAStatementCommand.onRendered(function(){
+		window.scrollTo(0,document.body.scrollHeight);
 	});
 }

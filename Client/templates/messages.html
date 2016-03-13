@@ -6,16 +6,20 @@
       	{{name}}
         </h2>
         <div class="row">
-      	<div class="col-sm-4">
-      		<i class="fa fa-clock-o icon-white"></i> {{prettifyDate startDateTime}}
-      	</div>
-      	<div class="col-sm-4">
-      		<i class="fa fa-cog"></i> {{ruleset}}
-      	</div>
-      	<div class="col-sm-4">
-      		<i class="fa fa-users"></i> {{attendance}} in Attendance
-      	</div>
+        	<div class="col-sm-3">
+        		<i class="fa fa-clock-o icon-white"></i> {{prettifyDate startDateTime}}
+        	</div>
+        	<div class="col-sm-3">
+        		<i class="fa fa-cog"></i> {{ruleset}}
+        	</div>
+        	<div class="col-sm-3">
+        		<i class="fa fa-users"></i> {{attendance}} in Attendance
+        	</div>
+          {{> Template.dynamic template=rulesetHeader data=meetings }}
         </div>
+      </div>
+      <div>
+        {{> Template.dynamic template=rulesetAgenda data=meetings }}
       </div>
     </nav>
     <div id="messages" class="container-fluid">

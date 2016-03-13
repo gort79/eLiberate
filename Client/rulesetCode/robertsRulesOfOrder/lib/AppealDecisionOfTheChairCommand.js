@@ -1,7 +1,7 @@
 if(Meteor.isClient) {
 	AppealDecisionOfTheChairCommand = function() {
 
-		this.commandName = "Appeal the Decision Of the Chair",
+		this.commandName = "Appeal the Decision",
 		this.commandType = "AppealDecisionOfTheChair",
 		this.commandDisplayName = "Member appeals from the decision of the chair",
 		this.canInterrupt = true,

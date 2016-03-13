@@ -16,10 +16,12 @@ if(Meteor.isServer) {
 
 	Permissions.allow({
 	  'insert': function(userId, doc) {
+			return true;
 			return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 
 	  'update': function(userId, doc) {
+			return true;
 			if(isNewOrOrganizationAdmin(doc.organizationId, userId)){
 			  // If the role they're setting now ISN'T an admin level role, we need to make sure there's an admin somewhere
 			  // You can't have an org without an admin, otherwise no one will be able to make any changes to the org.
@@ -144,12 +146,22 @@ if(Meteor.isServer) {
 
 	Queues.allow({
 	  'insert': function(userId, doc) {
-			if(Queues.find({meetingId: doc.meetingId, userId: userId}).count() == 0)
+			if(doc.motionId != undefined)
 			{
-			  return true;
+				if(Queues.find({meetingId: doc.meetingId, motionId: doc.motionId, userId: userId, hasSpoken: false}).count() == 0)
+				{
+				  return true;
+				}
+
+				return false;
 			}
 			else
 			{
+				if(Queues.find({meetingId: doc.meetingId, userId: userId, hasSpoken: false}).count() == 0)
+				{
+				  return true;
+				}
+
 			  return false;
 			}
 	  },
@@ -163,7 +175,7 @@ if(Meteor.isServer) {
 
 	Agendas.allow({
 		'insert': function (userId,doc) {
-			return isNewOrOrganizationAdmin(doc.organizationId, userId);
+			return true;//isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 	  'update': function (userId,doc) {
 			return isNewOrOrganizationAdmin(doc.organizationId, userId);

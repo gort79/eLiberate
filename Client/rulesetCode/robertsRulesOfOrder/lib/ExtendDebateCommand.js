@@ -27,14 +27,35 @@ if(Meteor.isClient) {
 			}
 		},
 
+		this.approved = function() {
+			var currentMotion = CurrentMotion();
+			if(currentMotion != undefined)
+			{
+				Messages.update({_id: currentMotion._id}, {$set: {status: MOTIONSTATUS.debate}});
+			}
+			else
+			{
+				Meetings.update({_id: Session.get("MeetingId")}, {$set: {inDebate: true}});
+			}
+		},
+
 		this.validateCommand = function() {
+			var currentMotion = CurrentMotion();
 			if(this.meeting.status == MEETINGSTATUS.started
-					&& CurrentMotion() != undefined
-					&& CurrentMotion().isDebateable
-					&& !this.meeting.inDebate) {
+				 && currentMotion != undefined
+					 && currentMotion.isDebateable
+				 	 && currentMotion.status == MOTIONSTATUS.debate
+				)
+			{
 				return true
 			}
-			return true;
+			else if(this.meeting.status == MEETINGSTATUS.started
+						  && currentMotion == undefined
+							&& this.meeting.inDebate)
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 }

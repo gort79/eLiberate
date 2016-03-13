@@ -22,7 +22,7 @@ if(Meteor.isClient) {
 	RobertsRulesOfOrderCommands.push(new CallTheMeetingToOrderCommand());
 	RobertsRulesOfOrderCommands.push(new CloseFloorToDebateCommand());
 	RobertsRulesOfOrderCommands.push(new CommitToCommitteeCommand());
-	RobertsRulesOfOrderCommands.push(new DivideTheQuestionCommand());
+	//RobertsRulesOfOrderCommands.push(new DivideTheQuestionCommand());
 	RobertsRulesOfOrderCommands.push(new ExtendDebateCommand());
 	RobertsRulesOfOrderCommands.push(new InformalConsiderationCommand());
 	RobertsRulesOfOrderCommands.push(new LayOnTheTableCommand());
@@ -142,14 +142,17 @@ if(Meteor.isClient) {
 				if(RobertsRulesOfOrderCommands[index].commandName == $('#commandSelected').text())
 				{
 					command = CreateCommandInstance(RobertsRulesOfOrderCommands[index], meeting, organization, statement, Meteor.userId(), Meteor.user().username, new Date());
+					isSubmittedCommandsPopulated.set(false);
 					command.execute();
 					if(command.refreshCommands)
 					{
-						SubmittedCommands = [];
+						BuildSubmittedCommands();
 					}
-					else {
+					else
+					{
 						SubmittedCommands.push(command);
 					}
+					isSubmittedCommandsPopulated.set(true);
 					break;
 				}
 			}

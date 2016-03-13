@@ -8,6 +8,14 @@ if(Meteor.isClient) {
 			return Messages.find({ meetingId: Session.get("meetingId")});
 		},
 
+		rulesetHeader: function() {
+			return toCamelCase(Session.get("ruleset")) + "Header";
+		},
+
+		rulesetAgenda: function() {
+			return toCamelCase(Session.get("ruleset")) + "Agenda";
+		},
+
 		rulesetMessages: function() {
 			return toCamelCase(Session.get("ruleset")) + "Messages";
 		},

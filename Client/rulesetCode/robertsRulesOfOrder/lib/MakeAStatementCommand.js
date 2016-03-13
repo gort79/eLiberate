@@ -27,12 +27,14 @@ if(Meteor.isClient) {
 		},
 
 		this.validateCommand = function() {
-			if(this.meeting.status == MEETINGSTATUS.started
-					&& (this.meeting.inDebate == true
+			var currentMotion = CurrentMotion();
+			if(currentMotion != undefined
+					&& this.meeting.status == MEETINGSTATUS.started
+					&& (currentMotion.status == MOTIONSTATUS.debate
 						|| Session.get("role") == ROLES.chairperson)) {
 				return true
 			}
-			return true;
+			return false;
 		}
 	}
 }

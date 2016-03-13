@@ -62,7 +62,7 @@ if(Meteor.isClient) {
 			return this.meeting.status == MEETINGSTATUS.started
 				&& (currentMotion == undefined
 					|| (!currentMotion.isMotion
-							|| (currentMotion.isMotion && currentMotion.status != MOTIONSTATUS.second));
+							|| (currentMotion.isMotion && currentMotion.status != MOTIONSTATUS.second)));
 		}
 	}
 }

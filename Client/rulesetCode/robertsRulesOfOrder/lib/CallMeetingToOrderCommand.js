@@ -16,7 +16,7 @@ if(Meteor.isClient) {
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();
-			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart, meetingPart: this.meetingPart, meetingPart: this.meetingPart});
+			commands.push({ commandName: this.commandName, isActive: isValid, meetingPart: this.meetingPart, meetingPart: this.meetingPart, meetingPart: this.meetingPart});
 		},
 
 		this.execute = function() {
@@ -32,13 +32,11 @@ if(Meteor.isClient) {
 		this.validateCommand = function() {
 			if(this.meeting.status == MEETINGSTATUS.pending
 				 && Session.get("role") == ROLES.chairperson
-				 && this.meeting.status == MEETINGSTATUS.pending
-				 && Session.get("role") == ROLES.chairperson
-				 && HaveQuorum()) {
+				 //&& HaveQuorum()
+			 ) {
 
 				return true;
 			}
-
 			return false;
 		}
 	}

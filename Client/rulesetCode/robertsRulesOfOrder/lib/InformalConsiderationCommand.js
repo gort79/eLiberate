@@ -1,9 +1,9 @@
 if(Meteor.isClient) {
 	InformalConsiderationCommand = function() {
 
-		this.commandName = "Open the Floor to Informal Consideration",
+		this.commandName = "Informal Consideration",
 		this.commandType = "InformalConsideration",
-		this.commandDisplayName = "Member moves to open the floor for informal consideration",
+		this.commandDisplayName = "Member moves to open the floor for debate",
 		this.canInterrupt = false,
 		this.requiresSecond = true,
 		this.isDebateable = false,
@@ -28,15 +28,32 @@ if(Meteor.isClient) {
 		},
 
 		this.approved = function() {
-			Meetings.update({_id: this.meeting._id}, {$set: {inDebate: true}});
-
+			var currentMotion = CurrentMotion();
+			if(currentMotion != undefined)
+			{
+				Messages.update({_id: currentMotion._id}, {$set: {status: MOTIONSTATUS.debate}});
+			}
+			else
+			{
+				Meetings.update({_id: Session.get("MeetingId")}, {$set: {inDebate: true}});
+			}
 		},
 
 		this.validateCommand = function() {
-			if(CurrentMotion() != undefined
-				 && CurrentMotion().isDebateable
-			   && !this.meeting.inDebate) {
+			var currentMotion = CurrentMotion();
+			if(this.meeting.status == MEETINGSTATUS.started
+				 && currentMotion != undefined
+					 && currentMotion.isDebateable
+				 	 && currentMotion.status != MOTIONSTATUS.debate
+				)
+			{
 				return true
+			}
+			else if(this.meeting.status == MEETINGSTATUS.started
+						  && currentMotion == undefined
+							&& !this.meeting.inDebate)
+			{
+				return true;
 			}
 			return false;
 		}

@@ -111,7 +111,7 @@ if(Meteor.isClient) {
 
 	Template.meetingSidebar.helpers({
 		activeAndUpcomingMeetings: function() {
-			return Meetings.find({$or: [{ startDateTime: {"$gte": new Date()}}, { status: MEETINGSTATUS.pending}]}, { sort: { startDateTime: 1 }});
+			return Meetings.find({$or: [{ startDateTime: {"$gte": new Date()}}, { status: MEETINGSTATUS.pending }, { status: MEETINGSTATUS.started }]}, { sort: { startDateTime: 1 }});
 		},
 
 		meetingsExist: function() {

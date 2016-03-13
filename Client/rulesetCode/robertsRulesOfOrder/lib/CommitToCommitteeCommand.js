@@ -32,7 +32,7 @@ if(Meteor.isClient) {
 				 && CurrentMotion() != undefined) {
 				return true
 			}
-			return true;
+			return false;
 		}
 	}
 }

@@ -18,10 +18,11 @@ if(Meteor.isClient) {
 		this.refreshCommands = true,
 		this.meetingPart = MEETINGPARTS.administrative,
 		this.motionPutToVote = undefined,
+		this.refreshCommands = true,
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();
-			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart, meetingPart: this.meetingPart, meetingPart: this.meetingPart});
+			commands.push({ commandName: this.commandName, isActive: isValid, meetingPart: this.meetingPart, meetingPart: this.meetingPart, meetingPart: this.meetingPart});
 		},
 
 		this.execute = function() {

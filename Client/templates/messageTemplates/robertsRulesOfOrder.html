@@ -1,30 +1,40 @@
+<template name="robertsRulesOfOrderHeader">
+  <div class="col-sm-3">
+    <i class="fa fa-comment"></i> {{isInDebate}}
+  </div>
+</template>
+
+<template name="robertsRulesOfOrderAgenda">
+  <table id="agenda" class="agendaBox">
+    <thead>
+      <tr>
+        <th colspan="2">
+          Agenda Items
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each agenda}}
+        <tr>
+          <td>
+            <i class="fa {{statusIcon}}"></i>
+          </td>
+          <td>
+            {{#if agendaOccurred}}
+              <a href="#{{name}}">{{name}}</a>
+            {{else}}
+              {{name}}
+            {{/if}}
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</template>
+
 <template name="robertsRulesOfOrderMessages">
   {{#if Template.subscriptionsReady}}
-    <table id="agenda" class="agendaBox">
-      <thead>
-        <tr>
-          <th colspan="2">
-            Agenda Items
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each agenda}}
-          <tr>
-            <td>
-              <i class="fa {{statusIcon}}"></i>
-            </td>
-            <td>
-              {{#if agendaOccurred}}
-                <a href="#{{name}}">{{name}}</a>
-              {{else}}
-                {{name}}
-              {{/if}}
-            </td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
+
     {{#each meetingMessages}}
       {{> Template.dynamic template=commandTemplate data=this }}
     {{/each}}
@@ -190,6 +200,10 @@
   {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
 </template>
 
+<template name="CloseFloorToDebateCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
+</template>
+
 <template name="AdjournTheMeetingCommand">
   {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
 </template>
@@ -288,30 +302,45 @@
   		</div>
   	{{/if}}
   	<div class="row">
-  		<div class="col-sm-4">
+  		<div class="col-sm-5">
   			<textarea id="newMessage"></textarea><br />
   			<input type="button" id="newMessageSubmit" class="btn btn-default" value="Submit" {{allowToSubmit}}/>
   			<button type="button" id="messagePreviewButton" class="btn btn-default show-modal" data-modal="preview">Preview Your Message</button>
   		</div>
-			<div class="col-sm-4">
+			<div class="col-sm-3">
 				<input type="hidden" id="ruleset" />
-				<div id="commandDropdown" class="btn-group dropup">
-					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span id="commandSelected">Things you can do</span>
-					<span class="caret"></span></button>
-					<ul class="dropdown-menu">
-            {{seperator}}
+				<div id="commandDropdown" class="dropdown">
+					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+            <span id="commandSelected">Things you can do</span>
+					  <span class="caret"></span>
+          </button>
+					<ul class="dropdown-menu" role="menu" id="commandMenu" aria-labelledby="commandSelected">
 						{{#each commands}}
-              <li class="{{actionDisabled}}"><a href="#">{{commandName}}</a></li>
+              {{{seperator}}}
+              <li class="{{actionDisabled}}">{{commandName}}</li>
 						{{/each}}
 					</ul>
 				</div>
-        <input type="button" id="enterQueue" class="btn btn-default" value="Request the Floor" />
+        {{#unless isChairperson}}
+          <input type="button" id="requestTheFloor" class="btn btn-default" value="Request the Floor" />
+        {{/unless}}
 			</div>
   		<div class="col-sm-4">
   			<h5>Queue for the Floor</h5>
   			<div id="queue">
   				{{#each queue}}
-  					<div class="row"><div class="col-sm-4">{{userName}}</div>{{#if isChairperson}}<div id="removeFromQueue" class="col-sm-1">X</div>{{/if}}</div>
+  					<div>
+              <div id="removeFromQueue">
+              {{#if canRemoevFromQueue}}X{{/if}}
+              </div>
+              {{#if isChairperson}}<div id="recognize"><i class="fa fa-comment">{{userFloorCount}}</i></div>{{/if}}
+              <div id="personInQueue">
+                {{#if hasTheFloor}}
+                  <i class="fa fa-star"></i>
+                {{/if}}
+                {{userName}}
+              </div>
+            </div>
   				{{/each}}
   			</div>
   		</div>

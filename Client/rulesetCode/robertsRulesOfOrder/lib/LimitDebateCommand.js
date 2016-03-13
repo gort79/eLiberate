@@ -28,15 +28,34 @@ if(Meteor.isClient) {
 		},
 
 		this.approved = function() {
-			Meetings.update({_id: this.meeting._id}, {$set: {inDebate: false}});
+			var currentMotion = CurrentMotion();
+			if(currentMotion != undefined)
+			{
+				Messages.update({_id: currentMotion._id}, {$set: {status: MOTIONSTATUS.seconded}});
+			}
+			else {
+				Meetings.update({_id: Session.get("MeetingId")}, {$set: {inDebate: false}});
+			}
 		},
 
 		this.validateCommand = function() {
+			var currentMotion = CurrentMotion();
 			if(this.meeting.status == MEETINGSTATUS.started
-				&& this.meeting.inDebate == true) {
+				 && currentMotion != undefined
+					 && currentMotion.isDebateable
+				 	 && currentMotion.status == MOTIONSTATUS.debate
+				)
+			{
 				return true
 			}
-			return true;
+			else if(this.meeting.status == MEETINGSTATUS.started
+						  && currentMotion == undefined
+							&& this.meeting.inDebate)
+			{
+				return true;
+			}
+
+			return false;
 		}
 	}
 }
