@@ -12,7 +12,7 @@ if(Meteor.isClient) {
 	Template.meetings.events({
 		'click #meetingId': function() {
 			// Pull them out of the previous meeting if they were in one
-			leaveMeeting(Meteor.userId(), this.organizationId, this._id);
+			leaveMeeting(Meteor.userId(), this.organizationId);
 
 			// Log the user into the meeting
 			Session.set("meetingId", this._id);
@@ -54,7 +54,7 @@ if(Meteor.isClient) {
 	Template.meetingSidebar.events({
 		'click .meeting-button': function() {
 			// Pull them out of the previous meeting if they were in one
-			leaveMeeting(Meteor.userId(), this.organizationId, this._id);
+			leaveMeeting(Meteor.userId(), this.organizationId);
 
 			// Log the user into the meeting
 			Session.set("meetingId", this._id);
@@ -81,9 +81,16 @@ if(Meteor.isClient) {
 
 
 	// Global function because it's used in the signout event
-	leaveMeeting = function(userId, organizationId, meetingId) {
+	leaveMeeting = function(userId, organizationId) {
 		if(Session.get("meetingId") != undefined) {
-			Meteor.call('leaveMeeting', userId, organizationId, meetingId);
+			attendees = Attendees.find({userId: userId}).fetch();
+			if(attendees.length > 0)
+			{
+				for(var i = 0; i < attendees.length; i++)
+				{
+					Attendees.remove({_id: attendees[i]._id});
+				}
+			}
 
 			delete Session.keys.meetingId;
 

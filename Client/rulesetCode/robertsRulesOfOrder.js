@@ -244,7 +244,6 @@ if(Meteor.isClient) {
 
 	Template.robertsRulesOfOrderHeader.helpers({
 		isInDebate: function() {
-			var messages = Messages.find({meetingId: Session.get("meetingId")}).fetch(); // This is a hack to get this to run whenever the messages are updated
 			var currentMotion = CurrentMotion();
 			if(isSubmittedCommandsPopulated.get() && currentMotion != undefined) // isSubmittedCommandsPopulated is another hack to get this to update after SubmittedCommands is populated
 			{

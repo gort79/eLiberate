@@ -1,5 +1,5 @@
 .Privileged {
-	background-color: rgba(75, 175, 75, .8);
+	background-color: rgba(30, 47, 75, .8);
 }
 
 .Privileged .messageHeader {
@@ -8,7 +8,7 @@
 }
 
 .Administrative {
-	background-color: rgba(55, 55, 150, .8);
+	background-color: rgba(97, 98, 56, .8);
 }
 
 .Administrative .messageHeader {
@@ -17,7 +17,7 @@
 }
 
 .Subsidiary {
-	background-color: rgba(25, 75, 25, .8);
+	background-color: rgba(89, 58, 29, .8);
 }
 
 .Subsidiary .messageHeader {
@@ -26,7 +26,7 @@
 }
 
 .Main {
-	background-color: rgba(0, 0, 0, .8);
+	background-color: rgba(74, 37, 31, .8);
 	color: white
 }
 
@@ -36,7 +36,7 @@
 }
 
 .Incidental {
-	background-color: rgba(0,0, 50, .8);
+	background-color: rgba(64, 44, 54, .8);
 	color: white
 }
 

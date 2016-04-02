@@ -17,32 +17,32 @@ if(Meteor.isServer) {
 	Permissions.allow({
 	  'insert': function(userId, doc) {
 			return true;
-			return isNewOrOrganizationAdmin(doc.organizationId, userId);
+			//return isNewOrOrganizationAdmin(doc.organizationId, userId);
 	  },
 
 	  'update': function(userId, doc) {
 			return true;
-			if(isNewOrOrganizationAdmin(doc.organizationId, userId)){
-			  // If the role they're setting now ISN'T an admin level role, we need to make sure there's an admin somewhere
-			  // You can't have an org without an admin, otherwise no one will be able to make any changes to the org.
-			  if(doc.role != ROLES.administrator && doc.role != ROLES.chairperson) {
-				// Check if there's a different person with an admin role
-				if(Permissions.find({organizationId: doc.organizationId, userId: {$ne: doc.userId}, $or: [{ role: ROLES.administrator}, {role: ROLES.chairperson}]}).count() > 0) {
-				  // There is!
-				  return true;
-				}
+			//if(isNewOrOrganizationAdmin(doc.organizationId, userId)){
+			//  // If the role they're setting now ISN'T an admin level role, we need to make sure there's an admin somewhere
+			//  // You can't have an org without an admin, otherwise no one will be able to make any changes to the org.
+			//  if(doc.role != ROLES.administrator && doc.role != ROLES.chairperson) {
+			//	// Check if there's a different person with an admin role
+			//	if(Permissions.find({organizationId: doc.organizationId, userId: {$ne: doc.userId}, $or: [{ role: ROLES.administrator}, {role: ROLES.chairperson}]}).count() > 0) {
+			//	  // There is!
+			//	  return true;
+			//	}
 
-				// Nope, denied.  You need at least one admin
-				return false;
-			  }
-			  else {
-				// The update is to make someone and admin, so we're good
-				return true;
-			  }
-			}
+			//	// Nope, denied.  You need at least one admin
+			//	return false;
+			//  }
+			//  else {
+			//	// The update is to make someone and admin, so we're good
+			//	return true;
+			//  }
+			//}
 
-			// They don't have authorization to edit permissions.
-			return false;
+			//// They don't have authorization to edit permissions.
+			//return false;
 	  },
 
 	  'remove': function(userId, doc) {
@@ -146,24 +146,25 @@ if(Meteor.isServer) {
 
 	Queues.allow({
 	  'insert': function(userId, doc) {
-			if(doc.motionId != undefined)
-			{
-				if(Queues.find({meetingId: doc.meetingId, motionId: doc.motionId, userId: userId, hasSpoken: false}).count() == 0)
-				{
-				  return true;
-				}
+			return true;
+			//if(doc.motionId != undefined)
+			//{
+			//	if(Queues.find({meetingId: doc.meetingId, motionId: doc.motionId, userId: userId, hasSpoken: false}).count() == 0)
+			//	{
+			//	  return true;
+			//	}
 
-				return false;
-			}
-			else
-			{
-				if(Queues.find({meetingId: doc.meetingId, userId: userId, hasSpoken: false}).count() == 0)
-				{
-				  return true;
-				}
+			//	return false;
+			//}
+			//else
+			//{
+			//	if(Queues.find({meetingId: doc.meetingId, userId: userId, hasSpoken: false}).count() == 0)
+			//	{
+			//	  return true;
+			//	}
 
-			  return false;
-			}
+			//  return false;
+			//}
 	  },
 	  'update': function(userId, doc) {
 			return true;

@@ -329,15 +329,13 @@
   			<h5>Queue for the Floor</h5>
   			<div id="queue">
   				{{#each queue}}
-  					<div>
-              <div id="removeFromQueue">
+  					<div class="row">
+              <div id="removeFromQueue" class="col-sm-1">
               {{#if canRemoevFromQueue}}X{{/if}}
               </div>
-              {{#if isChairperson}}<div id="recognize"><i class="fa fa-comment">{{userFloorCount}}</i></div>{{/if}}
-              <div id="personInQueue">
-                {{#if hasTheFloor}}
-                  <i class="fa fa-star"></i>
-                {{/if}}
+              {{#if isChairperson}}<div id="recognize" class="col-sm-2"><i class="fa fa-comment">{{userFloorCount}}</i></div>{{/if}}
+              <div class="col-sm-1">{{#if hasTheFloor}}<i class="fa fa-star"></i>{{/if}}</div>              
+              <div id="personInQueue" class="col-sm-8">
                 {{userName}}
               </div>
             </div>
