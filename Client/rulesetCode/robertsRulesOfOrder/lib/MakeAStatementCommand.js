@@ -33,7 +33,11 @@ if(Meteor.isClient) {
 					&& (currentMotion.status == MOTIONSTATUS.debate
 						|| Session.get("role") == ROLES.chairperson)) {
 				return true
+			} else if(this.meeting.status == MEETINGSTATUS.started
+					  && this.meeting.inDebate == true) {
+				return true;
 			}
+
 			return false;
 		}
 	}

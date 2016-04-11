@@ -46,6 +46,7 @@ if(Meteor.isServer) {
 	  },
 
 	  'remove': function(userId, doc) {
+			return true;
 			if(isNewOrOrganizationAdmin(doc.organizationId, userId)){
 			  // Check if there's a different person with an admin role
 			  if(Permissions.find({organizationId: doc.organizationId, userId: {$ne: doc.userId}, $or: [{ role: ROLES.administrator}, {role: ROLES.chairperson}]})) {
