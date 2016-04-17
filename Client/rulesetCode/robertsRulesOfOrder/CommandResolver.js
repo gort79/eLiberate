@@ -81,6 +81,19 @@ if(Meteor.isClient) {
 		}
 	}
 
+	GetMotionTypes = function() {
+		var motionTypes = [];
+		for(var index = 0; index < RobertsRulesOfOrderCommands.length; index++)
+		{
+			if(RobertsRulesOfOrderCommands[index].isMotion)
+			{
+				motionTypes.push(RobertsRulesOfOrderCommands[index].commandType);
+			}
+		}
+
+		return motionTypes;
+	}
+
 	CommandResolver = {
 		visitValidCommands : function() {
 			if(Session.get("meetingId") != undefined)

@@ -31,7 +31,7 @@ if(Meteor.isClient) {
 				}
 
 				// Open the next agenda item.
-				var nextAgendaItem = Agendas.findOne({meetingId: this.meeting._id, status: AGENDASTATUS.pending}, {$sort: {ordinal: 1}});
+				var nextAgendaItem = Agendas.findOne({meetingId: this.meeting._id, status: AGENDASTATUS.pending}, {sort: {ordinal: 1}});
 				Agendas.update({_id: nextAgendaItem._id}, {$set:{
 					status: AGENDASTATUS.active
 				}});

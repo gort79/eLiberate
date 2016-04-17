@@ -30,20 +30,21 @@ if(Meteor.isClient) {
 
 	// Gets the current motion if you need it
 	CurrentMotion = function() {
-		var currentMotion;
-		for(var index = 0; index < SubmittedCommands.length; index++)
-		{
-			if(SubmittedCommands[index].isMotion
-				&& SubmittedCommands[index].status != MOTIONSTATUS.approved
-				&& SubmittedCommands[index].status != MOTIONSTATUS.denied
-			  && SubmittedCommands[index].status != MOTIONSTATUS.killed
-				&& SubmittedCommands[index].status != MOTIONSTATUS.postponed
-				&& SubmittedCommands[index].status != MOTIONSTATUS.none) {
-				currentMotion = SubmittedCommands[index];
-			}
-		}
+		//var currentMotion;
+		//for(var index = 0; index < SubmittedCommands.length; index++)
+		//{
+		//	if(SubmittedCommands[index].isMotion
+		//		&& SubmittedCommands[index].status != MOTIONSTATUS.approved
+		//		&& SubmittedCommands[index].status != MOTIONSTATUS.denied
+		//	  && SubmittedCommands[index].status != MOTIONSTATUS.killed
+		//		&& SubmittedCommands[index].status != MOTIONSTATUS.postponed
+		//		&& SubmittedCommands[index].status != MOTIONSTATUS.none) {
+		//		currentMotion = SubmittedCommands[index];
+		//	}
+		//}
+		var currentMotion = Messages.find({meetingId: Session.get("meetingId"), status: { $nin: [ MOTIONSTATUS.approved, MOTIONSTATUS.denied, MOTIONSTATUS.killed, MOTIONSTATUS.postponed, MOTIONSTATUS.none ]}, commandType: { $in: GetMotionTypes() }}, {limit: 1, sort: { dateTime: -1 }}).fetch();
 
-		return currentMotion;
+		return currentMotion.length == 0 ? undefined : CreateCommandInstance(GetCommandPrototype(currentMotion[0].commandType), Meetings.find({_id: Session.get("meetingId")}).fetch()[0], Organizations.find({_id: Session.get("organizationId")}).fetch()[0], currentMotion[0].statement, currentMotion[0].userId, currentMotion[0].userName, currentMotion[0].dateTime, currentMotion[0]);
 	}
 
 	// Get the parent of the current motion
@@ -89,11 +90,11 @@ if(Meteor.isClient) {
 		var queue;
 		if(currentMotion != undefined)
 		{
-			 queue = Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, recognized: { $exists: true }, hasSpoken: false}, {$sort: { recognized: -1 }}).fetch();
+			 queue = Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, recognized: { $exists: true }, hasSpoken: false}, {sort: { recognized: -1 }}).fetch();
 		}
 		else
 		{
-			queue = Queues.find({meetingId: Session.get("meetingId"), recognized: { $exists: true }, hasSpoken: false}, {$sort: { recognized: -1 }}).fetch();
+			queue = Queues.find({meetingId: Session.get("meetingId"), motionId: {"$exists": false }, recognized: { $exists: true }, hasSpoken: false}, {sort: { recognized: -1 }}).fetch();
 		}
 
 		if(queue.length > 0) {
@@ -471,11 +472,11 @@ if(Meteor.isClient) {
 			var currentMotion = CurrentMotion();
 			if(currentMotion != undefined)
 			{
-				return Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, hasSpoken: false}, {$sort: { recognized: -1 }});
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, hasSpoken: false}, {sort: { recognized: -1 }});
 			}
 			else
 			{
-				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: false}, {$sort: { recognized: -1 }});
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: false}, {sort: { recognized: -1 }});
 			}
 		},
 

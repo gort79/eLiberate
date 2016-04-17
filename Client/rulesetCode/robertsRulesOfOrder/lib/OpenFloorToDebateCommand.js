@@ -1,9 +1,9 @@
 if(Meteor.isClient) {
 	OpenFloorToDebateCommand = function() {
 
-		this.commandName = "Open the Floor to Debate",
+		this.commandName = "Open the Floor to Discussion/Debate",
 		this.commandType = "OpenFloorToDebate",
-		this.commandDisplayName = "Opened the floor to debate",
+		this.commandDisplayName = "Opened the floor to discussion/debate",
 		this.canInterrupt = false,
 		this.requiresSecond = false,
 		this.isDebateable = false,

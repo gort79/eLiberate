@@ -268,6 +268,10 @@
   {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
 </template>
 
+<template name="PreviousQuestionCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
 <template name="ReconsiderCommand">
   {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
 </template>
@@ -334,7 +338,7 @@
               {{#if canRemoevFromQueue}}X{{/if}}
               </div>
               {{#if isChairperson}}<div id="recognize" class="col-sm-2"><i class="fa fa-comment">{{userFloorCount}}</i></div>{{/if}}
-              <div class="col-sm-1">{{#if hasTheFloor}}<i class="fa fa-star"></i>{{/if}}</div>              
+              <div class="col-sm-1">{{#if hasTheFloor}}<i class="fa fa-star"></i>{{/if}}</div>
               <div id="personInQueue" class="col-sm-8">
                 {{userName}}
               </div>

@@ -216,4 +216,7 @@ pip-log.txt
 #Mr Developer
 .mr.developer.cfg
 
-
+# MUPX
+mup.json
+settings.json
+*.pem
