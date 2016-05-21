@@ -37,8 +37,7 @@ if(Meteor.isClient) {
 
 		this.validateCommand = function() {
 			var currentMotion = CurrentMotion();
-			if(Session.get("role") == ROLES.chairperson
-				  && currentMotion != undefined
+			if(currentMotion != undefined
 					&& currentMotion.isDebateable
 				 	&& currentMotion.status != MOTIONSTATUS.debate
 				)

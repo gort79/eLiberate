@@ -29,7 +29,7 @@ if(Meteor.isClient) {
 				}
 				else
 				{
-					Meetings.update({_id: Session.get("MeetingId")}, {$set: {inDebate: false}});
+					Meetings.update({_id: Session.get("meetingId")}, {$set: {inDebate: false}});
 				}
 				Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement });
 			}

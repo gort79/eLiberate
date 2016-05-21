@@ -30,11 +30,13 @@ if(Meteor.isClient) {
 			var currentMotion = CurrentMotion();
 			if(currentMotion != undefined
 					&& this.meeting.status == MEETINGSTATUS.started
-					&& (currentMotion.status == MOTIONSTATUS.debate
-						|| Session.get("role") == ROLES.chairperson)) {
+					&& currentMotion.isDebateable
+					&& currentMotion.status == MOTIONSTATUS.debate
+					|| Session.get("role") == ROLES.chairperson) {
 				return true
-			} else if(this.meeting.status == MEETINGSTATUS.started
-					  && this.meeting.inDebate == true) {
+			} else if(currentMotion == undefined
+					&& this.meeting.status == MEETINGSTATUS.started
+				  && this.meeting.inDebate == true) {
 				return true;
 			}
 

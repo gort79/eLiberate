@@ -245,7 +245,16 @@ if(Meteor.isClient) {
 
 	Template.robertsRulesOfOrderHeader.helpers({
 		isInDebate: function() {
-			var currentMotion = CurrentMotion();
+			var currentMotion = Messages.find({meetingId: Session.get("meetingId"), status: { $nin: [ MOTIONSTATUS.approved, MOTIONSTATUS.denied, MOTIONSTATUS.killed, MOTIONSTATUS.postponed, MOTIONSTATUS.none ]}, commandType: { $in: GetMotionTypes() }}, {limit: 1, sort: { dateTime: -1 }}).fetch();
+
+			if(currentMotion.length == 0)
+			{
+				currentMotion = undefined;
+			}
+			else {
+				currentMotion = CreateCommandInstance(GetCommandPrototype(currentMotion[0].commandType), Meetings.find({_id: Session.get("meetingId")}).fetch()[0], Organizations.find({_id: Session.get("organizationId")}).fetch()[0], currentMotion[0].statement, currentMotion[0].userId, currentMotion[0].userName, currentMotion[0].dateTime, currentMotion[0]);
+			}
+
 			if(isSubmittedCommandsPopulated.get() && currentMotion != undefined) // isSubmittedCommandsPopulated is another hack to get this to update after SubmittedCommands is populated
 			{
 				return currentMotion.status == MOTIONSTATUS.debate ? "In Debate" : "Not In Debate";
@@ -368,57 +377,30 @@ if(Meteor.isClient) {
 		var attendanceCount = Attendees.find({meetingId: meeting._id}).count();
 		var voteCount = Votes.find({motionId: motion._id}).count();
 		var ayeCount = Votes.find({motionId: motion._id, voteOption: VOTEOPTIONS.aye}).count();
-		switch(motion.voteType)
-		{
-			case VOTETYPES.simpleMajority:
-				if(voteCount == attendanceCount)
-				{
-					if(ayeCount / attendanceCount > .5)
-					{
-						Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.approved}});
-						Messages.update({_id: motion.motionPutToVote._id}, {$set: {status: MOTIONSTATUS.approved}});
-						motion.status = MOTIONSTATUS.approved;
-						if(motion.motionPutToVote.approved != undefined)
-						{
-							motion.motionPutToVote.approved()
-						}
 
-						BuildSubmittedCommands();
-						return true;
-					}
-					else
-					{
-						motion.status = MOTIONSTATUS.denied;
-						Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.denied}});
-						Messages.update({_id: motion.motionPutToVote._id}, {$set: {status: MOTIONSTATUS.denied}});
-						BuildSubmittedCommands();
-					}
-				}
-				break;
-			case VOTETYPES.twoThirdsMajority:
-				if(voteCount == attendanceCount)
+		if(voteCount == attendanceCount)
+		{
+			if((motion.motionPutToVote.voteType == VOTETYPES.simpleMajority && ayeCount / attendanceCount >= .5)
+				|| (motion.motionPutToVote.voteType == VOTETYPES.twoThirdsMajority && ayeCount / attendanceCount >= .66))
+			{
+				Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.approved}});
+				Messages.update({_id: motion.motionPutToVote._id}, {$set: {status: MOTIONSTATUS.approved}});
+				motion.status = MOTIONSTATUS.approved;
+				if(motion.motionPutToVote.approved != undefined)
 				{
-					if(ayeCount / attendanceCount > .66)
-					{
-	 					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.approved}});
-						Messages.update({_id: motion.motionPutToVote._id}, {$set: {status: MOTIONSTATUS.approved}});
-						motion.status = MOTIONSTATUS.approved;
-						if(motion.motionPutToVote.approved != undefined)
-						{
-							motion.motionPutToVote.approved()
-						}
-						BuildSubmittedCommands();
-						return true;
-	 				}
-	 				else
-	 				{
-						motion.status = MOTIONSTATUS.denied;
-	 					Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.denied}});
-						Messages.update({_id: motion.motionPutToVote._id}, {$set: {status: MOTIONSTATUS.denied}});
-						BuildSubmittedCommands();
-	 				}
+					motion.motionPutToVote.approved()
 				}
-				break;
+
+				BuildSubmittedCommands();
+				return true;
+			}
+			else
+			{
+				motion.status = MOTIONSTATUS.denied;
+				Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.denied}});
+				Messages.update({_id: motion.motionPutToVote._id}, {$set: {status: MOTIONSTATUS.denied}});
+				BuildSubmittedCommands();
+			}
 		}
 
 		BuildSubmittedCommands();
@@ -589,21 +571,26 @@ if(Meteor.isClient) {
 
 	Template.robertsRulesOfOrderStandardCommand.onRendered(function(){
 		window.scrollTo(0,document.body.scrollHeight);
+		$('.message').last().stop(true, true).effect("highlight", {duration: 1000});
 	});
 
 	Template.robertsRulesOfOrderVotableCommand.onRendered(function(){
 		window.scrollTo(0,document.body.scrollHeight);
+		$('.message').last().stop(true, true).effect("highlight", {duration: 1000});
 	});
 
 	Template.PutToVoteCommand.onRendered(function(){
 		window.scrollTo(0,document.body.scrollHeight);
+		$('.message').last().stop(true, true).effect("highlight", {duration: 1000});
 	});
 
 	Template.OpenAgendaItemCommand.onRendered(function(){
 		window.scrollTo(0,document.body.scrollHeight);
+		$('.message').last().stop(true, true).effect("highlight", {duration: 1000});
 	});
 
 	Template.MakeAStatementCommand.onRendered(function(){
 		window.scrollTo(0,document.body.scrollHeight);
+		$('.message').last().stop(true, true).effect("highlight", {duration: 1000});
 	});
 }
