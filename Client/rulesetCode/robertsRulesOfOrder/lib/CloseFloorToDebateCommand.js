@@ -3,7 +3,7 @@ if(Meteor.isClient) {
 
 		this.commandName = "Close the Floor to Debate",
 		this.commandType = "CloseFloorToDebate",
-		this.commandDisplayName = "Closed the floor to debate",
+		this.commandDisplayName = "Closed the floor to discussion/debate",
 		this.canInterrupt = false,
 		this.requiresSecond = false,
 		this.isDebateable = false,

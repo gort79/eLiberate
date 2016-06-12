@@ -138,6 +138,16 @@
   cursor: pointer;
 }
 
+#queue {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: rgba(0, 10, 50, .8);
+  padding: 5px;
+}
+
 .disabled {
   color: gray !important;
   cursor: not-allowed !important;
@@ -145,22 +155,6 @@
 
 #newMessage {
   width: 100%;
-}
-
-#queue {
-  display: block;
-  overflow-y: scroll;
-  overflow-x: hidden;
-  height: 100%;
-}
-
-#queue > DIV {
-  width: 100%;
-}
-
-#queue > DIV > DIV {
-  float: left;
-  clear: none;
 }
 
 #removeFromQueue {

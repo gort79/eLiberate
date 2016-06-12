@@ -30,7 +30,7 @@ if(Meteor.isClient) {
 		},
 
 		this.validateCommand = function() {
-			return this.meeting.status == MEETINGSTATUS.started;
+			return this.meeting.status == MEETINGSTATUS.started && Agendas.findOne({meetingId: this.meeting._id, status: AGENDASTATUS.active}) != undefined;
 		}
 	}
 }

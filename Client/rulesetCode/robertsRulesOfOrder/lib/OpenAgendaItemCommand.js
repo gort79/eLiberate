@@ -45,6 +45,7 @@ if(Meteor.isClient) {
 		this.validateCommand = function() {
 			if(this.meeting.status == MEETINGSTATUS.started
 				 && Agendas.find({meetingId: this.meeting._id, status: AGENDASTATUS.pending}).count() > 0
+				 && CurrentMotion() == undefined
 				 && Session.get("role") == ROLES.chairperson)
 				 {
 					 return true;

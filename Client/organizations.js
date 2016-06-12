@@ -118,8 +118,13 @@ if(Meteor.isClient) {
 
 	Template.organizationDetails.events({
 		'change .userRole': function() {
-			Permissions.update({ _id: this._id },
-							   { $set: {"role":  $("#" + this.userName + ".userRole ").val()}});
+			var role = $("#" + this.userName + ".userRole ").val();
+			if(role == ROLES.chairperson)
+			{
+					var existingChairperson = Permissions.findOne({role: ROLES.chairperson});
+					Permissions.update({ _id: existingChairperson._id}, { $set: {role: ROLES.member }});
+			}
+			Permissions.update({ _id: this._id }, { $set: {"role":  $("#" + this.userName + ".userRole ").val()}});
 		},
 
 		'click #editOrganizationSubmit': function() {

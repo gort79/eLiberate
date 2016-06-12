@@ -107,7 +107,7 @@ if(Meteor.isClient) {
 				{
 					for(var x = 0; x < AdministrativeCommands.length; x++)
 					{
-						CreateCommandInstance(AdministrativeCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands);
+						CreateCommandInstance(AdministrativeCommands[x], meeting, organization, '', '', '', '', undefined).addCommandIfIsValid(commands, CurrentOrderOfPresedence());
 					}
 				}
 

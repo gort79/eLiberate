@@ -38,13 +38,15 @@ if(Meteor.isClient) {
 		this.validateCommand = function() {
 			var currentMotion = CurrentMotion();
 			if(currentMotion != undefined
+					&& this.meeting.status == MEETINGSTATUS.started
 					&& currentMotion.isDebateable
-				 	&& currentMotion.status != MOTIONSTATUS.debate
+				 	&& currentMotion.status != MOTIONSTATUS.debate 
 				)
 			{
 				return true
 			}
 			else if(Session.get("role") == ROLES.chairperson
+				&& this.meeting.status == MEETINGSTATUS.started
 			  && currentMotion == undefined
 				&& !this.meeting.inDebate)
 			{

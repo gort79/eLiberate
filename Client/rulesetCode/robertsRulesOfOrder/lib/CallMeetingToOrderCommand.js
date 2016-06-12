@@ -32,7 +32,8 @@ if(Meteor.isClient) {
 		this.validateCommand = function() {
 			if(this.meeting.status == MEETINGSTATUS.pending
 				 && Session.get("role") == ROLES.chairperson
-				 //&& HaveQuorum()
+				 && HaveQuorum()
+				 && this.meeting.startDateTime <= Date.now()
 			 ) {
 
 				return true;

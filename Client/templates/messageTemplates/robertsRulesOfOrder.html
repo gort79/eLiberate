@@ -50,6 +50,19 @@
       </div>
     </div>
   {{/if}}
+  <div id="queue">
+    <h5>Queue for the Floor</h5>
+    {{#each queue}}
+      <div class="row">
+        <div id="removeFromQueue" class="col-sm-1">{{#if canRemoveFromQueue}}X{{/if}}</div>
+        {{#if isChairperson}}<div id="recognize" class="col-sm-2"><i class="fa fa-comment">{{userFloorCount}}</i></div>{{/if}}
+        <div class="col-sm-1">{{#if hasTheFloor}}<i class="fa fa-star" style="color: yellow;"></i>{{/if}}</div>
+        <div id="personInQueue" class="col-sm-10">
+          {{userName}}
+        </div>
+      </div>
+    {{/each}}
+  </div>
 </template>
 
 <template name="robertsRulesOfOrderStandardCommand">
@@ -299,17 +312,27 @@
     </div>
   {{/if}}
   {{#if calledToOrder}}
-  	{{#if hasTheFloor}}
-  		<div class="alert alert-danger">
-  			<a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">x</a>
-  			You have the floor!
-  		</div>
-  	{{/if}}
   	<div class="row">
   		<div class="col-sm-5">
-  			<textarea id="newMessage"></textarea><br />
-  			<input type="button" id="newMessageSubmit" class="btn btn-default" value="Submit" {{allowToSubmit}}/>
-  			<button type="button" id="messagePreviewButton" class="btn btn-default show-modal" data-modal="preview">Preview Your Message</button>
+        <div class="row">
+          <div class="col-sm-12">
+      			<textarea id="newMessage"></textarea><br />
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-sm-6">
+  			     <input type="button" id="newMessageSubmit" class="btn btn-default" value="Submit" {{allowToSubmit}}/>
+  			     <button type="button" id="messagePreviewButton" class="btn btn-default show-modal" data-modal="preview">Preview Your Message</button>
+          </div>
+        {{#if hasTheFloor}}
+          <div class="col-sm-6">
+            <div class="alert alert-danger">
+              <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">x</a>
+              You have the floor!
+            </div>
+          </div>
+        {{/if}}
+        </div>
   		</div>
 			<div class="col-sm-3">
 				<input type="hidden" id="ruleset" />
@@ -325,26 +348,11 @@
 						{{/each}}
 					</ul>
 				</div>
+			</div>
+  		<div class="col-sm-4">
         {{#unless isChairperson}}
           <input type="button" id="requestTheFloor" class="btn btn-default" value="Request the Floor" />
         {{/unless}}
-			</div>
-  		<div class="col-sm-4">
-  			<h5>Queue for the Floor</h5>
-  			<div id="queue">
-  				{{#each queue}}
-  					<div class="row">
-              <div id="removeFromQueue" class="col-sm-1">
-              {{#if canRemoevFromQueue}}X{{/if}}
-              </div>
-              {{#if isChairperson}}<div id="recognize" class="col-sm-2"><i class="fa fa-comment">{{userFloorCount}}</i></div>{{/if}}
-              <div class="col-sm-1">{{#if hasTheFloor}}<i class="fa fa-star"></i>{{/if}}</div>
-              <div id="personInQueue" class="col-sm-8">
-                {{userName}}
-              </div>
-            </div>
-  				{{/each}}
-  			</div>
   		</div>
   	</div>
   {{/if}}

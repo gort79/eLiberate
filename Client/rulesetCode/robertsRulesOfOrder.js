@@ -176,6 +176,42 @@ if(Meteor.isClient) {
 
 		commandTemplate: function() {
 			return this.commandType + "Command";
+		},
+
+		canRemoveFromQueue : function() {
+			return Session.get("role") == ROLES.chairperson || this.userId == Meteor.userId();
+		},
+
+		isChairperson: function() {
+			return Session.get("role") == ROLES.chairperson;
+		},
+
+		userFloorCount : function() {
+			var currentMotion = CurrentMotion();
+			if(currentMotion != undefined)
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, hasSpoken: true, userId: this.userId}).count();
+			}
+			else
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: true, userId: this.userId}).count();
+			}
+		},
+
+		hasTheFloor: function() {
+			return HasTheFloor(this.userId == undefined ? Meteor.userId() : this.userId);
+		},
+
+		queue: function() {
+			var currentMotion = CurrentMotion();
+			if(currentMotion != undefined)
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, hasSpoken: false}, {sort: { recognized: -1 }});
+			}
+			else
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: false}, {sort: { recognized: -1 }});
+			}
 		}
 	});
 
@@ -194,6 +230,17 @@ if(Meteor.isClient) {
 		isSubmittedCommandsPopulated.set(true);
 	}
 
+	Template.robertsRulesOfOrderMessages.events({
+		'click #removeFromQueue': function() {
+ 			Queues.remove({_id: this._id});
+		},
+
+		'click #recognize': function() {
+		  Queues.update({_id: this._id}, { $set: { recognized: new Date() }});
+		},
+
+	});
+
 	Template.robertsRulesOfOrderVotableCommand.helpers({
 		needsSecond: function() {
 			if(this.status == MOTIONSTATUS.second)
@@ -206,7 +253,7 @@ if(Meteor.isClient) {
 
 		canKillMotion: function() {
 			if(Session.get("role") == ROLES.chairperson
-				 && this.status == MOTIONSTATUS.requiresSecond)
+				 && this.status == MOTIONSTATUS.second)
 			{
 				return true;
 			}
@@ -413,22 +460,6 @@ if(Meteor.isClient) {
 			return Session.get("role") == ROLES.chairperson;
 		},
 
-		canRemoevFromQueue : function() {
-			return Session.get("role") == ROLES.chairperson || this.userId == Meteor.userId();
-		},
-
-		userFloorCount : function() {
-			var currentMotion = CurrentMotion();
-			if(currentMotion != undefined)
-			{
-				return Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, hasSpoken: true, userId: this.userId}).count();
-			}
-			else
-			{
-				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: true, userId: this.userId}).count();
-			}
-		},
-
 		pending: function() {
 			return Meetings.findOne({_id: Session.get("meetingId")}).status == MEETINGSTATUS.pending;
 		},
@@ -448,18 +479,6 @@ if(Meteor.isClient) {
 
 		endDateTime: function() {
 			return Meetings.findOne({_id: Session.get("meetingId")}).endDateTime;
-		},
-
-		queue: function() {
-			var currentMotion = CurrentMotion();
-			if(currentMotion != undefined)
-			{
-				return Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, hasSpoken: false}, {sort: { recognized: -1 }});
-			}
-			else
-			{
-				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: false}, {sort: { recognized: -1 }});
-			}
 		},
 
 		hasTheFloor: function() {
@@ -510,13 +529,6 @@ if(Meteor.isClient) {
 
 
 	Template.robertsRulesOfOrderControls.events({
-		'click #removeFromQueue': function() {
- 			Queues.remove({_id: this._id});
-		},
-
-		'click #recognize': function() {
-		  Queues.update({_id: this._id}, { $set: { recognized: new Date() }});
-		},
 
 		'click #newMessageSubmit': function() {
 			// We have to clear out the queue first thing otherwise we end up clearing out the NEW motion's queue, not the old one.
