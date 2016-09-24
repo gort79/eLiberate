@@ -1,129 +1,131 @@
 <template name="meetingTemplates">
   <div id="meetingContent">
     {{> meetings}}
-    {{> meetingControls}}
   </div>
 </template>
 
 <template name="meetings">
-  <table id="meetings" class="table table-responsive">
-    <thead>
-      <tr>
-        <th>
-        </th>
-        <th>
-          Meeting Title
-        </th>
-        <th>
-          Starts
-        </th>
-        <th>
-          Ends
-        </th>
-        <th>
-          Rule Set
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each meetings}}
+  <div id="meetings-table-container">
+    <table id="meetings" class="table table-responsive">
+      <thead>
         <tr>
-          <td>
-            <div id="editMeeting"> <i class="fa fa-cog"></i> </div>
-          </td>
-          <td>
-            <a href="#" id="meetingId">{{name}}</a>
-          </td>
-          <td>
-            {{prettifyDate startDateTime}}
-          </td>
-          <td>
-            {{prettifyDate endDateTime}}
-          </td>
-          <td>
-            {{ruleset}}
-          </td>
+          <th>
+          </th>
+          <th>
+            Meeting Title
+          </th>
+          <th>
+            Starts
+          </th>
+          <th>
+            Ends
+          </th>
+          <th>
+            Status
+          </th>
+          <th>
+            Rule Set
+          </th>
+          <th>
+            Agenda
+          </th>
         </tr>
-      {{/each}}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {{#each meetings}}
+          <tr>
+            <td>
+              <div id="editMeeting"> <i class="fa fa-cog"></i> </div>
+            </td>
+            <td>
+              <a href="#" id="meetingId">{{name}}</a>
+            </td>
+            <td>
+              {{prettifyDate startDateTime}}
+            </td>
+            <td>
+              {{prettifyDate endDateTime}}
+            </td>
+            <td>
+              {{status}}
+            </td>
+            <td>
+              {{ruleset}}
+            </td>
+            <td>
+              <div id="editMeetingControlsContainer">
+                <div class="row">
+                  <table id="meetings" class="table table-responsive">
+                    <thead>
+                      <tr>
+                        <th>
+                        </th>
+                        <th>
+                          Agenda Items
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {{#each agenda}}
+                        <tr>
+                          <td>
+                            <div id="editAgenda"> <i class="fa fa-cog"></i> </div>
+                          </td>
+                          <td>
+                            {{name}}
+                          </td>
+                        </tr>
+                      {{/each}}
+                    </tbody>
+                  </table>
+                </div>
+                <div class="row">
+                  <div class="col-sm-12">
+                    Add Agenda Item
+                    <input type="text" id="agendaContent" />
+                    <input type="button" class="btn btn-primary" id="addAgendaItem" value="Add" />
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        {{/each}}
+      </tbody>
+
+      <tfoot>
+        {{> meetingControls}}
+      </tfoot>
+    </table>
+  </div>
 </template>
 
 <template name="meetingControls">
-	<div id="meetingControls">
-		<div class="row">
-			<div class="col-sm-12">New Meeting <input type="text" id="newMeetingName" /></div>
-		</div>
-		<div class="row">
-			<div class="col-sm-2">Start Date &amp; Time</div>
-			<div class="col-sm-4">
-				<input type="date" id="newMeetingStartDate" />
-				<input type="time" id="newMeetingStartTime" />
-			</div>
-			<div class="col-sm-2">End Date &amp; Time</div>
-			<div class="col-sm-4">
-				<input type="date" id="newMeetingEndDate" />
-				<input type="time" id="newMeetingEndTime" />
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12">
-				<input type="hidden" id="ruleset" />
-				<div id="rulesetDropdown" class="dropdown">
-					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown"><span id="rulesetSelected">Select a ruleset</span>
-					<span class="caret"></span></button>
-					<ul class="dropdown-menu">
-						{{#each allRulesets}}
-						<li><a href="#">{{this}}</a></li>
-						{{/each}}
-					</ul>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12">
-				<input type="button" class="btn btn-primary" id="newMeetingSubmit" value="Submit" />
-			</div>
-		</div>
-	</div>
-  {{> meetingEditor}}
-</template>
-
-<template name="meetingEditor">
-  <div id="editMeetingControlsContainer">
-    <div class="row">
-      <table id="meetings" class="table table-responsive">
-        <thead>
-          <tr>
-            <th>
-            </th>
-            <th>
-              Agenda Items
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {{#each agenda}}
-            <tr>
-              <td>
-                <div id="editAgenda"> <i class="fa fa-cog"></i> </div>
-              </td>
-              <td>
-                {{name}}
-              </td>
-            </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-    <div class="row">
-      <div class="col-sm-12">
-        Add Agenda Item
-        <input type="text" id="agendaContent" />
-        <input type="button" class="btn btn-primary" id="addAgendaItem" value="Add" />
-      </div>
-    </div>
-  </div>
+        <tr>
+          <td>
+            New Meeting
+          </td>
+          <td>
+            <input type="text" id="newMeetingName" />
+          </td>
+          <td>
+            <input type="date" id="newMeetingStartDate" />
+    				<input type="time" id="newMeetingStartTime" />
+          </td>
+          <td>
+            <input type="date" id="newMeetingEndDate" />
+    				<input type="time" id="newMeetingEndTime" />
+          </td>
+          <td>
+            <select id="newRuleset">
+              {{#each allRulesets}}
+              <option value="{{this}}">{{this}}</option>
+      				{{/each}}
+            </select>
+          </td>
+          <td colspan="2">
+				    <input type="button" class="btn btn-primary" id="newMeetingSubmit" value="Submit" />
+          </td>
+        </tr>
 </template>
 
 <template name="meetingSidebar">

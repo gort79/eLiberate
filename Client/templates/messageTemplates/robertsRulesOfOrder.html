@@ -131,10 +131,10 @@
       {{/if}}
     {{/if}}
     {{#if approved}}
-      <div class="bg-success"><strong>Motion carried with a vote of {{aye}} for, {{nay}} against, and {{abstain}} abstaining.</strong></div>
+      <div class="bg-success "><strong>Motion carried with a vote of {{aye}} for, {{nay}} against, and {{abstain}} abstaining.</strong></div>
     {{/if}}
     {{#if denied}}
-      <div class="bg-danger"><strong>Motion not carried with a vote of {{nay}} against, {{aye}} for, and {{abstain}} abstaining.</strong></div>
+      <div class="bg-danger finalVoteTallyCarry"><strong>Motion not carried with a vote of {{nay}} against, {{aye}} for, and {{abstain}} abstaining.</strong></div>
     {{/if}}
     </div>
     {{#if requiresVote}}
@@ -324,8 +324,13 @@
   			     <input type="button" id="newMessageSubmit" class="btn btn-default" value="Submit" {{allowToSubmit}}/>
   			     <button type="button" id="messagePreviewButton" class="btn btn-default show-modal" data-modal="preview">Preview Your Message</button>
           </div>
+          <div class="col-sm-3">
+            {{#each typers}}
+              <i>{{userName}} is typing...</i><br />
+            {{/each}}
+          </div>
         {{#if hasTheFloor}}
-          <div class="col-sm-6">
+          <div class="col-sm-3">
             <div class="alert alert-danger">
               <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">x</a>
               You have the floor!

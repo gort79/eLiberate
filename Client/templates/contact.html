@@ -1,0 +1,34 @@
+<template name="contactTemplate">
+  <h3>Contact/Feedback</h3>
+  <div class="row">
+    <div class="col-sm-12">
+      <h4>Your Email Address (if you would like us to respond)</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <input type="email" id="commentFrom" />
+      <div class="alert alert-error">Please enter a valid e-mail address.</div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <h4>Your Comment or Question</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <textarea cols="200" rows="10" id="comment"></textarea>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <input type="submit" id="sendComment" value="Send" />
+    </div>
+  </div>
+  <div id="commentSuccess" class="row hidden">
+    <div class="col-sm-12">
+      <h4>Your message has been sent.  Thank you very much for your interest!</h4>
+    </div>
+  </div>
+</template>

@@ -383,7 +383,7 @@ transition:all 1.2s ease-out;
 
 #modal-nav{
 	position: fixed;
-	opacity:0.8;
+	opacity:0.95;
 	z-index:999;
 	width:100%;
 	background:#2D3538;

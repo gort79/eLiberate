@@ -57,13 +57,16 @@
 			<li class="show-modal nav-organizations" style="display:none;" data-modal="organizations">
 				<a href="#"><i class="fa fa-university"></i> Organizations</a>
 			</li>
-			<li class="show-modal nav-about" style="display:none;" data-modal="meetings">
+			<li class="show-modal nav-meetings" style="display:none;" data-modal="meetings">
 				<a href="#"><i class="fa fa-flask"></i> Meetings</a>
 			</li>
-			{{configureMenu}}
-			<li class="show-modal nav-contact" data-modal="contact">
-				<a href="#"><i class="fa fa-users"></i> Contact</a>
+			<li class="show-modal nav-about" data-modal="about">
+				<a href="#"><i class="fa fa-question"></i> About</a>
 			</li>
+			<li class="show-modal nav-contact" data-modal="contact">
+				<a href="#"><i class="fa fa-comment"></i> Contact/Feedback</a>
+			</li>
+			{{configureMenu}}
 			<li>
 				{{> meetingSidebar }}
 			</li>
@@ -110,8 +113,34 @@
 					<div class="col-md-12">
 						<h2><i class="fa fa-users"></i> Meetings</h2>
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-12">
 						{{> meetingTemplates}}
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<article id="modal-about">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<h2><i class="fa fa-question"></i> About</h2>
+					</div>
+					<div class="col-md-12">
+						{{> aboutTemplate}}
+					</div>
+				</div>
+			</div>
+		</article>
+
+		<article id="modal-contact">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<h2><i class="fa fa-comment"></i> Contact/Feedback</h2>
+					</div>
+					<div class="col-md-12">
+						{{> contactTemplate}}
 					</div>
 				</div>
 			</div>
@@ -143,6 +172,14 @@
 						<h4>
 							Sign up now to start deliberating!
 						</h4>
+						<p>
+							eLiberate allows groups to hold online meetings using Roberts Rules of Order even if their members are in
+							different locations. It is nearly ready to be tested with real-world activities. Let us know if
+							<strong><a href="#" id="homeContact" data-modal="contact" onclick='showModal($("#homeContact"));'> your organization is interested</a></strong>
+							in being involved with these efforts. Our current plan is to make e-Liberate freely available for online
+							meetings in the near future and to release the software under a free software license at some point in the not-too-
+							distant future. For more information, see the <strong><a href="#" id="homeAbout" data-modal="about" onclick='showModal($("#homeAbout"));'>extended About page</a></strong>.
+						</p>
 					</div>
 				</div>
 

@@ -13,6 +13,7 @@ if(Meteor.isClient) {
 	Tracker.autorun(function(){
 		if(Meteor.userId()){
 			Meteor.subscribe("meetings");
+			Meteor.subscribe("agendas");
 			Meteor.subscribe("attendees");
 		}
 	});

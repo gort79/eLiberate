@@ -3,6 +3,7 @@ if(Meteor.isClient) {
 	var LastMeetingPart = '';
 	var isCommandSelected = new ReactiveVar(false);
 	isSubmittedCommandsPopulated = new ReactiveVar(false);
+	isTyping = false;
 
 	// Subsequent motions rely on the qualities of the last motion.
 	GetLastCommand = function() {
@@ -133,7 +134,6 @@ if(Meteor.isClient) {
 	Template.robertsRulesOfOrderMessages.onCreated(function () {
 		this.subscribe("messages", Session.get("meetingId"));
 		this.subscribe("queues", Session.get("meetingId"));
-		this.subscribe("agendas", Session.get("meetingId"));
 		this.subscribe("votes", Session.get("meetingId"));
 	});
 
@@ -425,6 +425,9 @@ if(Meteor.isClient) {
 		var voteCount = Votes.find({motionId: motion._id}).count();
 		var ayeCount = Votes.find({motionId: motion._id, voteOption: VOTEOPTIONS.aye}).count();
 
+		// So the vote type info is available
+		this.motionPutToVote = CreateCommandInstance(GetCommandPrototype(motion.motionPutToVote.commandType), Meetings.findOne({_id: Session.get("meetingId")}), Organizations.findOne({_id: Session.get("organizationId")}), motion.motionPutToVote.statement, motion.motionPutToVote.userId, motion.motionPutToVote.userName, motion.motionPutToVote.dateTime, motion.motionPutToVote);
+
 		if(voteCount == attendanceCount)
 		{
 			if((motion.motionPutToVote.voteType == VOTETYPES.simpleMajority && ayeCount / attendanceCount >= .5)
@@ -524,6 +527,10 @@ if(Meteor.isClient) {
 			LastMeetingPart = this.meetingPart
 
 			return seperatorHtml;
+		},
+
+		typers: function() {
+			return Attendees.find({meetingId: Session.get("meetingId"), typing: true, userId: { $ne: Meteor.userId() }});
 		}
 	});
 
@@ -547,6 +554,9 @@ if(Meteor.isClient) {
 			{
 				Queues.update({_id: queue._id}, { $set: { hasSpoken: true }});
 			}
+
+			var attendeeId = Attendees.findOne({meetingId: Session.get("meetingId"), userId: Meteor.userId() });
+			Attendees.update({_id: attendeeId._id}, {$set: {typing: false}});
 
 			CommandResolver.submitCommand();
 
@@ -578,6 +588,19 @@ if(Meteor.isClient) {
 				Queues.insert({meetingId: Session.get("meetingId"), userId: Meteor.userId(), userName: Meteor.user().username, hasSpoken: false});
 			}
 
+		},
+
+		'keydown #newMessage': function() {
+			if($('#newMessage').val() != '' && !isTyping) {
+				var attendee = Attendees.findOne({meetingId: Session.get("meetingId"), userId: Meteor.userId()});
+				Attendees.update({ _id: attendee._id }, { $set: { typing: true } })
+				isTyping = true;
+			}
+			else if($('#newMessage').val() == '') {
+				var attendee = Attendees.findOne({meetingId: Session.get("meetingId"), userId: Meteor.userId()});
+				Attendees.update({ _id: attendee._id }, { $set: { typing: false } })
+				isTyping = false;
+			}
 		}
 	});
 

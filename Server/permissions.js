@@ -1,17 +1,21 @@
 if(Meteor.isServer) {
 	Organizations.allow({
 	  'insert': function (userId, doc) {
-		return true;
+			return true;
 	  },
 
 	  'update': function (userId, doc) {
-		if(Permissions.find({organizationId: doc._id, userId: userId, $or: [{ role: ROLES.administrator }, { role: ROLES.chairperson }]}))
-		{
-		  return true;
-		}
+			if(Permissions.find({organizationId: doc._id, userId: userId, $or: [{ role: ROLES.administrator }, { role: ROLES.chairperson }]}))
+			{
+			  return true;
+			}
 
-		return false;
-	  }
+			return false;
+		},
+
+		'remove': function(userId, doc) {
+			return isNewOrOrganizationAdmin(doc._id, userId);
+		}
 	});
 
 	Permissions.allow({
@@ -132,6 +136,11 @@ if(Meteor.isServer) {
 			}
 
 			return false
+		},
+
+		//todo: validate that is only the isTypeing field is updated.
+		'update': function(userId, doc) {
+			return true;
 		},
 
 		'remove': function(userId, doc) {

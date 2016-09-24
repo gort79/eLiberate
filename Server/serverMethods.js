@@ -2,8 +2,8 @@ if(Meteor.isServer) {
 	Meteor.startup(function() {
 	  Meteor.methods({
 		// Organization is admin check
-		isOrganizationAdmin: function(organizationId, userId) {
-		  if(Permissions.find({organizationId: organizationId, userId: userId, $or: [ { role: ROLES.administrator }, { role: ROLES.chairperson} ] }).count() > 0)
+		isOrganizationAdmin: function(organizationId) {
+		  if(Permissions.find({organizationId: organizationId, userId: this.userId, $or: [ { role: ROLES.administrator }, { role: ROLES.chairperson} ] }).count() > 0)
 		  {
 			return true;
 		  }
@@ -21,12 +21,22 @@ if(Meteor.isServer) {
 			return null;
 		},
 
+		sendEmail: function(comment, fromEmail) {
+			Email.send({
+				/*to: "douglas@publicsphereproject.org"*/
+				to: "nathan.clinton@gmail.com",
+				from: fromEmail,
+				subject: "eLiberate contact/feedback",
+				text: comment
+			});
+		},
+
 		// Meeting methods
-		joinMeeting: function(userId, organizationId, meetingId) {
+		joinMeeting: function(userId, organizationId, meetingId, userName) {
 			if(Permissions.find({organizationId: organizationId, userId: userId}).count() > 0
 				&& Attendees.find({meetingId: meetingId, userId: userId}).fetch() == 0)
 			{
-				Attendees.insert({meetingId: meetingId, userId: userId});
+				Attendees.insert({meetingId: meetingId, userId: userId, userName: userName});
 			}
 		},
 

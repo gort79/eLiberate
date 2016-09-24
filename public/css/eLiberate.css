@@ -106,7 +106,13 @@
 	color: white !important;
 }
 
-#meetingsContainer TBODY tr:nth-child(odd) {
+#meetings-table-container {
+  max-height: 500px;
+  width: 100%;
+  overflow-y: scroll;
+}
+
+#meetings TBODY tr:nth-child(odd) {
   background-color: #FFEE55;
 }
 
@@ -139,7 +145,7 @@
 }
 
 #queue {
-  position: absolute;
+  position: fixed;
   right: 0px;
   top: 50%;
   overflow-y: auto;
@@ -191,13 +197,22 @@
 }
 
 #messages {
-  padding-top: 84px;
+  background-color: #f7f9e6;
+  padding-top: 143px;
   padding-bottom: 165px;
 }
 
 #messagesFooter {
   background-color: rgba(0, 10, 50, .8);
   border-top: solid 1px white;
+}
+
+.finalVoteTallyCarry {
+  border: 5px solid #880000;
+}
+
+.finalVoteTallyFail {
+  border: 5px solid #008800;
 }
 
 .navbar {

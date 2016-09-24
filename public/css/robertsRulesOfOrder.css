@@ -1,48 +1,50 @@
 .Privileged {
-	background-color: rgba(30, 47, 75, .8);
+	background-color: #c4bddc;
 }
 
 .Privileged .messageHeader {
-	color: lightgrey;
-	border-bottom: 1px solid grey;
+	color: black;
+	border-bottom: 1px solid black;
 }
 
 .Administrative {
-	background-color: rgba(97, 98, 56, .8);
+	background-color: #c4bddc;
+	color: black;
 }
 
 .Administrative .messageHeader {
-	color: lightgrey;
-	border-bottom: 1px solid grey;
+	color: black;
+	border-bottom: 1px solid black;
 }
 
 .Subsidiary {
-	background-color: rgba(89, 58, 29, .8);
+	background-color: #644c4c;
+	color: white;
 }
 
 .Subsidiary .messageHeader {
-	color: lightgrey;
-	border-bottom: 1px solid grey;
+	color: white;
+	border-bottom: 1px solid white;
 }
 
 .Main {
-	background-color: rgba(74, 37, 31, .8);
-	color: white
+	background-color: #657068;
+	color: white;
 }
 
 .Main .messageHeader {
-	color: lightgrey;
+	color: white;
 	border-bottom: 1px solid white;
 }
 
 .Incidental {
-	background-color: rgba(64, 44, 54, .8);
-	color: white
+	background-color: #b3c39c;
+	color: black;
 }
 
 .Incidental .messageHeader {
-	color: lightgrey;
-	border-bottom: 1px solid white;
+	color: black;
+	border-bottom: 1px solid black;
 }
 
 .Revisit {

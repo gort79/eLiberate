@@ -8,7 +8,7 @@ if(Meteor.isClient) {
 		this.requiresSecond = true,
 		this.isDebateable = false,
 		this.isAmendable = false,
-		this.voteType = VOTETYPES.simplemajority,
+		this.voteType = VOTETYPES.simpleMajority,
 		this.isMotion = true,
 		this.closesMotion = true,
 		this.orderOfPresedence = 0,

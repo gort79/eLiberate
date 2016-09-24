@@ -30,14 +30,23 @@ if(Meteor.isClient) {
 		},
 
 		this.validateCommand = function() {
+			var attendanceCount = Attendees.find({meetingId: this.meeting._id}).count();
+			var members = Permissions.find({organizationId: meeting.organizationId}).count();
+
 			if(this.meeting.status == MEETINGSTATUS.pending
 				 && Session.get("role") == ROLES.chairperson
-				 && HaveQuorum()
-				 && this.meeting.startDateTime <= Date.now()
+				 && attendanceCount / members >= .5
+				 && this.meeting.startDateTime <= moment()
 			 ) {
 
+				 console.log("valid");
 				return true;
 			}
+			console.log(this.meeting);
+			console.log(this.meeting.status == MEETINGSTATUS.pending);
+			console.log(Session.get("role") == ROLES.chairperson);
+			console.log(this.meeting.startDateTime <= moment());
+			console.log("invalid");
 			return false;
 		}
 	}
