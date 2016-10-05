@@ -12,8 +12,8 @@ if(Meteor.isClient) {
 			return toCamelCase(Session.get("ruleset")) + "Header";
 		},
 
-		rulesetAgenda: function() {
-			return toCamelCase(Session.get("ruleset")) + "Agenda";
+		rulesetTools: function() {
+			return toCamelCase(Session.get("ruleset")) + "Tools";
 		},
 
 		rulesetMessages: function() {

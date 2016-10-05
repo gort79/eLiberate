@@ -1,40 +1,39 @@
 <template name="robertsRulesOfOrderHeader">
-  <div class="col-sm-3">
+  <div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
     <i class="fa fa-comment"></i> {{isInDebate}}
   </div>
 </template>
 
-<template name="robertsRulesOfOrderAgenda">
-  <table id="agenda" class="agendaBox">
-    <thead>
-      <tr>
-        <th colspan="2">
-          Agenda Items
-        </th>
-      </tr>
-    </thead>
-    <tbody>
+<template name="robertsRulesOfOrderTools">
+  <div class="dropdown agenda">
+    <button class="dropbtn">Agenda</button>
+    <div class="dropdown-content">
       {{#each agenda}}
-        <tr>
-          <td>
-            <i class="fa {{statusIcon}}"></i>
-          </td>
-          <td>
-            {{#if agendaOccurred}}
-              <a href="#{{name}}">{{name}}</a>
-            {{else}}
-              {{name}}
-            {{/if}}
-          </td>
-        </tr>
+        {{#if agendaOccurred}}
+          <a href="#{{name}}"><i class="fa {{statusIcon}}"></i> {{name}}</a>
+        {{else}}
+          <a href="#"><i class="fa {{statusIcon}}"></i> {{name}}</a>
+        {{/if}}
       {{/each}}
-    </tbody>
-  </table>
+    </div>
+  </div>
+  <div class="dropdown queue">
+    <button class="dropbtn">Queue ({{queueCount}})</button>
+    <div class="dropdown-content">
+      {{#each queue}}
+        <a href="#">
+            {{#if canRemoveFromQueue}}<i id="removeFromQueue" class="fa fa-ban"></i>{{/if}}
+          {{#if isChairperson}}<i id="recognize" class="fa fa-comment">{{userFloorCount}}</i>{{/if}}
+          {{#if hasTheFloor}}<i class="fa fa-star" style="color: yellow;"></i>{{/if}}
+          {{userName}}
+        </a>
+      {{/each}}
+    </div>
+  </div>
 </template>
 
 <template name="robertsRulesOfOrderMessages">
   {{#if Template.subscriptionsReady}}
-
     {{#each meetingMessages}}
       {{> Template.dynamic template=commandTemplate data=this }}
     {{/each}}
@@ -50,19 +49,6 @@
       </div>
     </div>
   {{/if}}
-  <div id="queue">
-    <h5>Queue for the Floor</h5>
-    {{#each queue}}
-      <div class="row">
-        <div id="removeFromQueue" class="col-sm-1">{{#if canRemoveFromQueue}}X{{/if}}</div>
-        {{#if isChairperson}}<div id="recognize" class="col-sm-2"><i class="fa fa-comment">{{userFloorCount}}</i></div>{{/if}}
-        <div class="col-sm-1">{{#if hasTheFloor}}<i class="fa fa-star" style="color: yellow;"></i>{{/if}}</div>
-        <div id="personInQueue" class="col-sm-10">
-          {{userName}}
-        </div>
-      </div>
-    {{/each}}
-  </div>
 </template>
 
 <template name="robertsRulesOfOrderStandardCommand">
@@ -82,20 +68,24 @@
     </div>
     <h5>{{commandDisplayName}}</h5>
     {{#markdown}}{{statement}}{{/markdown}}
-    {{#if needsSecond}}
-      <strong>A second is required</strong>
-      {{#if canSecond}}
-        <input type="button" class="btn btn-primary" id="second" value="Second" />
+    {{#if killed}}
+      <strong>The motion has been killed by the chairperson.</strong>
+    {{else}}
+      {{#if needsSecond}}
+        <strong>A second is required</strong>
+        {{#if canSecond}}
+          <input type="button" class="btn btn-primary" id="second" value="Second" />
+        {{/if}}
+        {{#if canKillMotion}}
+          <input type="button" class="btn btn-primary" id="killMotion" value="Kill the Motion" />
+        {{/if}}
       {{/if}}
-      {{#if canKillMotion}}
-        <input type="button" class="btn btn-primary" id="killMotion" value="Kill the Motion" />
+      {{#if motionNotSeconded}}
+        <strong>The motion was not seconded</strong>
       {{/if}}
-    {{/if}}
-    {{#if motionNotSeconded}}
-      <strong>The motion was not seconded</strong>
-    {{/if}}
-    {{#if seconded}}
-      <strong>Seconded by {{secondedBy}}</strong>
+      {{#if seconded}}
+        <strong>Seconded by {{secondedBy}}</strong>
+      {{/if}}
     {{/if}}
   </div>
 </template>
@@ -131,10 +121,29 @@
       {{/if}}
     {{/if}}
     {{#if approved}}
-      <div class="bg-success "><strong>Motion carried with a vote of {{aye}} for, {{nay}} against, and {{abstain}} abstaining.</strong></div>
+      <div class="bg-success ">
+        <strong>Motion carried with a vote of {{aye}} for, {{nay}} against, and {{abstain}} abstaining.</strong>
+        {{#if notYetRatified}}
+          {{#if isChairperson}}
+            <input type="button" class="btn btn-primary" id="ratify" value="Ratify the Vote" />
+          {{/if}}
+        {{else}}
+          <strong>The motion has been ratified by the chairperson.</strong>
+        {{/if}}
+      </div>
     {{/if}}
     {{#if denied}}
-      <div class="bg-danger finalVoteTallyCarry"><strong>Motion not carried with a vote of {{nay}} against, {{aye}} for, and {{abstain}} abstaining.</strong></div>
+      <div class="bg-danger finalVoteTallyCarry">
+        <strong>Motion not carried with a vote of {{nay}} against, {{aye}} for, and {{abstain}} abstaining.</strong>
+        {{#if notYetRatified}}
+          {{#if isChairperson}}
+            <input type="button" class="btn btn-primary" id="ratify" value="Ratify the Vote" />
+          {{/if}}
+        {{/if}}
+        {{#if ratified}}
+          <strong>The motion has been ratified by the chairperson.</strong>
+        {{/if}}
+      </div>
     {{/if}}
     </div>
     {{#if requiresVote}}
@@ -313,50 +322,38 @@
   {{/if}}
   {{#if calledToOrder}}
   	<div class="row">
-  		<div class="col-sm-5">
-        <div class="row">
-          <div class="col-sm-12">
-      			<textarea id="newMessage"></textarea><br />
+  		<div class="col-sm-12 col-xs-12 col-md-12 col-lg-12">
+    			<textarea id="newMessage"></textarea><br />
+          {{#each typers}}
+            <i>{{userName}} is typing...</i><br />
+          {{/each}}
+          {{#if hasTheFloor}}
+          <div class="alert alert-danger">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">x</a>
+            You have the floor!
           </div>
-        </div>
-        <div class="row">
-          <div class="col-sm-6">
-  			     <input type="button" id="newMessageSubmit" class="btn btn-default" value="Submit" {{allowToSubmit}}/>
-  			     <button type="button" id="messagePreviewButton" class="btn btn-default show-modal" data-modal="preview">Preview Your Message</button>
-          </div>
-          <div class="col-sm-3">
-            {{#each typers}}
-              <i>{{userName}} is typing...</i><br />
-            {{/each}}
-          </div>
-        {{#if hasTheFloor}}
-          <div class="col-sm-3">
-            <div class="alert alert-danger">
-              <a href="#" class="close" data-dismiss="alert" aria-label="close" title="close">x</a>
-              You have the floor!
-            </div>
-          </div>
-        {{/if}}
-        </div>
-  		</div>
-			<div class="col-sm-3">
-				<input type="hidden" id="ruleset" />
-				<div id="commandDropdown" class="dropdown">
-					<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
-            <span id="commandSelected">Things you can do</span>
-					  <span class="caret"></span>
+          {{/if}}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div id="commandDropdown" class="dropdown">
+          <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+            <span id="commandSelected">Actions</span>
+            <span class="caret"></span>
           </button>
-					<ul class="dropdown-menu" role="menu" id="commandMenu" aria-labelledby="commandSelected">
-						{{#each commands}}
+          <ul class="dropdown-menu" role="menu" id="commandMenu" aria-labelledby="commandSelected">
+            {{#each commands}}
               {{{seperator}}}
               <li class="{{actionDisabled}}">{{commandName}}</li>
-						{{/each}}
-					</ul>
-				</div>
-			</div>
-  		<div class="col-sm-4">
+            {{/each}}
+          </ul>
+        </div>
+        <input type="button" id="newMessageSubmit" class="btn btn-default" value="Submit" {{allowToSubmit}}/>
+        <button type="button" id="messagePreviewButton" class="btn btn-default show-modal" data-modal="preview">Preview</button>
+        <input type="hidden" id="ruleset" />
         {{#unless isChairperson}}
-          <input type="button" id="requestTheFloor" class="btn btn-default" value="Request the Floor" />
+        <input type="button" id="requestTheFloor" class="btn btn-default" value="Request the Floor" />
         {{/unless}}
   		</div>
   	</div>

@@ -42,11 +42,6 @@ if(Meteor.isClient) {
 				 console.log("valid");
 				return true;
 			}
-			console.log(this.meeting);
-			console.log(this.meeting.status == MEETINGSTATUS.pending);
-			console.log(Session.get("role") == ROLES.chairperson);
-			console.log(this.meeting.startDateTime <= moment());
-			console.log("invalid");
 			return false;
 		}
 	}

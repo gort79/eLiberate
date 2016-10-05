@@ -32,15 +32,15 @@ if(Meteor.isClient) {
 	RobertsRulesOfOrderCommands.push(new ObjectToConsiderationCommand());
 	RobertsRulesOfOrderCommands.push(new OpenAgendaItemCommand());
 	RobertsRulesOfOrderCommands.push(new OpenFloorToDebateCommand());
-	RobertsRulesOfOrderCommands.push(new OrdersOfTheDayCommand());
-	RobertsRulesOfOrderCommands.push(new PointOfInformationCommand());
-	RobertsRulesOfOrderCommands.push(new PointOfOrderCommand());
+	//RobertsRulesOfOrderCommands.push(new OrdersOfTheDayCommand());
+	//RobertsRulesOfOrderCommands.push(new PointOfInformationCommand());
+	//RobertsRulesOfOrderCommands.push(new PointOfOrderCommand());
 	RobertsRulesOfOrderCommands.push(new PostponeIndefinitelyCommand());
-	RobertsRulesOfOrderCommands.push(new PostponeToACertainTimeCommand());
-	RobertsRulesOfOrderCommands.push(new PreviousQuestionCommand());
+	//RobertsRulesOfOrderCommands.push(new PostponeToACertainTimeCommand());
+	//RobertsRulesOfOrderCommands.push(new PreviousQuestionCommand());
 	RobertsRulesOfOrderCommands.push(new PutToVoteCommand());
 	RobertsRulesOfOrderCommands.push(new ReconsiderCommand());
-	RobertsRulesOfOrderCommands.push(new SuspendTheRulesCommand());
+	//RobertsRulesOfOrderCommands.push(new SuspendTheRulesCommand());
 	RobertsRulesOfOrderCommands.push(new TakeFromTheTableCommand());
 	RobertsRulesOfOrderCommands.push(new WithdrawModifyMainMotionCommand());
 

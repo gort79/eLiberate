@@ -137,7 +137,7 @@ if(Meteor.isClient) {
 		this.subscribe("votes", Session.get("meetingId"));
 	});
 
-	Template.robertsRulesOfOrderAgenda.helpers({
+	Template.robertsRulesOfOrderTools.helpers({
 		agenda: function() {
 			return Agendas.find({meetingId: Session.get("meetingId")});
 		},
@@ -160,8 +160,66 @@ if(Meteor.isClient) {
 				case AGENDASTATUS.ended:
 					return "fa-check-square-o";
 			}
+		},
+
+		hasTheFloor: function() {
+			return HasTheFloor(this.userId == undefined ? Meteor.userId() : this.userId);
+		},
+
+		isChairperson: function() {
+			return Session.get("role") == ROLES.chairperson;
+		},
+
+		queue: function() {
+			var currentMotion = CurrentMotion();
+			if(currentMotion != undefined)
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, hasSpoken: false}, {sort: { recognized: -1 }});
+			}
+			else
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: false}, {sort: { recognized: -1 }});
+			}
+		},
+
+		canRemoveFromQueue : function() {
+			return Session.get("role") == ROLES.chairperson || this.userId == Meteor.userId();
+		},
+
+		userFloorCount : function() {
+			var currentMotion = CurrentMotion();
+			if(currentMotion != undefined)
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, hasSpoken: true, userId: this.userId}).count();
+			}
+			else
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: true, userId: this.userId}).count();
+			}
+		},
+
+		queueCount : function() {
+			var currentMotion = CurrentMotion();
+			if(currentMotion != undefined)
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, hasSpoken: false}).count();
+			}
+			else
+			{
+				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: false}).count();
+			}
 		}
-	})
+	});
+
+	Template.robertsRulesOfOrderTools.events({
+		'click #removeFromQueue': function() {
+			Queues.remove({_id: this._id});
+		},
+
+		'click #recognize': function() {
+		  Queues.update({_id: this._id}, { $set: { recognized: new Date() }});
+		},
+	});
 
 	/* eLiberate Constants */
 	Template.robertsRulesOfOrderMessages.helpers({
@@ -196,22 +254,6 @@ if(Meteor.isClient) {
 			{
 				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: true, userId: this.userId}).count();
 			}
-		},
-
-		hasTheFloor: function() {
-			return HasTheFloor(this.userId == undefined ? Meteor.userId() : this.userId);
-		},
-
-		queue: function() {
-			var currentMotion = CurrentMotion();
-			if(currentMotion != undefined)
-			{
-				return Queues.find({meetingId: Session.get("meetingId"), motionId: currentMotion._id, hasSpoken: false}, {sort: { recognized: -1 }});
-			}
-			else
-			{
-				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: false}, {sort: { recognized: -1 }});
-			}
 		}
 	});
 
@@ -229,17 +271,6 @@ if(Meteor.isClient) {
 		}
 		isSubmittedCommandsPopulated.set(true);
 	}
-
-	Template.robertsRulesOfOrderMessages.events({
-		'click #removeFromQueue': function() {
- 			Queues.remove({_id: this._id});
-		},
-
-		'click #recognize': function() {
-		  Queues.update({_id: this._id}, { $set: { recognized: new Date() }});
-		},
-
-	});
 
 	Template.robertsRulesOfOrderVotableCommand.helpers({
 		needsSecond: function() {
@@ -262,13 +293,7 @@ if(Meteor.isClient) {
 		},
 
 		motionNotSeconded: function() {
-			if(this.status == MOTIONSTATUS.notSeconded)
-			{
-				return true;
-
-			}
-
-			return false;
+			return this.status == MOTIONSTATUS.notSeconded;
 		},
 
 		canSecond: function() {
@@ -287,6 +312,10 @@ if(Meteor.isClient) {
 			}
 
 			return false;
+		},
+
+		killed: function() {
+			return this.status == MOTIONSTATUS.killed;
 		}
 	});
 
@@ -321,6 +350,10 @@ if(Meteor.isClient) {
 
 			this.status = status;
 			Messages.update({_id: this._id}, {$set: {status: status, secondedBy: Meteor.user().username, secondedById: Meteor.userId()}});
+		},
+
+		'click #killMotion': function() {
+			Messages.update({_id: this._id}, {$set: {status: MOTIONSTATUS.killed}});
 		}
 	});
 
@@ -383,6 +416,14 @@ if(Meteor.isClient) {
 
 		motionPutToVote: function() {
 			return this.motionPutToVote;
+		},
+
+		isChairperson: function() {
+			return Session.get("role") == ROLES.chairperson;
+		},
+
+		notYetRatified: function() {
+			return this.ratified != true;
 		}
 	});
 
@@ -414,8 +455,8 @@ if(Meteor.isClient) {
 			}
 		},
 
-		'click #killMotion': function() {
-			Messages.update({_id: this._id}, {status: MOTIONSTATUS.killed});
+		'click #ratify': function() {
+			Messages.update({_id: this._id}, {$set: { ratified: true}});
 		}
 	});
 
@@ -521,7 +562,7 @@ if(Meteor.isClient) {
 			seperatorHtml = "";
 			if(this.meetingPart != LastMeetingPart
 				|| LastMeetingPart == "") {
-				seperatorHtml = "<li class='separator' style='background-color: #777777; text-align: center;'><h4>" + this.meetingPart + "</h4></li>";
+				seperatorHtml = "<li class='separator'><h4>" + this.meetingPart + "</h4></li>";
 			}
 
 			LastMeetingPart = this.meetingPart
@@ -562,7 +603,7 @@ if(Meteor.isClient) {
 
 			// Clear out the command controls
 			$("#newMessage").val('');
-			$("#commandSelected").text('Things you can do');
+			$("#commandSelected").text('Actions');
 			isCommandSelected.set(false);
 		},
 

@@ -39,27 +39,20 @@ if(Meteor.isClient) {
 				// Close the meeting
 				Meetings.update({_id: this.meeting._id}, {$set: {status: MEETINGSTATUS.ended, endDateTime: new Date()}});
 
-				// Close any remaining orders of business
-				openAgendas = Agendas.find({meetingId: this.meeting._id, status: AGENDASTATUS.active}).fetch();
-				for(var x = 0; x < openAgendas.length; x++)
-				{
-					// We're not going to create any motions to do this, just going to close those that are open.
-					// Those that are pending are left pending so it's easy to see that they were never addressed.
-					Agendas.update({_id: openAgendas[x]._id}, {$set: {status: AGENDASTATUS.ended}});
-				}
-
 				// Close any parent motions that may be open
-				var parentMotion = CurrentParentMotion();
-				if(parentMotion != undefined)
-				{
-					Messages.update({_id: parentMotion._id}, {status: MOTIONSTATUS.killed});
-				}
+				//var parentMotion = CurrentParentMotion();
+				//if(parentMotion != undefined)
+				//{
+				//	Messages.update({_id: parentMotion._id}, {status: MOTIONSTATUS.killed});
+				//}
 			}
 		},
 
 		this.validateCommand = function() {
 			var currentMotion = CurrentMotion();
+			var openAgendas = Agendas.find({meetingId: this.meeting._id, status: AGENDASTATUS.active}).fetch();
 			return this.meeting.status == MEETINGSTATUS.started
+			  && openAgendas.length == 0
 				&& (currentMotion == undefined
 					|| (!currentMotion.isMotion
 							|| (currentMotion.isMotion && currentMotion.status != MOTIONSTATUS.second)));

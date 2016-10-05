@@ -35,7 +35,7 @@
   // Configure environment
   "env": {
     "PORT":80,
-    "ROOT_URL": "https://eliberate.publicsphereproject.org"
+    "ROOT_URL": "http://eliberate.publicsphereproject.org"
   },
 
   // ssl

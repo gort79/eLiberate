@@ -129,6 +129,10 @@
   margin-bottom: 7px;
 }
 
+.navbar-fixed-bottom {
+  min-height: 130px;
+}
+
 #messageControls {
   position: absolute;
   bottom: 0;
@@ -138,20 +142,33 @@
   z-index: 1;
 }
 
+#commandDropdown {
+  display: inline-block;
+  position: relative;;
+  margin-top: 2px;
+  background: black;
+}
+
 #commandDropdown .dropdown-menu > li {
   color: white ;
   background-color: black;
   cursor: pointer;
 }
 
-#queue {
-  position: fixed;
-  right: 0px;
-  top: 50%;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background: rgba(0, 10, 50, .8);
-  padding: 5px;
+#commandMenu {
+  min-width: 250px;
+}
+
+.separator {
+  background-color: black;
+  border-bottom: solid 1px white;
+}
+
+.separator H4 {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  padding-top: 15px;
+  color: #8888CC;
 }
 
 .disabled {
@@ -198,8 +215,10 @@
 
 #messages {
   background-color: #f7f9e6;
-  padding-top: 143px;
-  padding-bottom: 165px;
+  padding-top: 163px;
+  padding-bottom: 185px;
+  min-height: 1000px;
+  display: block;
 }
 
 #messagesFooter {

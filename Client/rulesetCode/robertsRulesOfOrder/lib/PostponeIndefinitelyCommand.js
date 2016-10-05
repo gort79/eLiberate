@@ -28,11 +28,15 @@ if(Meteor.isClient) {
 		},
 
 		this.approved = function() {
-			// Close the parent motion if there is one
-			var parentMotion = CurrentParentMotion();
-			if(parentMotion != undefined)
-			{
-				Messages.update({_id: parentMotion._id}, {status: MOTIONSTATUS.postponed});
+			// Have the chairperson close the motion and add a comment stating the motion has been postponed indefinitely
+			if(Session.get("role") == ROLES.Chairperson){
+				// Close the parent motion if there is one
+				var parentMotion = CurrentParentMotion();
+				if(parentMotion != undefined)
+				{
+					Messages.update({_id: parentMotion._id}, {status: MOTIONSTATUS.postponed});
+					Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: "MakeAStatement", statement: "The motion has been postponed indefinitely."})
+				}
 			}
 		},
 
