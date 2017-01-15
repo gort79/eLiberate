@@ -112,7 +112,7 @@ if(Meteor.isClient) {
 	HaveQuorum = function() {
 		var meeting = Meetings.findOne({_id: Session.get("meetingId")});
 		var attendanceCount = Attendees.find({meetingId: meeting._id}).count();
-		var members = Permissions.find({organizationId: meeting.organizationId}).count();
+		var members = Permissions.find({organizationId: meeting.organizationId, role: { $nin: [ ROLES.guest ]}}).count();
 
 		if(attendanceCount / members >= .5)
 		{
@@ -455,8 +455,14 @@ if(Meteor.isClient) {
 			}
 		},
 
-		'click #ratify': function() {
+		'click #ratify': function(motion) {
 			Messages.update({_id: this._id}, {$set: { ratified: true}});
+			this.motionPutToVote = CreateCommandInstance(GetCommandPrototype(this.motionPutToVote.commandType), Meetings.findOne({_id: Session.get("meetingId")}), Organizations.findOne({_id: Session.get("organizationId")}), this.motionPutToVote.statement, this.motionPutToVote.userId, this.motionPutToVote.userName, this.motionPutToVote.dateTime, this.motionPutToVote);
+
+			if(this.motionPutToVote != undefined && this.motionPutToVote.approved != undefined)
+			{
+				this.motionPutToVote.approved()
+			}
 		}
 	});
 
@@ -477,11 +483,6 @@ if(Meteor.isClient) {
 				Messages.update({_id: motion._id}, {$set: {status: MOTIONSTATUS.approved}});
 				Messages.update({_id: motion.motionPutToVote._id}, {$set: {status: MOTIONSTATUS.approved}});
 				motion.status = MOTIONSTATUS.approved;
-				if(motion.motionPutToVote.approved != undefined)
-				{
-					motion.motionPutToVote.approved()
-				}
-
 				BuildSubmittedCommands();
 				return true;
 			}

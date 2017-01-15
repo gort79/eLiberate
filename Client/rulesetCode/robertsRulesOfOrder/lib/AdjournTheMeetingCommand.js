@@ -50,9 +50,9 @@ if(Meteor.isClient) {
 
 		this.validateCommand = function() {
 			var currentMotion = CurrentMotion();
-			var openAgendas = Agendas.find({meetingId: this.meeting._id, status: AGENDASTATUS.active}).fetch();
+			//var openAgendas = Agendas.find({meetingId: this.meeting._id, status: AGENDASTATUS.active}).fetch();
 			return this.meeting.status == MEETINGSTATUS.started
-			  && openAgendas.length == 0
+			  //&& openAgendas.length == 0
 				&& (currentMotion == undefined
 					|| (!currentMotion.isMotion
 							|| (currentMotion.isMotion && currentMotion.status != MOTIONSTATUS.second)));

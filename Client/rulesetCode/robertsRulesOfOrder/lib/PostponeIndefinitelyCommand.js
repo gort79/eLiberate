@@ -29,7 +29,7 @@ if(Meteor.isClient) {
 
 		this.approved = function() {
 			// Have the chairperson close the motion and add a comment stating the motion has been postponed indefinitely
-			if(Session.get("role") == ROLES.Chairperson){
+			if(Session.get("role") == ROLES.chairperson){
 				// Close the parent motion if there is one
 				var parentMotion = CurrentParentMotion();
 				if(parentMotion != undefined)

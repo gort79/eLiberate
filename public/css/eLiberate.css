@@ -99,6 +99,10 @@
   background-color: #FFEE55;
 }
 
+.table-striped TBODY tr:nth-child(even) {
+  background-color: #
+}
+
 /* Details Styles */
 
 .meeting-button {
@@ -112,8 +116,19 @@
   overflow-y: scroll;
 }
 
-#meetings TBODY tr:nth-child(odd) {
-  background-color: #FFEE55;
+.table-striped TBODY tr:nth-child(odd),
+.table-striped TBODY tr:nth-child(odd) A {
+  background-color: #FFFFFF;
+  color: #444444;
+}
+
+.table-striped TBODY tr:nth-child(odd) td .table-striped {
+  border-color: #2D3538;
+}
+
+.table-striped TBODY tr:nth-child(even) {
+  background-color: #2D3538;
+  color: #FFF;
 }
 
 /* Message Styles */
@@ -214,7 +229,6 @@
 }
 
 #messages {
-  background-color: #f7f9e6;
   padding-top: 163px;
   padding-bottom: 185px;
   min-height: 1000px;

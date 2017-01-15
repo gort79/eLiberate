@@ -106,9 +106,23 @@ if(Meteor.isClient) {
 		},
 
 		'click #organization-name-delete': function() {
-			var result = confirm("Are you sure you want to delete " + this.organizationName + "?");
+			var result = confirm("Are you sure you want to delete " + this.organizationName + "? All meetings will be deleted as well.");
 			if (result) {
 				Organizations.remove({_id: this._id});
+
+				// Delete all of meetings
+				var meetings = Meetings.find({organizationId: this._id}).fetch();
+				for(var i = 0; i < meetings.count(); i++)
+				{
+					Meetings.remove({_id: meetings[i]._id});
+				}
+
+				// Delete all of roles
+				var roles = Roles.find({organizationId: this._id}).fetch();
+				for(var i = 0; i < roles.count(); i++)
+				{
+					Roles.remove({_id: roles[i]._id});
+				}
 			}
 		},
 
@@ -140,7 +154,7 @@ if(Meteor.isClient) {
 	  },
 
 		isAdmin: function () {
-			return Meteor.wrapAsync(Meteor.call('isOrganizationAdmin', Session.get("organizationId"), function(err, data) { return data; }));
+			return Permissions.find({$or: [ {userId: Meteor.userId(), role: ROLES.administrator }, {userId: Meteor.userId(), role: ROLES.chairperson} ] }).count() > 0;
 		}
 	});
 

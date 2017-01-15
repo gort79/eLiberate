@@ -36,6 +36,13 @@ if(Meteor.isClient) {
 					status: AGENDASTATUS.active
 				}});
 
+				// Clear the queue.
+				var queues = Queues.find({meetingId:this.meeting._id}).fetch();
+				for(var i = 0; i < queues.length; i++)
+				{
+					Queues.remove({_id: queues[i]._id});
+				}
+
 				// Save the command
 				this.agendaName = nextAgendaItem.name;
 				this._id = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, agendaName: this.agendaName, statement: this.statement });

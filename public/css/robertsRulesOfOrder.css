@@ -75,11 +75,13 @@
 }
 
 .agenda {
+		margin-top: 1px;
 		width: 180px;
 		right: 185px;
 }
 
 .queue {
+ 		margin-top: 1px;
 		right: 0px;
 		width: 180px;
 }

@@ -24,7 +24,7 @@
         <a href="#">
             {{#if canRemoveFromQueue}}<i id="removeFromQueue" class="fa fa-ban"></i>{{/if}}
           {{#if isChairperson}}<i id="recognize" class="fa fa-comment">{{userFloorCount}}</i>{{/if}}
-          {{#if hasTheFloor}}<i class="fa fa-star" style="color: yellow;"></i>{{/if}}
+          {{#if hasTheFloor}}<i class="fa fa-star" style="color: goldenrod;"></i>{{/if}}
           {{userName}}
         </a>
       {{/each}}
@@ -77,7 +77,7 @@
           <input type="button" class="btn btn-primary" id="second" value="Second" />
         {{/if}}
         {{#if canKillMotion}}
-          <input type="button" class="btn btn-primary" id="killMotion" value="Kill the Motion" />
+          <input type="button" class="btn btn-primary" id="killMotion" value="Withdraw the Motion" />
         {{/if}}
       {{/if}}
       {{#if motionNotSeconded}}

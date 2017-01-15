@@ -12,8 +12,8 @@ html,body {
 
 
 body {
-	background:#222;
-    background: url("/images/foggy.jpg") no-repeat center center fixed;
+	background:#000;
+    background: url("/images/blurry-lights-9805.jpg") no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
@@ -357,7 +357,7 @@ transition:all 1.2s ease-out;
 	font-weight:100;
     margin: 0 0 32px;
     text-align: center;
-    text-transform: uppercase;5444444444444
+    text-transform: uppercase;
 
 
 }
@@ -383,11 +383,10 @@ transition:all 1.2s ease-out;
 
 #modal-nav{
 	position: fixed;
-	opacity:0.95;
 	z-index:999;
 	width:100%;
 	background:#2D3538;
-	color:#848D90;
+	color:#FFFFFF;
   display:none;
   padding-top:15px;
   padding-bottom:50px;
@@ -497,6 +496,10 @@ transition:all 1.2s ease-out;
 
 #modal-nav #modal-newsletter .btn-submit:hover {
 	opacity:0.6;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+	color: #444;
 }
 .gmap images{
 	max-width: 100%;
