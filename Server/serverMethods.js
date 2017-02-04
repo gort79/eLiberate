@@ -22,9 +22,8 @@ if(Meteor.isServer) {
 		},
 
 		sendEmail: function(comment, fromEmail) {
-			Email.send({
-				/*to: "douglas@publicsphereproject.org"*/
-				to: "nathan.clinton@gmail.com",
+			return Email.send({
+				to: "nathan.clinton@gmail.com", /* douglas@publicsphereproject.org; */
 				from: fromEmail,
 				subject: "eLiberate contact/feedback",
 				text: comment
@@ -38,6 +37,16 @@ if(Meteor.isServer) {
 			{
 				Attendees.insert({meetingId: meetingId, userId: userId, userName: userName});
 			}
+		},
+
+		isAdmin: function() {
+			var user = Meteor.users.findOne(this.userId);
+	    if(admins.includes(user.username))
+	    {
+	      return true;
+	    }
+
+			return false;
 		},
 
 		leaveMeeting: function(userId, organizationId, meetingId) {

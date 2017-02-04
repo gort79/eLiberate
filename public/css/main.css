@@ -43,6 +43,10 @@ textarea {
   color: black !important;
 }
 
+input {
+	color: black !important;
+}
+
 #video-wrapper{
 	height:100%;
 }

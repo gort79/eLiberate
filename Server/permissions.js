@@ -196,13 +196,32 @@ if(Meteor.isServer) {
 	  }
 	});
 
-
 	Votes.allow({
 		'insert': function (userId,doc) {
 			return Permissions.find({organizationId: doc.organizationId, userId: userId, $or: [{role: ROLES.chairperson}, {role: ROLES.member}, {role: ROLES.administrator}]});
 	  },
 		'remove': function (userId,doc) {
 			return true;
+		}
+	});
+
+
+	Comments.allow({
+		'insert': function (userId,doc) {
+			return true;
+	  },
+		'update': function (userId,doc) {
+			return false;
+	  },
+		'remove': function (userId,doc) {
+			var user = Meteor.users.findOne(this.userId);
+	    if(admins.includes(user.username)) {
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 	});
 

@@ -84,4 +84,13 @@ if(Meteor.isServer) {
 		return Votes.find({meetingId: meetingId});
 	});
 
+  Meteor.publish("comments", function() {
+    var user = Meteor.users.findOne(this.userId);
+    if(admins.includes(user.username))
+    {
+      return Comments.find({});
+    }
+
+    return Comments.find({commentFrom: 'dontsendanythingback'});
+  });
 }

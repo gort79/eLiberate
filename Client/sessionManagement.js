@@ -15,6 +15,7 @@ if(Meteor.isClient) {
 			Meteor.subscribe("meetings");
 			Meteor.subscribe("agendas");
 			Meteor.subscribe("attendees");
+			Meteor.subscribe("comments");
 		}
 	});
 
