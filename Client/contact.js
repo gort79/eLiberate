@@ -1,10 +1,27 @@
 if(Meteor.isClient) {
+	Template.contactTemplate.helpers({
+		comments: function(){
+			return Comments.find().fetch();
+		},
+
+		hasComments: function() {
+			return Comments.find({}).count() > 0;
+		}
+	});
 	Template.contactTemplate.events({
-		'click #sendComment': function() {
+		'click #sendComment': function(e) {
+			e.preventDefault();
 			Meteor.call('sendEmail', $('#comment').val(), $('#commentFrom').val(), function(err, data) {
 			  if(err == undefined) {
-					$('#commentSuccess').delay(500).fadeIn('normal', function() {
-						 $(this).delay(10000).fadeOut();
+					$('#commentSuccess').show('fade', {}, 500, function (){
+						 $('#commentSuccess').delay(10000).hide('fade', {}, 500);
+					});
+
+					Comments.insert({commentFrom: $('#commentFrom').val(), comment: $('#comment').val()});
+				} else {
+					$('#commentfailure').show('fade', {}, 500, function (){
+						$('#commentFailureError').text(err);
+						$('#commentSuccess').delay(10000).hide('fade', {}, 500);
 					});
 				}
 			});
