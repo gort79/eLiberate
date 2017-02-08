@@ -39,11 +39,16 @@ a:hover, a:focus {
     opacity:0.6;
 }
 
+.bright-link {
+	color: #f77936;
+}
 textarea {
   color: black !important;
 }
 
-input {
+input[type=text],
+input[type=email]
+ {
 	color: black !important;
 }
 

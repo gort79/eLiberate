@@ -345,7 +345,7 @@
           <ul class="dropdown-menu" role="menu" id="commandMenu" aria-labelledby="commandSelected">
             {{#each commands}}
               {{{seperator}}}
-              <li class="{{actionDisabled}}">{{commandName}}</li>
+              <li class="{{actionDisabled}}" data-tooltip="{{tooltip}}">{{commandName}}</li>
             {{/each}}
           </ul>
         </div>
@@ -353,7 +353,7 @@
         <button type="button" id="messagePreviewButton" class="btn btn-default show-modal" data-modal="preview">Preview</button>
         <input type="hidden" id="ruleset" />
         {{#unless isChairperson}}
-        <input type="button" id="requestTheFloor" class="btn btn-default" value="Request the Floor" />
+        <input type="button" id="requestTheFloor" class="btn btn-default" value="Request the Floor" data-tooltip="Join the queue in order to speak or take most actions. You can queue several times. The chairperson must give you the floor before you can take an action."/>
         {{/unless}}
   		</div>
   	</div>
@@ -363,4 +363,5 @@
       The meeting ajourned at {{prettifyDate endDateTime}}.
     </div>
   {{/if}}
+  {{> tooltips }}
 </template>

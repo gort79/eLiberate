@@ -13,6 +13,7 @@ if(Meteor.isClient) {
 		this.closesMotion = true,
 		this.orderOfPresedence = 725,
 		this.meetingPart = MEETINGPARTS.subsidiary,
+		this.tooltip = 'Delay what is currently being debated for a later, unknown date in a different meeting. Need 1: a 2nd 2: a majority vote. Can be debated.',
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();

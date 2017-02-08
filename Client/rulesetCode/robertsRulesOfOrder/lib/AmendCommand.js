@@ -13,6 +13,7 @@ if(Meteor.isClient) {
 		this.closesMotion = false,
 		this.orderOfPresedence = 1000,
 		this.meetingPart = MEETINGPARTS.subsidiary,
+		this.tooltip = 'proposes an edit the current motion. Need 1: a 2nd 2: a majority vote. Can be debated/amended. Needs to be relevant.',
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();

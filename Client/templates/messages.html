@@ -1,31 +1,29 @@
 <template name="messageTemplates">
-  {{#if hasComments}}
-    {{#with comments}}
-      <nav id="messagesHeader" class="navbar navbar-default navbar-fixed-top">
-        <div class="container-fluid">
-          <h2>
-        	{{name}}
-          </h2>
-          <div class="row">
-          	<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          		<i class="fa fa-clock-o icon-white"></i> {{prettifyDate startDateTime}}
-          	</div>
-          	<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          		<i class="fa fa-cog"></i> {{ruleset}}
-          	</div>
-          	<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
-          		<i class="fa fa-users"></i> {{attendance}} Attending ({{quorum}})
-          	</div>
-            {{> Template.dynamic template=rulesetHeader data=meetings }}
-          </div>
+  {{#with meeting}}
+    <nav id="messagesHeader" class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+        <h2>
+      	{{name}}
+        </h2>
+        <div class="row">
+        	<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+        		<i class="fa fa-clock-o icon-white"></i> {{prettifyDate startDateTime}}
+        	</div>
+        	<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+        		<i class="fa fa-cog"></i> {{ruleset}}
+        	</div>
+        	<div class="col-xs-6 col-sm-6 col-md-3 col-lg-3">
+        		<i class="fa fa-users"></i> {{attendance}} Attending ({{quorum}})
+        	</div>
+          {{> Template.dynamic template=rulesetHeader data=meetings }}
         </div>
-        <div>
-          {{> Template.dynamic template=rulesetTools data=meetings }}
-        </div>
-      </nav>
-      <div id="messages" class="container-fluid">
-        {{> Template.dynamic template=rulesetMessages data=meetings }}
       </div>
-    {{/with}}
-  {{/if}}
+      <div>
+        {{> Template.dynamic template=rulesetTools data=meetings }}
+      </div>
+    </nav>
+    <div id="messages" class="container-fluid">
+      {{> Template.dynamic template=rulesetMessages data=meetings }}
+    </div>
+  {{/with}}
 </template>

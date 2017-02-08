@@ -14,6 +14,7 @@ if(Meteor.isClient) {
 		this.orderOfPresedence = 0,
 		this.meetingPart = MEETINGPARTS.administrative,
 		this.refreshCommands = true,
+		this.tooltip = "Ends the debate on the current motion.",
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();

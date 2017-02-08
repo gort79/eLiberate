@@ -13,6 +13,7 @@ if(Meteor.isClient) {
 		this.closesMotion = false,
 		this.orderOfPresedence = 0,
 		this.meetingPart = MEETINGPARTS.subsidiary,
+		this.tooltip = 'Comment on the current motion in play.',
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();

@@ -13,6 +13,7 @@ if(Meteor.isClient) {
 		this.closesMotion = false,
 		this.orderOfPresedence = 0,
 		this.meetingPart = MEETINGPARTS.administrative,
+		this.tooltip = "Begin the meeting. Need 1: a majority of people from the group to be present before you can start.",
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();

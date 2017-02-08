@@ -13,6 +13,7 @@ if(Meteor.isClient) {
 		this.closesMotion = true,
 		this.orderOfPresedence = 700,
 		this.meetingPart = MEETINGPARTS.subsidiary,
+		this.tooltip = 'Shorten the maximum amount of time for each argument. Restrict the number of times members can speak. Define when the debate will be closed for voting',
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();

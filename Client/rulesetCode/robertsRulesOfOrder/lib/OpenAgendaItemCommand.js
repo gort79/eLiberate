@@ -13,6 +13,7 @@ if(Meteor.isClient) {
 		this.closesMotion = false,
 		this.orderOfPresedence = 0,
 		this.meetingPart = MEETINGPARTS.administrative,
+		this.tooltip = 'Used to move on to the next subject in the agenda. Useable after the current agenda is resolved or put to a committee.',
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();

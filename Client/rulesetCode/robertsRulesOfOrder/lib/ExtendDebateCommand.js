@@ -13,6 +13,7 @@ if(Meteor.isClient) {
 		this.closesMotion = false,
 		this.orderOfPresedence = 700,
 		this.meetingPart = MEETINGPARTS.subsidiary,
+		this.tooltip = 'Lengthen the maximum amount of time for each speech Increase the number of times members can speak. Needs 1: 2/3ds vote.',
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();

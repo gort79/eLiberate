@@ -16,6 +16,7 @@ if(Meteor.isClient) {
 		this.closesMotion = true,
 		this.orderOfPresedence = 100,
 		this.meetingPart = MEETINGPARTS.privileged,
+		this.tooltip = 'Propose to end the meeting. Need 1: a 2nd 2: a majority vote.',
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();

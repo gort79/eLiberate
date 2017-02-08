@@ -14,6 +14,7 @@ if(Meteor.isClient) {
 		this.orderOfPresedence = 0,
 		this.meetingPart = MEETINGPARTS.administrative,
 		this.refreshCommands = true,
+		this.tooltip = 'Allows members of the meeting to debate the current motion once they have the floor.',
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();
@@ -40,7 +41,7 @@ if(Meteor.isClient) {
 			if(currentMotion != undefined
 					&& this.meeting.status == MEETINGSTATUS.started
 					&& currentMotion.isDebateable
-				 	&& currentMotion.status != MOTIONSTATUS.debate 
+				 	&& currentMotion.status != MOTIONSTATUS.debate
 				)
 			{
 				return true

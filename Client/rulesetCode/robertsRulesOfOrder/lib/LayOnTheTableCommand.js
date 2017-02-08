@@ -13,6 +13,7 @@ if(Meteor.isClient) {
 		this.closesMotion = true,
 		this.orderOfPresedence = 500,
 		this.meetingPart = MEETINGPARTS.subsidiary,
+		this.tooltip = 'Present an urgent matter for an immediate decision. Need 1: should explain the reason for making the motion, 2: a 2nd, 3: majority vote.',
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();

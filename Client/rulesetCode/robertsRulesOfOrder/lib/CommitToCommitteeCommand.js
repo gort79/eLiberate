@@ -13,6 +13,7 @@ if(Meteor.isClient) {
 		this.closesMotion = true,
 		this.orderOfPresedence = 900,
 		this.meetingPart = MEETINGPARTS.subsidiary,
+		this.tooltip = 'Appoint the current motion to a group to research/discuss/debate the subject outside of the meeting. The group only has the power appointed to it.',
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();
