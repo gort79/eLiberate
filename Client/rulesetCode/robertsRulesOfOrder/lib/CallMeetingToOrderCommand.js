@@ -40,7 +40,6 @@ if(Meteor.isClient) {
 				 && this.meeting.startDateTime <= moment()
 			 ) {
 
-				 console.log("valid");
 				return true;
 			}
 			return false;
