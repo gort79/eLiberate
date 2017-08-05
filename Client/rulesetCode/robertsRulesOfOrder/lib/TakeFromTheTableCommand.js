@@ -16,7 +16,7 @@ if(Meteor.isClient) {
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();
-			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart});
+			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart, tooltip: this.tooltip});
 		},
 
 		this.execute = function() {
@@ -27,14 +27,14 @@ if(Meteor.isClient) {
 			}
 		},
 
-			this.approved = function() {
-				// Close the parent motion if there is one
-				var parentMotion = CurrentParentMotion();
-				if(parentMotion != undefined)
-				{
-					Messages.update({_id: parentMotion._id}, {status: MOTIONSTATUS.killed});
-				}
-			},
+		this.approved = function() {
+			// Close the parent motion if there is one
+			var parentMotion = CurrentParentMotion();
+			if(parentMotion != undefined)
+			{
+				Messages.update({_id: parentMotion._id}, {status: MOTIONSTATUS.killed});
+			}
+		},
 
 		this.validateCommand = function() {
 			if(CurrentMotion() != undefined) {

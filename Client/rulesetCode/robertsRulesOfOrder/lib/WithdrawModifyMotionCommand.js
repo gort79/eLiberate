@@ -13,10 +13,11 @@ if(Meteor.isClient) {
 		this.closesMotion = true,
 		this.orderOfPresedence = 0,
 		this.meetingPart = MEETINGPARTS.incidental,
+		this.tooltip = "",
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();
-			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart});
+			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart, tooltip: this.tooltip});
 		},
 
 		this.execute = function() {

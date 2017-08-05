@@ -277,3 +277,31 @@
 .tooltip.show {
   opacity: 1;
 }
+
+.indent-0 {
+  margin-left: 0px;
+}
+
+.indent-1 {
+  margin-left: 20px;
+}
+
+.indent-2 {
+  margin-left: 40px;
+}
+
+.indent-3 {
+  margin-left: 60px;
+}
+
+.indent-4 {
+  margin-left: 80px;
+}
+
+.indent-5 {
+  margin-left: 100px;
+}
+
+.indent-6 {
+  margin-left: 120px;
+}

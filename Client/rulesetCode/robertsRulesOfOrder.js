@@ -31,18 +31,6 @@ if(Meteor.isClient) {
 
 	// Gets the current motion if you need it
 	CurrentMotion = function() {
-		//var currentMotion;
-		//for(var index = 0; index < SubmittedCommands.length; index++)
-		//{
-		//	if(SubmittedCommands[index].isMotion
-		//		&& SubmittedCommands[index].status != MOTIONSTATUS.approved
-		//		&& SubmittedCommands[index].status != MOTIONSTATUS.denied
-		//	  && SubmittedCommands[index].status != MOTIONSTATUS.killed
-		//		&& SubmittedCommands[index].status != MOTIONSTATUS.postponed
-		//		&& SubmittedCommands[index].status != MOTIONSTATUS.none) {
-		//		currentMotion = SubmittedCommands[index];
-		//	}
-		//}
 		var currentMotion = Messages.find({meetingId: Session.get("meetingId"), status: { $nin: [ MOTIONSTATUS.approved, MOTIONSTATUS.denied, MOTIONSTATUS.killed, MOTIONSTATUS.postponed, MOTIONSTATUS.none ]}, commandType: { $in: GetMotionTypes() }}, {limit: 1, sort: { dateTime: -1 }}).fetch();
 
 		return currentMotion.length == 0 ? undefined : CreateCommandInstance(GetCommandPrototype(currentMotion[0].commandType), Meetings.find({_id: Session.get("meetingId")}).fetch()[0], Organizations.find({_id: Session.get("organizationId")}).fetch()[0], currentMotion[0].statement, currentMotion[0].userId, currentMotion[0].userName, currentMotion[0].dateTime, currentMotion[0]);
@@ -219,6 +207,16 @@ if(Meteor.isClient) {
 		'click #recognize': function() {
 		  Queues.update({_id: this._id}, { $set: { recognized: new Date() }});
 		},
+
+		'change #commandSelected': function() {
+			if($('#commandSelected').selectedValue == "Amendment")
+			{
+				$('#newMessage').val(CurrentMotion().statement);
+			}
+			else {
+				$('#newMessage').val('');
+			}
+		}
 	});
 
 	/* eLiberate Constants */
@@ -254,10 +252,44 @@ if(Meteor.isClient) {
 			{
 				return Queues.find({meetingId: Session.get("meetingId"), motionId: { $exists: false }, hasSpoken: true, userId: this.userId}).count();
 			}
+		},
+
+		CurrentMessageLevel: function() {
+			var messageId = this._id;
+			var level = 0;
+
+			for(var index = 0; index < SubmittedCommands.length; index++)
+			{
+				if(SubmittedCommands[index].isMotion
+					&& SubmittedCommands[index].status != MOTIONSTATUS.approved
+					&& SubmittedCommands[index].status != MOTIONSTATUS.denied
+					&& SubmittedCommands[index].status != MOTIONSTATUS.killed
+					&& SubmittedCommands[index].status != MOTIONSTATUS.postponed
+					&& SubmittedCommands[index].status != MOTIONSTATUS.none) {
+						if(currentMotion != undefined
+							 && (SubmittedCommands[index].meetingPart == MEETINGPARTS.subsidiary
+								|| SubmittedCommands[index].meetingPart == MEETINGPARTS.incidental)) { // Only subsidiary and incidental motions can have parents
+							level++;
+						}
+				}
+				else if (SubmittedCommands[index].closesMotion) {
+					level--;
+				}
+
+				if(SubmittedCommands[index]._id == messageId)
+				{
+					break;
+				}
+			}
+
+			return level;
 		}
 	});
 
 	BuildSubmittedCommands = function() {
+		var currentMotion;
+		var currentParentMotion;
+		var depth = 0;
 		SubmittedCommands = [];
 		meeting = Meetings.findOne({_id: Session.get("meetingId")});
 		organization = Organizations.findOne({_id: meeting.organizationId});
@@ -267,7 +299,21 @@ if(Meteor.isClient) {
 		{
 			var commandPrototype = GetCommandPrototype(messagesSubmitted[index].commandType);
 			var command = CreateCommandInstance(commandPrototype, meeting, organization, messagesSubmitted[index].statement, messagesSubmitted[index].userId, messagesSubmitted[index].userName, messagesSubmitted[index].dateTime, messagesSubmitted[index]);
+
+			command.depth = depth;
+
 			SubmittedCommands.push(command);
+
+			if (command.commandType == "PutToVote" ||
+					command.commandType == "Kill") {
+				depth--;
+			}
+			else if(command.isMotion)
+			{
+				currentMotion = command;
+				depth++;
+			}
+
 		}
 		isSubmittedCommandsPopulated.set(true);
 	}
@@ -353,7 +399,10 @@ if(Meteor.isClient) {
 		},
 
 		'click #killMotion': function() {
+			var currentMotion = CurrentMotion();
 			Messages.update({_id: this._id}, {$set: {status: MOTIONSTATUS.killed}});
+			CreateCommandInstance(GetCommandPrototype("Kill"), Meetings.find({_id: Session.get("meetingId")}).fetch()[0], Organizations.find({_id: Session.get("organizationId")}).fetch()[0], currentMotion[0].statement, currentMotion[0].userId, currentMotion[0].userName, currentMotion[0].dateTime, currentMotion[0]).execute();
+			TallyVote(this);
 		}
 	});
 
@@ -424,6 +473,15 @@ if(Meteor.isClient) {
 
 		notYetRatified: function() {
 			return this.ratified != true;
+		},
+
+		killed: function() {
+			if(this.status == MOTIONSTATUS.killed)
+			{
+				return true;
+			}
+
+			return false;
 		}
 	});
 
@@ -463,6 +521,12 @@ if(Meteor.isClient) {
 			{
 				this.motionPutToVote.approved()
 			}
+		},
+
+		'click #kill-vote': function() {
+			var currentMotion = CurrentMotion();
+			Messages.update({_id: this._id}, {$set: {status: MOTIONSTATUS.killed}});
+			CreateCommandInstance(GetCommandPrototype("Kill"), Meetings.find({_id: Session.get("meetingId")}).fetch()[0], Organizations.find({_id: Session.get("organizationId")}).fetch()[0], currentMotion[0].statement, currentMotion[0].userId, currentMotion[0].userName, currentMotion[0].dateTime, currentMotion[0]).execute();
 		}
 	});
 
@@ -546,7 +610,6 @@ if(Meteor.isClient) {
 		},
 
 		commands: function() {
-
 			return CommandResolver.visitValidCommands(Messages.find({meetingId: Session.get("meetingId")}).fetch());
 		},
 
@@ -573,9 +636,18 @@ if(Meteor.isClient) {
 
 		typers: function() {
 			return Attendees.find({meetingId: Session.get("meetingId"), typing: true, userId: { $ne: Meteor.userId() }});
+		},
+
+		tooltipTag: function() {
+			return {
+	      tooltip: this.tooltip,
+    	}
 		}
 	});
 
+	Template.robertsRulesOfOrderControls.rendered = function() {
+	  $('[data-toggle="tooltip"]').tooltip();
+	}
 
 	Template.robertsRulesOfOrderControls.events({
 
@@ -642,6 +714,14 @@ if(Meteor.isClient) {
 				var attendee = Attendees.findOne({meetingId: Session.get("meetingId"), userId: Meteor.userId()});
 				Attendees.update({ _id: attendee._id }, { $set: { typing: false } })
 				isTyping = false;
+			}
+		},
+
+		'click .dropdown-menu > li': function() {
+			var command = GetCommandPrototype($('#commandSelected')[0].innerText);
+			if(command.selected != undefined)
+			{
+				command.selected($('#newMessage'), CurrentMotion());
 			}
 		}
 	});

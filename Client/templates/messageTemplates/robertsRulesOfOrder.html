@@ -22,7 +22,7 @@
     <div class="dropdown-content">
       {{#each queue}}
         <a href="#">
-            {{#if canRemoveFromQueue}}<i id="removeFromQueue" class="fa fa-ban"></i>{{/if}}
+          {{#if canRemoveFromQueue}}<i id="removeFromQueue" class="fa fa-ban"></i>{{/if}}
           {{#if isChairperson}}<i id="recognize" class="fa fa-comment">{{userFloorCount}}</i>{{/if}}
           {{#if hasTheFloor}}<i class="fa fa-star" style="color: goldenrod;"></i>{{/if}}
           {{userName}}
@@ -52,17 +52,17 @@
 </template>
 
 <template name="robertsRulesOfOrderStandardCommand">
-  <div class="message {{meetingPart}}">
+  <div class="message {{meetingPart}} indent-{{depth}}">
     <div class="messageHeader">
       Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
     </div>
     <h5>{{commandDisplayName}}</h5>
-  {{#markdown}}{{statement}}{{/markdown}}
+    {{#markdown}}{{statement}}{{/markdown}}
   </div>
 </template>
 
 <template name="robertsRulesOfOrderVotableCommand">
-  <div class="message {{meetingPart}}">
+  <div class="message {{meetingPart}} indent-{{depth}}">
     <div class="messageHeader">
       Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
     </div>
@@ -91,7 +91,7 @@
 </template>
 
 <template name="PutToVoteCommand">
-  <div class="message {{meetingPart}}">
+  <div class="message {{meetingPart}} indent-{{depth}}">
     <div class="messageHeader">
       Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
     </div>
@@ -119,6 +119,11 @@
       {{else}}
         <div>You voted: <strong>{{yourVote}}</strong></div>
       {{/if}}
+      {{#if isChairperson}}
+      <div class="col-sm-3">
+        <input type="button" class="btn btn-primary" id="kill" value="Kill" />
+      </div>
+      {{/if}}
     {{/if}}
     {{#if approved}}
       <div class="bg-success ">
@@ -145,9 +150,14 @@
         {{/if}}
       </div>
     {{/if}}
+    {{#if killed}}
+      <div class="bg-danger finalVoteTallyCarry">
+        <strong>The motion was killed by the chairperson.</strong>
+      </div>
+    {{/if}}
     </div>
     {{#if requiresVote}}
-    <div class="modal-backdrop fade in "></div>
+    <div class="modal-backdrop fade in"></div>
     <div id="voteModal" class="modal show" role="dialog">
       <div class="modal-dialog">
         <!-- Modal content-->
@@ -161,7 +171,7 @@
                 Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
               </div>
               <h5>{{commandDisplayName}}</h5>
-              {{#markdown}}{{statement}}{{/markdown}}
+              {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=motionPutToVote }}
             </div>
             <div class="row">
               <div class="col-sm-3">
@@ -173,6 +183,11 @@
               <div class="col-sm-3">
                 <input type="button" class="btn btn-primary" id="abstain" value="Abstain" />
               </div>
+              {{#if isChairperson}}
+              <div class="col-sm-3">
+                <input type="button" class="btn btn-primary" id="kill-vote" value="Kill" />
+              </div>
+              {{/if}}
             </div>
             <div class="row">
               <div class="col-sm-3">
@@ -200,7 +215,7 @@
 
 <template name="OpenAgendaItemCommand">
   <a class="agena-link" name="{{agendaName}}"></a>
-  <div class="message {{meetingPart}}">
+  <div class="message {{meetingPart}} indent-{{depth}}">
     <div class="messageHeader">
       Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
     </div>
@@ -210,7 +225,7 @@
 </template>
 
 <template name="MakeAStatementCommand">
-  <div class="message {{meetingPart}}">
+  <div class="message {{meetingPart}} indent-{{depth}}">
     <div class="messageHeader">
       Posted by {{userName}} <i class="fa fa-clock-o"></i> {{prettifyDate dateTime}}
     </div>
@@ -248,6 +263,10 @@
 
 <template name="ExtendDebateCommand">
   {{> Template.dynamic template="robertsRulesOfOrderVotableCommand" data=this }}
+</template>
+
+<template name="KillCommand">
+  {{> Template.dynamic template="robertsRulesOfOrderStandardCommand" data=this }}
 </template>
 
 <template name="InformalConsiderationCommand">
@@ -345,7 +364,7 @@
           <ul class="dropdown-menu" role="menu" id="commandMenu" aria-labelledby="commandSelected">
             {{#each commands}}
               {{{seperator}}}
-              <li class="{{actionDisabled}}" data-tooltip="{{tooltip}}">{{commandName}}</li>
+              <li class="{{actionDisabled}}" data-toggle="tooltip" data-placement="right" {{tooltipTag}}>{{commandName}}</li>
             {{/each}}
           </ul>
         </div>

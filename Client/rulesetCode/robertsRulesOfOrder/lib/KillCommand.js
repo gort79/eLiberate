@@ -1,9 +1,9 @@
 if(Meteor.isClient) {
-	PutToVoteCommand = function() {
+	KillCommand = function() {
 
-		this.commandName = "Put the Question to Vote",
-		this.commandType = "PutToVote",
-		this.commandDisplayName = "The chairperson has put the question to vote",
+		this.commandName = "Kill the Current Motion",
+		this.commandType = "Kill",
+		this.commandDisplayName = "The chairperson has killed the motion",
 		this.isDebateable = false,
 		this.isDebateConfinedToPendingQuestion = false,
 		this.isAmendable = false,
@@ -19,7 +19,7 @@ if(Meteor.isClient) {
 		this.meetingPart = MEETINGPARTS.administrative,
 		this.motionPutToVote = undefined,
 		this.refreshCommands = true,
-		this.tooltip = 'Request for an end to the debate in order to vote on the current motion.',
+		this.tooltip = 'Allows the chairperson to kill the current motion to keep the meeting moving properly.',
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();
@@ -28,24 +28,19 @@ if(Meteor.isClient) {
 
 		this.execute = function() {
 			if(this.validateCommand()) {
-				// Get the motion put to vote
-				motionPutToVote =  CurrentMotion();
-				// Get the motion put to vote and link it to this guy so we can display it more easily on the screen
-				this.motionPutToVote = motionPutToVote;
-				this.voteType = motionPutToVote.voteType;
-				this.aye = 0;
-				this.nay = 0;
-				this.abstain = 0;
+				// Get the motion killed
+				var motionToKill =  CurrentMotion();
 
 				// Record that the chairperson put the motion to vote.
-				this._id = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement, status: MOTIONSTATUS.toVote, motionIdPutToVote: motionPutToVote._id, aye: 0, nay: 0, abstain: 0});
+				this._id = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement, aye: 0, nay: 0, abstain: 0});
+				Messages.update({_id: motionToKill._id}, {$set: {status: MOTIONSTATUS.killed}});
 			}
 		},
 
 		this.validateCommand = function() {
 			if(CurrentMotion() != undefined)
 			{
-				return CurrentMotion().voteType != VOTETYPES.none && CurrentMotion().secondedBy != "";
+				return true;
 			}
 			return false;
 		}

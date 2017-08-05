@@ -25,6 +25,7 @@ if(Meteor.isClient) {
 	//RobertsRulesOfOrderCommands.push(new DivideTheQuestionCommand());
 	RobertsRulesOfOrderCommands.push(new ExtendDebateCommand());
 	RobertsRulesOfOrderCommands.push(new InformalConsiderationCommand());
+	RobertsRulesOfOrderCommands.push(new KillCommand());
 	RobertsRulesOfOrderCommands.push(new LayOnTheTableCommand());
 	RobertsRulesOfOrderCommands.push(new LimitDebateCommand());
 	RobertsRulesOfOrderCommands.push(new MakeAStatementCommand());
@@ -74,7 +75,8 @@ if(Meteor.isClient) {
 	GetCommandPrototype = function(commandType) {
 		for(var index = 0; index < RobertsRulesOfOrderCommands.length; index++)
 		{
-			if(RobertsRulesOfOrderCommands[index].commandType == commandType)
+			if(RobertsRulesOfOrderCommands[index].commandType == commandType
+					|| RobertsRulesOfOrderCommands[index].commandName == commandType )
 			{
 				return RobertsRulesOfOrderCommands[index];
 			}

@@ -17,7 +17,7 @@ if(Meteor.isClient) {
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();
-			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart});
+			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart, tooltip: this.tooltip});
 		},
 
 		this.execute = function() {
@@ -27,6 +27,10 @@ if(Meteor.isClient) {
 				this._id = Messages.insert({ meetingId: this.meeting._id, dateTime: new Date(), userId: Meteor.userId(), userName: Meteor.user().username, commandType: this.commandType, statement: this.statement, status: MOTIONSTATUS.second, aye: 0, nay: 0, abstain: 0 });
 			}
 		},
+
+		this.selected = function(textbox, currentMotion) {
+			textbox.val(currentMotion.statement);
+		}
 
 		this.validateCommand = function() {
 			if(IsInMotion()

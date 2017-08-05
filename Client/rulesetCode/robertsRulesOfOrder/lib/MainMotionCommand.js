@@ -9,17 +9,16 @@ if(Meteor.isClient) {
 		this.isDebateConfinedToPendingQuestion = true,
 		this.isAmendable = true,
 		this.voteType = VOTETYPES.simpleMajority,
-		this.requiresSecond = true,
 		this.canInterrupt = false,
 		this.isMotion = true,
-		this.closesMotion = true,
+		this.closesMotion = false,
 		this.orderOfPresedence = 1200,
 		this.meetingPart = MEETINGPARTS.main,
 		this.tooltip = 'Propose a spacific action and start the groups consideration of the subject.',
 
 		this.addCommandIfIsValid = function(commands, currentOrderOfPresedence) {
 			isValid = this.validateCommand();
-			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart});
+			commands.push({ commandName: this.commandName, isActive: this.orderOfPresedence < currentOrderOfPresedence && isValid, meetingPart: this.meetingPart, tooltip: this.tooltip});
 		},
 
 		this.execute = function() {
