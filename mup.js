@@ -1,7 +1,7 @@
 module.exports = {
   servers: {
     one: {
-      host: 'eliberate.publicsphereproject.org',
+      host: 'ec2-18-220-192-114.us-east-2.compute.amazonaws.com',
       username: 'ubuntu',
       pem: "c:\\eliberate\\.ssh\\moldavite.pem"
       // pem:
@@ -20,9 +20,11 @@ module.exports = {
       serverOnly: true
     },
     env: {
-      ROOT_URL: 'https://eliberate.publicsphereproject.org',
+      ROOT_URL: 'http://18.220.195.181',
       MONGO_URL: 'mongodb://localhost/meteor'
     },
+
+/*
     ssl:
     {
       autogenerate: {
@@ -30,8 +32,9 @@ module.exports = {
         domains: 'eliberate.publicsphereproject.org'
       }
     },
+*/
 
-    //dockerImage: 'kadirahq/meteord'
+    dockerImage: 'abernix/meteord:base',
     deployCheckWaitTime: 60
   },
 

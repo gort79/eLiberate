@@ -1,9 +1,9 @@
 if(Meteor.isServer) {
 	Meteor.startup(function () {
 	smtp = {
-	  username: 'nathan.clinton@gmail.com',   // eg: server@gentlenode.com
-	  password: 'ozqkgdagpusemqwa',   // eg: 3eeP1gtizk5eziohfervU
-	  server:   'smtp.gmail.com',  // eg: mail.gandi.net
+	  username: 'AKIAIBLUD2MS47XH2QXA',   // eg: server@gentlenode.com
+	  password: 'At4eLUQMu43HDMr5jEo7cBP1f2ZvRfLHurrkJalrVlNc',   // eg: 3eeP1gtizk5eziohfervU
+	  server:   'email-smtp.us-west-2.amazonaws.com',  // eg: mail.gandi.net
 	  port: 587
 	}
 
